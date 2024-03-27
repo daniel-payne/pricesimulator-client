@@ -19,7 +19,7 @@ type ComponentProps = {
 export default function MarketOverview({ symbol, name = "MarketDetails", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
     <div {...rest} data-component={name}>
-      <div className="h-full w-full border-1 rounded p-2 flex flex-col  gap-2">
+      <div className="h-full w-full border rounded-lg p-2 flex flex-col gap-2">
         <Suspense fallback={<TextSkeleton />}>
           <MarketDescription symbol={symbol} />
         </Suspense>

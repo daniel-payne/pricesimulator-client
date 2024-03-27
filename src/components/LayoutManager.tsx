@@ -2,26 +2,24 @@ import { Children, cloneElement } from "react"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
-  gap?: number
+  padding?: number
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-const StyleInjector = ({ size, children }: any) => {
+const StyleInjector = ({ size, padding, children }: any) => {
   const StyledChildren = () =>
     Children.map(children, (child) =>
       cloneElement(child, {
-        className: `${child.props.className} ${size}`,
+        className: `${child.props.className ?? ""} ${size} p-${padding}`,
       })
     )
 
   return <StyledChildren />
 }
 
-export default function LayoutManager({ gap = 0, name = "LayoutManager", children, ...rest }: PropsWithChildren<ComponentProps>) {
+export default function LayoutManager({ padding = 0, name = "LayoutManager", children, ...rest }: PropsWithChildren<ComponentProps>) {
   const count = Children.count(children)
-
-  const gapClass = `gap-${gap}`
 
   let size = "w-1/3 h-1/5"
 
@@ -55,8 +53,10 @@ export default function LayoutManager({ gap = 0, name = "LayoutManager", childre
 
   return (
     <div {...rest} data-component={name}>
-      <div className={`overflow-auto h-full w-full flex flex-row flex-wrap justify-start items-start ${gapClass}`}>
-        <StyleInjector size={size}>{children}</StyleInjector>
+      <div className={`overflow-auto h-full w-full flex flex-row flex-wrap justify-start items-start gap-0`}>
+        <StyleInjector size={size} padding={padding}>
+          {children}
+        </StyleInjector>
       </div>
     </div>
   )

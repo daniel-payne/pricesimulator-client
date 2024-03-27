@@ -3,6 +3,7 @@ import { type HTMLAttributes, type PropsWithChildren, useState } from "react"
 type ComponentProps = {
   options: Array<{ value: number | string; label: string; info?: string }>
 
+  defaultValue?: number
   displayAsButtons?: boolean
 
   onValueChanged?: (value: number) => void
@@ -10,8 +11,15 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ValueChooser({ options, onValueChanged, displayAsButtons = true, name = "ValueChooser", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [selectedValue, setSelectedValue] = useState(25)
+export default function ValueChooser({
+  defaultValue,
+  options,
+  onValueChanged,
+  displayAsButtons = true,
+  name = "ValueChooser",
+  ...rest
+}: PropsWithChildren<ComponentProps>) {
+  const [selectedValue, setSelectedValue] = useState(defaultValue)
 
   const manipulateChange = (value: any) => () => {
     setSelectedValue(value)
@@ -43,7 +51,7 @@ const OptionsAsRadioButtons = ({ options, selectedValue, manipulateChange }: any
         return (
           <label className="label cursor-pointer flex flex-col" key={option.value}>
             <span className="label-text">{option.label}</span>
-            <input type="radio" name="radio-1M" className="ms-2 radio-xs" checked={selectedValue === option.value} onClick={manipulateChange(option.value)} />
+            <input type="radio" name="radio-1M" className="ms-2 radio" checked={selectedValue === option.value} onClick={manipulateChange(option.value)} />
             <span className="label-text text-sm">{option.info}</span>
           </label>
         )
@@ -57,7 +65,7 @@ const OptionsAsRadioButtons = ({ options, selectedValue, manipulateChange }: any
 const OptionsAsTabButtons = ({ options, selectedValue, manipulateChange }: any) => {
   return (
     <div className="flex flex-row gap-2 items-center">
-      <div role="tablist" className="tabs-xs tabs-boxed">
+      <div role="tablist" className="tabs tabs-boxed">
         {options?.map((option: any) => {
           return (
             <div role="tab" className={`tab ${selectedValue === option.value ? "tab-active" : ""}`} onClick={manipulateChange(option.value)}>

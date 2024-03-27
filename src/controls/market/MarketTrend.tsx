@@ -1,5 +1,5 @@
 import DatumChart from "@/components/DatumChart"
-import RangeChooser from "@/components/RangeChooser"
+import RangeChooser, { ONE_MONTH } from "@/components/RangeChooser"
 
 import useLivePriceForSymbol from "@/data/computed/hooks/useLivePriceForSymbol"
 import useTrendForSymbol from "@/data/indexDB/hooks/useTrendForSymbol"
@@ -13,7 +13,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketTrend({ symbol, name = "MarketTrend", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [range, setRange] = useState(25)
+  const [range, setRange] = useState(ONE_MONTH)
 
   // const market = useMarketForSymbol(symbol)
 
@@ -30,8 +30,8 @@ export default function MarketTrend({ symbol, name = "MarketTrend", ...rest }: P
   return (
     <div {...rest} data-component={name}>
       <div className="h-full w-full relative">
-        <div className="absolute top-2 left-0 z-10 flex justify-center w-full">
-          <RangeChooser onRangeChanged={handleRateChange} />
+        <div className="absolute top-1 left-0 z-10 flex justify-center w-full">
+          <RangeChooser defaultValue={range} onRangeChanged={handleRateChange} />
         </div>
 
         <DatumChart className="h-full w-full" datum={trend} labelName="timestamps" dataNames="highs,lows" currentIndex={currentIndex} range={range} />
