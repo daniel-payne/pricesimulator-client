@@ -8,15 +8,15 @@ import useTrendForSymbol from "@/data/indexDB/hooks/useTrendForSymbol"
 type ComponentProps = {
   symbol: string | undefined
 
-  title?: string
+  name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketDetails({ symbol, title = "MarketDetails", children, ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketDetails({ symbol, name = "MarketDetails", children, ...rest }: PropsWithChildren<ComponentProps>) {
   const market = useMarketForSymbol(symbol)
   const trend = useTrendForSymbol(symbol)
 
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className="h-full w-full border-1 rounded p-2">
         <pre>
           {market?.name} {trend?.opens.length}

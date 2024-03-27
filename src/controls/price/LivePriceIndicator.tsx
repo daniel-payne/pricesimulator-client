@@ -6,10 +6,10 @@ import useLivePriceForSymbol from "@/data/computed/hooks/useLivePriceForSymbol"
 type ComponentProps = {
   symbol: string | undefined
 
-  title?: string
+  name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function LatestPriceIndicator({ symbol, title = "LatestPriceIndicator", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function LatestPriceIndicator({ symbol, name = "LatestPriceIndicator", ...rest }: PropsWithChildren<ComponentProps>) {
   const market = useMarketForSymbol(symbol)
   const price = useLivePriceForSymbol(symbol)
 
@@ -29,7 +29,7 @@ export default function LatestPriceIndicator({ symbol, title = "LatestPriceIndic
   const formattedClassName = price?.marketClosed === true ? "text-gray-400" : "text-primary"
 
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className={formattedClassName}>{formattedPrice}</div>
     </div>
   )

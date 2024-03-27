@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client"
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-import GameContainer from "@/routes/containers/GameContainer"
+import DataContainer from "@/routes/containers/DataContainer"
+// import GameContainer from "@/routes/containers/GameContainer"
 
 import HomePage from "@/routes/pages/HomePage"
 import ErrorPage from "@/routes/pages/ErrorPage"
@@ -15,7 +16,7 @@ import MarketPage, { loader as marketLoader } from "./routes/pages/MarketPage"
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <GameContainer className="h-full w-full" />,
+    element: <DataContainer className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
 
     children: [

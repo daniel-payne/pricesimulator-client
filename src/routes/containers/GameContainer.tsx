@@ -1,14 +1,14 @@
-import CurrentDayDisplay from "@/components/currentDay/CurrentDayDisplay"
+import CurrentDayDisplay from "@/controls/timer/CurrentDayDisplay"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { Link, Outlet } from "react-router-dom"
 
 type ComponentProps = {
-  title?: string
+  name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function GameContainer({ title = "GameContainer", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function GameContainer({ name = "GameContainer", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className="h-full w-full flex flex-col gap-0 ">
         <div>
           <Link to="/">Home</Link>

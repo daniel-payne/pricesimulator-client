@@ -1,20 +1,17 @@
-import type { HTMLAttributes, PropsWithChildren } from "react";
-import { ErrorResponse, useRouteError } from "react-router-dom";
+import type { HTMLAttributes, PropsWithChildren } from "react"
+import { ErrorResponse, useRouteError } from "react-router-dom"
 
 type ComponentProps = {
-  title?: string;
-} & HTMLAttributes<HTMLDivElement>;
+  name?: string
+} & HTMLAttributes<HTMLDivElement>
 
-export default function ErrorPage({
-  title = "ErrorPage",
-  ...rest
-}: PropsWithChildren<ComponentProps>) {
-  const error = useRouteError() as ErrorResponse & Error;
+export default function ErrorPage({ name = "ErrorPage", ...rest }: PropsWithChildren<ComponentProps>) {
+  const error = useRouteError() as ErrorResponse & Error
 
-  console.error(error);
+  console.error(error)
 
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className="h-full w-full flex flex-col justify-center items-center">
         <h1>Oops!</h1>
         <p>Sorry, an unexpected error has occurred.</p>
@@ -23,5 +20,5 @@ export default function ErrorPage({
         </p>
       </div>
     </div>
-  );
+  )
 }

@@ -1,19 +1,19 @@
 import { Suspense } from "react"
-import MarketOverview from "@/components/market/MarketOverview"
-import LayoutManager from "@/components/utility/LayoutManager"
+import MarketOverview from "@/controls/market/MarketOverview"
+import LayoutManager from "@/components/LayoutManager"
 import useMarkets from "@/data/indexDB/hooks/useMarkets"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
-  title?: string
+  name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketsPage({ title = "MarketsPage", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketsPage({ name = "MarketsPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const markets = useMarkets()
 
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       {/* <pre>{JSON.stringify(markets, null, 2)}</pre> */}
       <LayoutManager className="h-full w-full">
         {markets?.map((market) => (

@@ -1,21 +1,19 @@
-import type { HTMLAttributes, PropsWithChildren } from "react";
-import { Outlet } from "react-router-dom";
+import DataHeader from "@/components/DataHeader"
+import type { HTMLAttributes, PropsWithChildren } from "react"
+import { Outlet } from "react-router-dom"
 
 type ComponentProps = {
-  title?: string;
-} & HTMLAttributes<HTMLDivElement>;
+  name?: string
+} & HTMLAttributes<HTMLDivElement>
 
-export default function DataContainer({
-  title = "DataContainer",
-  ...rest
-}: PropsWithChildren<ComponentProps>) {
+export default function DataContainer({ name = "DataContainer", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className="h-full w-full flex flex-col gap-0 ">
-        <div>Header</div>
+        <DataHeader />
         <Outlet />
         <div>Footer</div>
       </div>
     </div>
-  );
+  )
 }

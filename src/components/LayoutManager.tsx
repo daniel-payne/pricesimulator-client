@@ -4,7 +4,7 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 type ComponentProps = {
   gap?: number
 
-  title?: string
+  name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 const StyleInjector = ({ size, children }: any) => {
@@ -18,7 +18,7 @@ const StyleInjector = ({ size, children }: any) => {
   return <StyledChildren />
 }
 
-export default function LayoutManager({ gap = 0, title = "LayoutManager", children, ...rest }: PropsWithChildren<ComponentProps>) {
+export default function LayoutManager({ gap = 0, name = "LayoutManager", children, ...rest }: PropsWithChildren<ComponentProps>) {
   const count = Children.count(children)
 
   const gapClass = `gap-${gap}`
@@ -54,7 +54,7 @@ export default function LayoutManager({ gap = 0, title = "LayoutManager", childr
   }
 
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className={`overflow-auto h-full w-full flex flex-row flex-wrap justify-start items-start ${gapClass}`}>
         <StyleInjector size={size}>{children}</StyleInjector>
       </div>

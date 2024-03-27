@@ -2,29 +2,29 @@
 
 import { Suspense } from "react"
 
-import Skeleton from "@/components/skeleton/Skeleton"
+import TextSkeleton from "@/components/TextSkeleton"
 
-import LatestPriceIndicator from "@/components/price/LatestPriceIndicator"
+import LivePriceIndicator from "@/controls/price/LivePriceIndicator"
 // import MarketDescription from "../MarketDescription"
 
 import { type HTMLAttributes, type PropsWithChildren } from "react"
-import MarketDescription from "@/components/market/MarketDescription"
+import MarketDescription from "@/controls/market/MarketDescription"
 
 type ComponentProps = {
   symbol: string | undefined
 
-  title?: string
+  name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketOverview({ symbol, title = "MarketDetails", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketOverview({ symbol, name = "MarketDetails", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
-    <div {...rest} data-component={title}>
+    <div {...rest} data-component={name}>
       <div className="h-full w-full border-1 rounded p-2 flex flex-col  gap-2">
-        <Suspense fallback={<Skeleton />}>
+        <Suspense fallback={<TextSkeleton />}>
           <MarketDescription symbol={symbol} />
         </Suspense>
-        <Suspense fallback={<Skeleton />}>
-          <LatestPriceIndicator symbol={symbol} />
+        <Suspense fallback={<TextSkeleton />}>
+          <LivePriceIndicator symbol={symbol} />
         </Suspense>
         {/* <Suspense fallback={<div>Loading {symbol} ...</div>}>
           <QuickQuoteGenerator symbol={symbol} />
