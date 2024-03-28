@@ -33,7 +33,7 @@ const lengthOptions = [
   { value: "1W", label: "One Week" },
   { value: "1M", label: "One Month" },
   { value: "3M", label: "Three Months" },
-  { value: "CON", label: "Duration of contract" },
+  // { value: "CON", label: "Duration of contract" },
 ]
 
 const exerciseOptions = [
@@ -48,7 +48,15 @@ export default function MarketQuote({ symbol, name = "MarketQuote", ...rest }: P
     <div {...rest} data-component={name} style={{ border: "1px solid grey", padding: 2 }}>
       <div className="p-2 flex flex-row items-baseline gap-2">
         <ValueChooser options={tradeOptions} />
-        <ValueChooser options={sizeOptions} />
+
+        <input type="text" placeholder="$" className="input input-bordered max-w-xs w-24" />
+        <div className="text-xs">of</div>
+        <div className="text-primary border border-primary rounded-lg py-1 px-2">{market?.name}</div>
+        <div className="text-xs">at approximately</div>
+        <div className="text-primary border border-primary rounded-lg py-1 px-2">1.0562</div>
+
+        {/*
+         <ValueChooser options={sizeOptions} />
         <div className="text-xs">contract for a</div>
         <div className="text-primary border border-primary rounded-lg py-1 px-2">{market?.contractName}</div>
         <div className="text-xs">for Delivery on last day of</div>
@@ -56,6 +64,8 @@ export default function MarketQuote({ symbol, name = "MarketQuote", ...rest }: P
         <div className="text-xs">in 95 days time</div>
         <div className="text-xs">for</div>
         <div className="text-primary border border-primary rounded-lg py-1 px-2">$12,345</div>
+        */}
+
         <div className="join">
           <button className="btn join-item">Stop Loses at</button>
           <input type="text" placeholder="$" className="input input-bordered max-w-xs w-24" />
@@ -67,7 +77,7 @@ export default function MarketQuote({ symbol, name = "MarketQuote", ...rest }: P
       </div>
       <div className="p-2 flex flex-row items-baseline gap-2">
         <ValueChooser options={coverOptions} />
-        <div className="text-xs">with an option</div>
+        <div className="text-xs">with an option to</div>
         <div className="text-primary border border-primary rounded-lg py-1 px-2">Sell</div>
         <div className="text-xs">at</div>
         <div className="join">
@@ -80,6 +90,8 @@ export default function MarketQuote({ symbol, name = "MarketQuote", ...rest }: P
         <ValueChooser options={lengthOptions} />
         <div className="text-xs">option can be used</div>
         <ValueChooser options={exerciseOptions} />
+        <div className="text-xs">for an estimated cost of</div>
+        <div className="text-primary border border-primary rounded-lg py-1 px-2">$1,540.34</div>
       </div>
     </div>
   )
