@@ -5,6 +5,7 @@ import { useLoaderData } from "react-router-dom"
 
 import MarketQuote from "@/controls/market/MarketQuote"
 import MarketTrend from "@/controls/market/MarketTrend"
+import ContractQuote from "@/controls/contract/ContractQuote"
 
 type ComponentProps = {
   name?: string
@@ -20,7 +21,8 @@ export default function MarketPage({ name = "MarketPage", ...rest }: PropsWithCh
   return (
     <div {...rest} data-component={name}>
       <div className="flex-auto w-full h-full flex flex-col gap-1">
-        <MarketQuote symbol={symbol} />
+        <ContractQuote symbol={symbol} />
+        {/* <MarketQuote symbol={symbol} /> */}
         <MarketTrend className="flex-auto" symbol={symbol} />
       </div>
     </div>

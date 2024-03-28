@@ -13,6 +13,10 @@ export default function LatestPriceIndicator({ symbol, name = "LatestPriceIndica
   const market = useMarketForSymbol(symbol)
   const price = useLivePriceForSymbol(symbol)
 
+  if (price == null) {
+    return <div className="skeleton h-1 w-28" />
+  }
+
   const decimalPlaces = market?.decimalPlaces ? parseInt(market.decimalPlaces) : 4
   const displayPrice = price?.marketClosed === true ? price?.lastClose : price?.midDayPrice
 
