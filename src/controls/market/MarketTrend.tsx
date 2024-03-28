@@ -29,12 +29,11 @@ export default function MarketTrend({ symbol, name = "MarketTrend", ...rest }: P
 
   return (
     <div {...rest} data-component={name}>
-      <div className="h-full w-full relative">
+      <div className="h-full w-full relative flex flex-col">
         <div className="absolute top-1 left-0 z-10 flex justify-center w-full">
           <RangeChooser defaultValue={range} onRangeChanged={handleRateChange} />
         </div>
-
-        <DatumChart className="h-full w-full" datum={trend} labelName="timestamps" dataNames="highs,lows" currentIndex={currentIndex} range={range} />
+        <DatumChart className="flex-auto" datum={trend} labelName="timestamps" dataNames="highs,lows" currentIndex={currentIndex} range={range} />
       </div>
     </div>
   )

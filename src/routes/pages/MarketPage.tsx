@@ -19,7 +19,7 @@ export default function MarketPage({ name = "MarketPage", ...rest }: PropsWithCh
 
   return (
     <div {...rest} data-component={name}>
-      <div className="w-full h-full flex flex-col gap-1">
+      <div className="flex-auto w-full h-full flex flex-col gap-1">
         <MarketQuote symbol={symbol} />
         <MarketTrend className="flex-auto" symbol={symbol} />
       </div>

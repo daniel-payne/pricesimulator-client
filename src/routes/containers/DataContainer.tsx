@@ -11,7 +11,7 @@ export default function DataContainer({ name = "DataContainer", ...rest }: Props
     <div {...rest} data-component={name}>
       <div className="h-full w-full flex flex-col gap-0 ">
         <DataHeader />
-        <div className="overflow-auto">
+        <div className="flex-auto overflow-auto">
           <Outlet />
         </div>
         <div>Footer</div>

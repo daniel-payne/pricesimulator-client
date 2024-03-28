@@ -15,7 +15,7 @@ export default function MarketsPage({ name = "MarketsPage", ...rest }: PropsWith
   return (
     <div {...rest} data-component={name}>
       {/* <pre>{JSON.stringify(markets, null, 2)}</pre> */}
-      <LayoutManager className="h-full w-full" padding={1}>
+      <LayoutManager className="h-full w-full flex-auto" padding={2}>
         {markets?.map((market) => (
           <div key={market.symbol}>
             <Suspense fallback={<div>Loading {market.symbol} ...</div>}>
