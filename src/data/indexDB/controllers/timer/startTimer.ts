@@ -1,11 +1,11 @@
-import db from "../db"
+import db from "../../db"
 
 import nextDay from "./nextDay"
 
-import { ScenarioSpeed } from "../enums/ScenarioSpeed"
+import { ScenarioSpeed } from "../../enums/ScenarioSpeed"
 
-import type { PriceSimulatorDexie } from "../db"
-import updateStatus from "./updateStatus"
+import type { PriceSimulatorDexie } from "../../db"
+import updateStatus from "../status/updateStatus"
 
 export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed) {
   if (db.timeout != null) {

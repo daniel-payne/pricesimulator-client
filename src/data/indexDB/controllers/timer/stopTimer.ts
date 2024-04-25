@@ -1,7 +1,8 @@
-import db from "../db"
+import db from "../../db"
 
-import type { PriceSimulatorDexie } from "../db"
-import updateStatus from "./updateStatus"
+import updateStatus from "../status/updateStatus"
+
+import type { PriceSimulatorDexie } from "../../db"
 
 export async function controller(db: PriceSimulatorDexie) {
   if (db.timeout != null) {

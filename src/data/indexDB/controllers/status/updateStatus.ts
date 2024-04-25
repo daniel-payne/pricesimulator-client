@@ -1,9 +1,9 @@
-import db from "../db"
+import db from "../../db"
 
-import { ScenarioSpeed } from "../enums/ScenarioSpeed"
+import { ScenarioSpeed } from "../../enums/ScenarioSpeed"
 
-import type { PriceSimulatorDexie } from "../db"
-import type { Status } from "../types/Status"
+import type { PriceSimulatorDexie } from "../../db"
+import type { Status } from "../../types/Status"
 
 export async function controller(db: PriceSimulatorDexie, newStatus: Status = {}) {
   const id = db.id

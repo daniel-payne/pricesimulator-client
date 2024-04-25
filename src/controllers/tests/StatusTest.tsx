@@ -1,5 +1,5 @@
-import startTimer from "@/data/indexDB/controlers/startTimer"
-import stopTimer from "@/data/indexDB/controlers/stopTimer"
+import startTimer from "@/data/indexDB/controllers/timer/startTimer"
+import stopTimer from "@/data/indexDB/controllers/timer/stopTimer"
 import db from "@/data/indexDB/db"
 import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 import { useLiveQuery } from "dexie-react-hooks"

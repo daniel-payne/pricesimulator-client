@@ -1,12 +1,12 @@
-import db from "../db"
+import db from "../../db"
 
-import { ScenarioSpeed } from "../enums/ScenarioSpeed"
+import { ScenarioSpeed } from "../../enums/ScenarioSpeed"
 
-import type { PriceSimulatorDexie } from "../db"
-import { DEFAULT_START } from "../constants/DEFAULT_START"
-import { ONE_DAY } from "../constants/ONE_DAY"
-import currentStatus from "./currentStatus"
-import updateStatus from "./updateStatus"
+import type { PriceSimulatorDexie } from "../../db"
+import { DEFAULT_START } from "../../constants/DEFAULT_START"
+import { ONE_DAY } from "../../constants/ONE_DAY"
+import currentStatus from "../status/currentStatus"
+import updateStatus from "../status/updateStatus"
 
 export async function controller(db: PriceSimulatorDexie) {
   db.transaction("rw", db.status, async () => {
