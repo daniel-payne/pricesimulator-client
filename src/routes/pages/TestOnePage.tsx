@@ -1,6 +1,6 @@
 // import MarketsTest from "@/controllers/tests//MarketsTest"
 // import ScenariosTest from "@/controllers/tests//ScenariosTest"
-import StatusTest from "@/controllers/tests/StatusTest"
+import StatusTest from "@/elements/tests/StatusTest"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 

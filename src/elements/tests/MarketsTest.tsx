@@ -1,3 +1,7 @@
+import synchronizeAllMarkets from "@/data/indexDB/controllers/synchronize/synchronizeAllMarkets"
+import synchronizeAllTrends from "@/data/indexDB/controllers/synchronize/synchronizeAllTrends"
+import synchronizeTrendForSymbol from "@/data/indexDB/controllers/synchronize/synchronizeTrendForSymbol"
+import synchronizeTrendForSymbols from "@/data/indexDB/controllers/synchronize/synchronizeTrendForSymbols"
 import db from "@/data/indexDB/db"
 import { Market } from "@/data/indexDB/types/Market"
 import formatTimestamp from "@/utilities/formatTimestamp"
@@ -30,7 +34,7 @@ export default function MarketsTest({ name = "MarketsTest", ...rest }: PropsWith
                 {market.dataStatus} {market.dataCount}
               </div>
               <div>{formatTimestamp(market.firstTimestamp)} </div>
-              <button className="btn btn-sm" onClick={() => db.synchronizeTrendForSymbol(market.symbol)}>
+              <button className="btn btn-sm" onClick={() => synchronizeTrendForSymbol(market.symbol)}>
                 Synchronize
               </button>
             </div>
@@ -39,13 +43,13 @@ export default function MarketsTest({ name = "MarketsTest", ...rest }: PropsWith
       </div>
 
       <div className="flex flex-row gap-2 py-2">
-        <button className="btn btn-sm" onClick={() => db.synchronizeAllMarkets()}>
+        <button className="btn btn-sm" onClick={() => synchronizeAllMarkets()}>
           Synchronize
         </button>
-        <button className="btn btn-sm" onClick={() => db.synchronizeTrendForSymbols(["RR.F", "SB.F", "SL.f"])}>
+        <button className="btn btn-sm" onClick={() => synchronizeTrendForSymbols(["RR.F", "SB.F", "SL.f"])}>
           Synchronize RR.F SB.F SL.f Trends
         </button>
-        <button className="btn btn-sm" onClick={() => db.synchronizeAllTrends()}>
+        <button className="btn btn-sm" onClick={() => synchronizeAllTrends()}>
           Synchronize All Trends
         </button>
       </div>

@@ -1,5 +1,6 @@
 import type { Market } from "@/data/indexDB/types/Market"
 import type { HTMLAttributes, PropsWithChildren } from "react"
+import DefaultComponent from "./DefaultComponent"
 
 type ComponentProps = {
   market: Market
@@ -14,8 +15,12 @@ export default function MarketCard({ market, name = "MarketCard", ...rest }: Pro
         <div className="card-body">
           <h4 className="card-title">{market.name}</h4>
           <p>{market.description}</p>
-          <div>Prices</div>
-          <div>1.03304</div>
+          <DefaultComponent name="PriceSummary" className="h-full">
+            <div className="h-full flex flex-col">
+              <DefaultComponent name="PriceSparkline" className="h-24" />
+              <DefaultComponent name="PriceLatest" className="h-8" />
+            </div>
+          </DefaultComponent>
           <div className="card-actions justify-end">
             <button className="btn btn-sm w-20 btn-primary">Buy</button>
             <button className="btn btn-sm w-20 btn-primary">Sell</button>

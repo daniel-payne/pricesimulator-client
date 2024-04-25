@@ -1,9 +1,11 @@
-import ScenariosListing from "@/controllers/ScenariosListing"
-import db from "@/data/indexDB/db"
+import ScenariosListing from "@/elements/ScenariosListing"
+
+import synchronizeAllScenarios from "@/data/indexDB/controllers/synchronize/synchronizeAllScenarios"
+
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 export async function loader() {
-  db.synchronizeAllScenarios()
+  synchronizeAllScenarios()
 
   return null
 }

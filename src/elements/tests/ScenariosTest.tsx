@@ -1,3 +1,4 @@
+import synchronizeAllScenarios from "@/data/indexDB/controllers/synchronize/synchronizeAllScenarios"
 import db from "@/data/indexDB/db"
 
 import { useLiveQuery } from "dexie-react-hooks"
@@ -28,7 +29,7 @@ export default function ScenariosTest({ name = "ScenariosTest", ...rest }: Props
       </div>
 
       <div className="flex flex-row gap-2 py-2">
-        <button className="btn btn-sm" onClick={() => db.synchronizeAllScenarios()}>
+        <button className="btn btn-sm" onClick={() => synchronizeAllScenarios()}>
           Synchronize
         </button>
       </div>

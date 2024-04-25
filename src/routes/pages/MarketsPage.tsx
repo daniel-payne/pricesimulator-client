@@ -1,4 +1,4 @@
-import MarketsListing from "@/controllers/MarketsListing"
+import MarketsListing from "@/elements/MarketsListing"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {

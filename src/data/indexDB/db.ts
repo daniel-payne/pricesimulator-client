@@ -12,17 +12,17 @@ import type { Trade } from "./types/Trade"
 
 import generateID from "@/utilities/generateID"
 // import { ScenarioSpeed } from "./enums/ScenarioSpeed"
-import loadScenarios from "../load/loadScenarios"
-import loadMarkets from "../load/loadMarkets"
-import loadTrend from "../load/loadTrend"
+// import loadScenarios from "../load/loadScenarios"
+// import loadMarkets from "../load/loadMarkets"
+// import loadTrend from "../load/loadTrend"
 
-export const SCENARIO_COUNT = 60
-export const MARKETS_COUNT = 60
+// export const SCENARIO_COUNT = 60
+// export const MARKETS_COUNT = 60
 
-export const DEFAULT_SPREAD = 0.007
-export const DEFAULT_START = "1981-2-09"
+// export const DEFAULT_SPREAD = 0.007
+// export const DEFAULT_START = "1981-2-09"
 
-export const ONE_DAY = 60 * 60 * 24 * 1000
+// export const ONE_DAY = 60 * 60 * 24 * 1000
 
 export class PriceSimulatorDexie extends Dexie {
   id: string
@@ -134,80 +134,80 @@ export class PriceSimulatorDexie extends Dexie {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public async synchronizeAllScenarios() {
-    const count = await this.scenarios.count()
+  // public async synchronizeAllScenarios() {
+  //   const count = await this.scenarios.count()
 
-    if (count < SCENARIO_COUNT) {
-      const scenarios = await loadScenarios()
+  //   if (count < SCENARIO_COUNT) {
+  //     const scenarios = await loadScenarios()
 
-      await this.scenarios.bulkPut(scenarios).catch(Dexie.BulkError, function (e) {
-        console.error("loadScenarios Loading Error: " + e.failures.length)
-      })
-    }
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  public async synchronizeAllMarkets() {
-    const count = await this.markets.count()
-
-    if (count < MARKETS_COUNT) {
-      const markets = await loadMarkets()
-
-      await this.markets.bulkPut(markets).catch(Dexie.BulkError, function (e) {
-        console.error("loadMarkets Loading Error: " + e.failures.length)
-      })
-    }
-  }
+  //     await this.scenarios.bulkPut(scenarios).catch(Dexie.BulkError, function (e) {
+  //       console.error("loadScenarios Loading Error: " + e.failures.length)
+  //     })
+  //   }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public async synchronizeAllTrends() {
-    const markets = await this.markets.toArray()
+  // public async synchronizeAllMarkets() {
+  //   const count = await this.markets.count()
 
-    const synchronizeTrends = markets.map((market) => {
-      return db.synchronizeTrendForSymbol(market.symbol)
-    })
+  //   if (count < MARKETS_COUNT) {
+  //     const markets = await loadMarkets()
 
-    await Promise.all(synchronizeTrends)
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  public async synchronizeTrendForSymbols(symbols: Array<string>) {
-    const synchronizeTrends = symbols.map((symbol) => {
-      return db.synchronizeTrendForSymbol(symbol)
-    })
-
-    await Promise.all(synchronizeTrends)
-  }
+  //     await this.markets.bulkPut(markets).catch(Dexie.BulkError, function (e) {
+  //       console.error("loadMarkets Loading Error: " + e.failures.length)
+  //     })
+  //   }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public async synchronizeTrendForSymbol(symbol: string) {
-    const market = await this.markets.where({ symbol }).first()
+  // public async synchronizeAllTrends() {
+  //   const markets = await this.markets.toArray()
 
-    const hasNoData = market && (market.dataCount ?? 0) === 0
-    const isNotLoading = market && market.dataStatus == null
+  //   const synchronizeTrends = markets.map((market) => {
+  //     return db.synchronizeTrendForSymbol(market.symbol)
+  //   })
 
-    if (hasNoData && isNotLoading) {
-      await this.markets.update(symbol, { dataStatus: "LOADING" })
+  //   await Promise.all(synchronizeTrends)
+  // }
 
-      const trends = await loadTrend(symbol)
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      const firstTimestamp = trends.timestamps[0]
-      const secondTimestamp = trends.timestamps[1]
-      const lastTimestamp = trends.timestamps[trends.timestamps.length - 1]
+  // public async synchronizeTrendForSymbols(symbols: Array<string>) {
+  //   const synchronizeTrends = symbols.map((symbol) => {
+  //     return db.synchronizeTrendForSymbol(symbol)
+  //   })
 
-      trends.symbol = symbol
+  //   await Promise.all(synchronizeTrends)
+  // }
 
-      await this.trends.put(trends).catch(Dexie.BulkError, function (e) {
-        console.error("loadMarkets Loading Error: " + e.failures.length)
-      })
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      await this.markets.update(symbol, { dataStatus: undefined, dataCount: trends.timestamps.length, firstTimestamp, secondTimestamp, lastTimestamp })
-    }
-  }
+  // public async synchronizeTrendForSymbol(symbol: string) {
+  //   const market = await this.markets.where({ symbol }).first()
+
+  //   const hasNoData = market && (market.dataCount ?? 0) === 0
+  //   const isNotLoading = market && market.dataStatus == null
+
+  //   if (hasNoData && isNotLoading) {
+  //     await this.markets.update(symbol, { dataStatus: "LOADING" })
+
+  //     const trends = await loadTrend(symbol)
+
+  //     const firstTimestamp = trends.timestamps[0]
+  //     const secondTimestamp = trends.timestamps[1]
+  //     const lastTimestamp = trends.timestamps[trends.timestamps.length - 1]
+
+  //     trends.symbol = symbol
+
+  //     await this.trends.put(trends).catch(Dexie.BulkError, function (e) {
+  //       console.error("loadMarkets Loading Error: " + e.failures.length)
+  //     })
+
+  //     await this.markets.update(symbol, { dataStatus: undefined, dataCount: trends.timestamps.length, firstTimestamp, secondTimestamp, lastTimestamp })
+  //   }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
