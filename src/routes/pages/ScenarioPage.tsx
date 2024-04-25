@@ -13,7 +13,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketPage({ name = "MarketPage", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ScenarioPage({ name = "ScenarioPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const data = useLoaderData() as any
 
   return (

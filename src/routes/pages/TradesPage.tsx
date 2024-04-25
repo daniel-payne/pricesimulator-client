@@ -4,7 +4,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function TradesPage({ name = "TradesPage", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
     <div {...rest} data-component={name}>
       {name}

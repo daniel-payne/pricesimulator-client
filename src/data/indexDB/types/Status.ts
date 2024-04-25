@@ -1,4 +1,4 @@
-import { ScenarioSpeed } from "./enums/ScenarioSpeed"
+import { ScenarioSpeed } from "../enums/ScenarioSpeed"
 
 export type Status = {
   id?: string
