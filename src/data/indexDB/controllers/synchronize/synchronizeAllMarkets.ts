@@ -9,15 +9,21 @@ import { MARKETS_COUNT } from "@/data/indexDB/constants/MARKETS_COUNT"
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
 export async function controller(db: PriceSimulatorDexie) {
-  const count = await db.markets.count()
+  const markets = await db.markets.toArray()
+
+  const count = markets.length
 
   if (count < MARKETS_COUNT) {
-    const markets = await loadMarkets()
+    const newMarkets = await loadMarkets()
 
-    await db.markets.bulkPut(markets).catch(Dexie.BulkError, function (e) {
+    await db.markets.bulkPut(newMarkets).catch(Dexie.BulkError, function (e) {
       console.error("loadMarkets Loading Error: " + e.failures.length)
     })
   }
+
+  markets?.forEach((market) => {
+    db.marketsCache[market.symbol] = market
+  })
 }
 
 export default function currentStatus() {

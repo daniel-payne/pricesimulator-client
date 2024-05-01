@@ -1,15 +1,15 @@
-import MarketsListing from "@/display/elements/MarketsListing"
+import TrendsListing from "@/display/elements/TrendsListing"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketsPage({ name = "MarketsPage", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function TrendsPage({ name = "TrendsPage", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
     <div {...rest} data-component={name}>
       <div className="h-full w-full ">
-        <MarketsListing />
+        <TrendsListing />
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-export default function formatTimestamp(timestamp: number | undefined | null) {
+export default function formatTimestamp(timestamp: number | string | undefined | null) {
   if (timestamp == null) {
     return null
   }

@@ -5,14 +5,14 @@ export type Trade = {
   notionalAmount: number
   tradeDirection: "CALL" | "PUT"
 
-  openingValue: number
+  openingValue?: number
   closingValue?: number
 
   openingDay: string
   closingDay?: string
 
-  openingPrice: number
-  closingPrice?: number
+  openingRate: number
+  closingRate?: number
 
   profit?: number
 
@@ -20,5 +20,5 @@ export type Trade = {
 }
 
 // Amount is stored
-// Amount = Value  / ( Price * Modifier )
-// Value  = Amount * ( Price * Modifier )
+// Amount = Value  / ( Rate * Modifier )
+// Value  = Amount * ( Rate * Modifier )

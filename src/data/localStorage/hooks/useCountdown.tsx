@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState, Dispatch } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 const DEFAULT_TIME = 60
 
 const useCountdown = () => {
   // const [id] = useState<string>(generateID())
-  const [isActive, setIsActive] = useState<boolean>(false)
+  const [isCountdownActive, setIsCountdownActive] = useState<boolean>(false)
 
   const [progress, setProgress] = useState<number>(100)
   const [time, setTime] = useState<number>(DEFAULT_TIME)
@@ -21,7 +21,7 @@ const useCountdown = () => {
     }
 
     setProgress(100)
-    setIsActive(true)
+    setIsCountdownActive(true)
   }, [])
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   const stopCountdown = useCallback(() => {
@@ -29,11 +29,11 @@ const useCountdown = () => {
     setDuration(DEFAULT_TIME)
 
     setProgress(100)
-    setIsActive(false)
+    setIsCountdownActive(false)
   }, [])
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
-    if (isActive) {
+    if (isCountdownActive) {
       window.setTimeout(() => {
         const newTime = time - 1
         const newProgress = (newTime / duration) * 100
@@ -44,18 +44,18 @@ const useCountdown = () => {
         } else {
           setTime(0)
           setProgress(0)
-          setIsActive(false)
+          setIsCountdownActive(false)
         }
       }, 1000)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive, progress])
+  }, [isCountdownActive, progress])
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   return {
-    data: { progress, time, duration, isActive },
+    data: { progress, time, duration, isCountdownActive },
     actions: { startCountdown, stopCountdown },
   } as const
 }

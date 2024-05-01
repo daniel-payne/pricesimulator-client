@@ -1,4 +1,4 @@
-import ScenariosListing from "@/elements/ScenariosListing"
+import ScenariosListing from "@/display/elements/ScenariosListing"
 
 import synchronizeAllScenarios from "@/data/indexDB/controllers/synchronize/synchronizeAllScenarios"
 
