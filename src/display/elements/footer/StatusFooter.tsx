@@ -9,8 +9,9 @@ export default function StatusFooter({ name = "StatusFooter", ...rest }: PropsWi
   return (
     <div {...rest} data-controller={name}>
       <div className="flex flex-row gap-2 justify-between items-center bg-base-200 p-2">
+        <DefaultElement name="TradesNavigation" />
         <DefaultElement name="ActiveTradeBadges" />
-        <DefaultElement name="CurrentBalanceSummary" />
+        <DefaultElement name="AccountNavigation" />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-import MarketCurrentPriceCard from "../card/MarketCurrentPriceCard"
+import MarketCurrentPriceCard from "../card/xMarketCurrentPriceCard"
 
 import useStatus from "@/data/indexDB/hooks/useStatus"
 import useMarkets from "@/data/indexDB/hooks/useMarkets"

@@ -3,32 +3,37 @@ import ReactDOM from "react-dom/client"
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-import StatusContainer from "./routes/containers/StatusContainer"
+import StatusContainer from "@/routes/containers/StatusContainer"
+import CurrentContainer from "@/routes/containers/CurrentContainer"
+import AdministrationContainer from "@/routes/containers/AdministrationContainer"
 
 import HomePage from "@/routes/pages/HomePage"
 import ErrorPage from "@/routes/pages/ErrorPage"
 import TestPage from "@/routes/pages/TestPage"
-
-import ScenariosPage, { loader as scenariosLoader } from "./routes/pages/ScenariosPage"
-import MarketsPage from "./routes/pages/MarketsPage"
-import TradesPage from "./routes/pages/TradesPage"
-
-import MarketPage, { loader as marketLoader } from "./routes/pages/MarketPage"
-
-import ScenarioPage, { loader as scenarioLoader } from "@//routes/pages/ScenarioPage"
+import MarketsPage, { loader as marketsLoader } from "@/routes/pages/MarketsPage"
+import TradesPage from "@/routes/pages/TradesPage"
+import ScenariosPage, { loader as scenariosLoader } from "@/routes/pages/ScenariosPage"
+import MarketPage from "@/routes/pages/MarketPage"
+import ScenarioPage from "@//routes/pages/ScenarioPage"
 
 import "@/data/indexDB/db"
 
 import "./main.css"
-import PricesPage from "./routes/pages/PricesPage"
-import TrendsPage from "./routes/pages/TrendsPage"
-import DataPage from "./routes/pages/DataPage"
+import SettingsPage from "./routes/pages/SettingsPage"
+import StatusPage from "./routes/pages/StatusPage"
+import AccountsPage from "./routes/pages/AccountsPage"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
+  },
+  {
+    path: "/scenarios",
+    element: <ScenariosPage className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+    loader: scenariosLoader,
   },
   {
     path: "status",
@@ -38,30 +43,33 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage className="h-full w-full" /> },
       {
-        path: "data",
-        element: <DataPage className="h-full w-full" />,
-        errorElement: <ErrorPage className="h-full w-full" />,
-        loader: scenariosLoader,
-      },
-      {
-        path: "scenarios",
-        element: <ScenariosPage className="h-full w-full" />,
-        errorElement: <ErrorPage className="h-full w-full" />,
-        loader: scenariosLoader,
-      },
-      {
         path: "markets",
         element: <MarketsPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
+        loader: marketsLoader,
       },
       {
-        path: "trends",
-        element: <TrendsPage className="h-full w-full" />,
+        path: "market/:symbol",
+        element: <MarketPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
       },
+
       {
-        path: "prices",
-        element: <PricesPage className="h-full w-full" />,
+        path: "scenario/:id",
+        element: <ScenarioPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
+    ],
+  },
+  {
+    path: "current",
+    element: <CurrentContainer className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+
+    children: [
+      {
+        path: "Accounts",
+        element: <AccountsPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
       },
       {
@@ -69,17 +77,23 @@ const router = createBrowserRouter([
         element: <TradesPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
       },
+    ],
+  },
+  {
+    path: "admin",
+    element: <AdministrationContainer className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+
+    children: [
       {
-        path: "market/:symbol",
-        element: <MarketPage className="h-full w-full" />,
+        path: "Settings",
+        element: <SettingsPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
-        loader: marketLoader,
       },
       {
-        path: "scenario/:id",
-        element: <ScenarioPage className="h-full w-full" />,
+        path: "status",
+        element: <StatusPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
-        loader: scenarioLoader,
       },
     ],
   },

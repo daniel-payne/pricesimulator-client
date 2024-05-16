@@ -30,7 +30,7 @@ export class PriceSimulatorDexie extends Dexie {
   constructor() {
     super("PriceSimulator")
 
-    this.version(12).stores({
+    this.version(20).stores({
       status: "id",
 
       scenarios: "code, name",
