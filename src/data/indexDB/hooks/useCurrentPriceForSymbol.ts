@@ -1,3 +1,5 @@
+import getTrendForSymbol from "../controllers/get/getTrendForSymbol"
+
 import type { Price } from "../types/Price"
 import useStatus from "./useStatus"
 
@@ -12,6 +14,8 @@ export default function useCurrentPriceForSymbol(symbol: string): Price | undefi
 
   if (entry != null && entry[1] != null) {
     price = entry[1]
+  } else {
+    getTrendForSymbol(symbol)
   }
 
   return price

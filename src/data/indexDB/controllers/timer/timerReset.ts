@@ -4,6 +4,7 @@ import updateStatus from "../update/updateStatus"
 
 import type { PriceSimulatorDexie } from "../../db"
 import timerNextDay from "./timerNextDay"
+import { DEFAULT_START } from "../../constants/DEFAULT_START"
 
 export async function controller(db: PriceSimulatorDexie, day: string) {
   if (db.timeout != null) {
@@ -15,6 +16,6 @@ export async function controller(db: PriceSimulatorDexie, day: string) {
   await timerNextDay(true)
 }
 
-export default function timerReset(day: string) {
+export default function timerReset(day: string = DEFAULT_START) {
   return controller(db, day)
 }

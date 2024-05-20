@@ -1,1 +1,1 @@
-export const DEFAULT_START = "1981-2-09"
+export const DEFAULT_START = "1970-01-05"

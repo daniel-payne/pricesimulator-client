@@ -42,7 +42,9 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
                   <div>Take me back to 1970, and see how well you can grow a starting investment of $1,000</div>
                   <div className="text-xs mt-4">
                     <span>As its not real money, you just hit this</span>
-                    <button className="btn btn-xs btn-error mx-2">button</button>
+                    <Link to="/reset">
+                      <button className="btn btn-xs btn-error mx-2">button</button>
+                    </Link>
                     <span>to start over again anytime.</span>
                   </div>
                   <div className="text-xs mt-4">
@@ -51,7 +53,7 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
                 </p>
               </div>
               <div className="card-actions justify-end p-4">
-                <Link to="/status/markets">
+                <Link to="/status/categories">
                   <button className="btn btn-primary">Dive in and start trading</button>
                 </Link>
               </div>
