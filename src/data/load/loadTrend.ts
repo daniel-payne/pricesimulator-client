@@ -7,5 +7,13 @@ export default async function loadTrend(symbol: string) {
 
   const json = await response.json()
 
+  json.timegaps = json.timestamps.map((timestamp: number, index: number) => {
+    if (index === 0) {
+      return null
+    }
+
+    return timestamp - json.timestamps[index - 1]
+  })
+
   return json
 }

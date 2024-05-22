@@ -29,7 +29,11 @@ export default async function calculateNewStatus() {
 
     const trendCount = trend?.timestamps?.length
 
-    const currentIndex = await calculateIndexForSymbolDay(symbol, day)
+    const currentIndexForSymbol = oldStatus?.currentIndexForSymbol ?? {}
+
+    const currentPosition = currentIndexForSymbol[symbol]?.currentPosition
+
+    const currentIndex = await calculateIndexForSymbolDay(symbol, day, currentPosition)
     const currentPrice = await calculatePriceForSymbolIndex(symbol, currentIndex.currentPosition)
 
     newStatus.trendCountForSymbol[symbol] = trendCount

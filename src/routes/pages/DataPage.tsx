@@ -26,7 +26,7 @@ export async function loader({ request, params }: any) {
 }
 
 const Cell = ({ data, columnIndex, rowIndex, style }: { data: any; columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {
-  let display = columnIndex + ":" + rowIndex
+  let display: string | number = ""
 
   if (columnIndex === 0) {
     display = formatTimestampDay(data?.timestamps[rowIndex]) + " " + formatTimestamp(data?.timestamps[rowIndex])
@@ -38,6 +38,8 @@ const Cell = ({ data, columnIndex, rowIndex, style }: { data: any; columnIndex: 
     display = formatNumber(data?.lows[rowIndex])
   } else if (columnIndex === 4) {
     display = formatNumber(data?.closes[rowIndex])
+  } else if (columnIndex === 5) {
+    display = (data?.timegaps[rowIndex] ?? 0) / 1000 / 60 / 60 / 24
   }
 
   return <div style={style}>{display}</div>
@@ -59,7 +61,7 @@ export default function DataPage({ name = "DataPage", ...rest }: PropsWithChildr
             itemData={trend}
             height={height}
             rowCount={trend?.timestamps.length || 0}
-            columnCount={5}
+            columnCount={6}
             rowHeight={35}
             columnWidth={200}
             width={width}

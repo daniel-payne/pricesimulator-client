@@ -23,8 +23,6 @@ export default async function calculateIndexForSymbolDay(symbol: string, day: st
   }
 
   if (doSearch) {
-    isMarketActive = true
-
     if (indexHint == null) {
       currentPosition = binarySearch(timestamps, currentTimestamp)
     } else {
@@ -54,7 +52,10 @@ export default async function calculateIndexForSymbolDay(symbol: string, day: st
       }
     }
 
+    const timegapDays = trend.timegaps[Math.abs(currentPosition)] / 1000 / 60 / 60 / 24
+
     isMarketOpen = !!(currentPosition > -1)
+    isMarketActive = timegapDays > 0 && timegapDays < 6
   }
 
   const index = {

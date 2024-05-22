@@ -6,4 +6,6 @@ export type Trend = {
   highs: number[]
   lows: number[]
   closes: number[]
+
+  timegaps: number[]
 }

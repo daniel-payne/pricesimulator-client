@@ -9,7 +9,7 @@ import AdministrationContainer from "@/routes/containers/AdministrationContainer
 
 import HomePage from "@/routes/pages/HomePage"
 import ErrorPage from "@/routes/pages/ErrorPage"
-import TestPage from "@/routes/pages/TestPage"
+import ActionsPage from "@/routes/pages/ActionsPage"
 import CategoriesPage, { loader as categoriesLoader } from "@/routes/pages/CategoriesPage"
 import TradesPage from "@/routes/pages/TradesPage"
 import ScenariosPage, { loader as scenariosLoader } from "@/routes/pages/ScenariosPage"
@@ -98,16 +98,28 @@ const router = createBrowserRouter([
       },
     ],
   },
+
   {
     path: "test",
-    element: <TestPage className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
-  },
-  {
-    path: "data/:symbol",
-    element: <DataPage className="h-full w-full" />,
-    errorElement: <ErrorPage className="h-full w-full" />,
-    loader: dataLoader,
+    children: [
+      {
+        path: "actions",
+        element: <ActionsPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
+      {
+        path: "status",
+        element: <StatusPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
+      {
+        path: "data/:symbol",
+        element: <DataPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+        loader: dataLoader,
+      },
+    ],
   },
 ])
 

@@ -17,7 +17,7 @@ export async function loader({ request, params }: any) {
   return { params, search }
 }
 
-export default function TestPage({ name = "TestPage", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ActionsPage({ name = "ActionsPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const status = useStatus()
 
   const handleNextDay = () => timerNextDay(true)
