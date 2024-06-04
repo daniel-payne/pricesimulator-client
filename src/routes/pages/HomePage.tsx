@@ -1,12 +1,19 @@
 import { Link } from "react-router-dom"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
+import useStatus from "@/data/indexDB/hooks/useStatus"
+import formatTimestamp from "@/utilities/formatTimestamp"
+import formatTimestampDay from "@/utilities/formatTimestampDay"
 
 type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildren<ComponentProps>) {
+  const status = useStatus()
+
+  const { currentDay } = status ?? {}
+
   return (
     <div {...rest} data-component={name}>
       <div className="p-6 h-full w-full flex flex-col gap-2 justify-center">
@@ -53,7 +60,7 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
                 </p>
               </div>
               <div className="card-actions justify-end p-4">
-                <Link to="/status/categories">
+                <Link to="/status/markets">
                   <button className="btn btn-primary">Dive in and start trading</button>
                 </Link>
               </div>
@@ -61,8 +68,8 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
           </div>
           <div className="font-extrabold leading-none tracking-tight text-gray-500">
             <span className="text-sm">Currently in the game it is &nbsp;</span>
-            <span className="text-lg">Tuesday &nbsp;</span>
-            <span className="text-md">03 Jan 1970</span>
+            <span className="text-sm">{formatTimestampDay(currentDay)}, </span>
+            <span className="text-lg">{formatTimestamp(currentDay)}</span>
           </div>
         </div>
         {/* aside */}

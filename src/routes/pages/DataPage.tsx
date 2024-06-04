@@ -5,6 +5,7 @@
 // import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 // import useStatus from "@/data/indexDB/hooks/useStatus"
 
+import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 import useTrendForSymbol from "@/data/indexDB/hooks/useTrendForSymbol"
 import formatNumber from "@/utilities/formatNumber"
 import formatTimestamp from "@/utilities/formatTimestamp"
@@ -51,6 +52,7 @@ export default function DataPage({ name = "DataPage", ...rest }: PropsWithChildr
   const { symbol } = params
 
   const trend = useTrendForSymbol(symbol)
+  const price = useCurrentPriceForSymbol(symbol)
 
   return (
     <div {...rest} data-component={name}>
@@ -60,7 +62,7 @@ export default function DataPage({ name = "DataPage", ...rest }: PropsWithChildr
             className="List"
             itemData={trend}
             height={height}
-            rowCount={trend?.timestamps.length || 0}
+            rowCount={(price?.currentIndex ?? -1) + 1}
             columnCount={6}
             rowHeight={35}
             columnWidth={200}

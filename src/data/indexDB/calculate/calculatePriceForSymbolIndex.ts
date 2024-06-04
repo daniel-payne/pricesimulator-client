@@ -29,6 +29,7 @@ export default async function calculatePriceForSymbolIndex(symbol: string, index
     let low
     let close
 
+    let lastOpen
     let lastClose
     let nextOpen
 
@@ -39,7 +40,8 @@ export default async function calculatePriceForSymbolIndex(symbol: string, index
     let offer
 
     if (marketClosed) {
-      lastClose = lastIndex > 0 ? trend.closes[lastIndex] : undefined
+      lastOpen = currentIndex > 0 ? trend.opens[currentIndex] : undefined
+      lastClose = currentIndex > 0 ? trend.closes[currentIndex] : undefined
       nextOpen = nextIndex <= indexEnd ? trend.opens[nextIndex] : undefined
 
       if (nextOpen) {
@@ -54,12 +56,17 @@ export default async function calculatePriceForSymbolIndex(symbol: string, index
       high = trend.highs[currentIndex]
       low = trend.lows[currentIndex]
 
+      lastOpen = lastIndex > 0 ? trend.opens[lastIndex] : undefined
+      lastClose = lastIndex > 0 ? trend.closes[lastIndex] : undefined
+
       midRangePrice = Math.random() * (high - low) + low
       midDayPrice = Math.random() * Math.abs(open - close) + Math.min(open, close)
 
       bid = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 + spread)
       offer = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 - spread)
     }
+
+    const hasIntraDayPrices = !(open === close && high === low)
 
     price = {
       symbol,
@@ -72,6 +79,7 @@ export default async function calculatePriceForSymbolIndex(symbol: string, index
       low,
       close,
 
+      lastOpen,
       lastClose,
       nextOpen,
 
@@ -82,6 +90,8 @@ export default async function calculatePriceForSymbolIndex(symbol: string, index
       offer,
 
       currentIndex,
+
+      hasIntraDayPrices,
     }
   }
 

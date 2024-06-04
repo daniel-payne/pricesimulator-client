@@ -11,6 +11,7 @@ export type Price = {
 
   marketClosed?: boolean
 
+  lastOpen?: number
   lastClose?: number
   nextOpen?: number
 
@@ -21,6 +22,8 @@ export type Price = {
   offer?: number
 
   currentIndex?: number
+
+  hasIntraDayPrices?: boolean
 
   [index: string]: any
 }

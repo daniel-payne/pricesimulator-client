@@ -5,27 +5,37 @@ import formatTimestampDay from "@/utilities/formatTimestampDay"
 import formatTimestamp from "@/utilities/formatTimestamp"
 
 import { FaGear } from "react-icons/fa6"
-import { useSearchParams } from "react-router-dom"
+
+import ApplicationNavigation from "@/display/components/ApplicationNavigation"
+import { useQueryState } from "@keldan-systems/state-mutex"
 
 type ComponentProps = {
+  focus?: string
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function StatusHeader({ name = "StatusHeader", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function StatusHeader({ focus, name = "StatusHeader", ...rest }: PropsWithChildren<ComponentProps>) {
   const status = useStatus()
-  const [searchParams, setSearchParams] = useSearchParams()
+
+  const setView = useQueryState("view")[1]
 
   const { currentDay } = status ?? {}
 
-  const handle = () => {
-    setSearchParams({ ...Object.fromEntries(searchParams), view: "compact" })
+  const handle1 = () => {
+    setView("compact")
+  }
+
+  const handle2 = () => {
+    setView("full")
   }
 
   return (
     <div {...rest} data-controller={name}>
       <div className="flex flex-row gap-2 justify-between items-center bg-base-200 p-2">
-        <DefaultElement name="ApplicationNavigation" />
-        <DefaultElement name="DetailViewChooser" onClick={handle} />
+        <ApplicationNavigation focus={focus} />
+        {focus === "overview" && <DefaultElement name="DetailViewChooser" onClick={handle1} />}
+        <DefaultElement name="HistoryRangeChooser" onClick={handle2} />
         {/* <DefaultElement name="CurrentDayDisplay">{currentDay}</DefaultElement> */}
         <div className="flex flex-row gap-2 justify-right items-center bg-base-200 p-2">
           <div className="w-4 font-bold text-right">{formatTimestampDay(currentDay)}</div>

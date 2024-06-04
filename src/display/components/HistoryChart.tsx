@@ -13,6 +13,7 @@ Chart.register()
 // const MILLISECONDS = 24 * 60 * 60 * 1000
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
+import cssVar from "@/utilities/cssVar"
 
 type ComponentProps = {
   timestamps: number[]
@@ -82,8 +83,8 @@ export default function HistoryChart({
       pointRadius: 0,
       borderWidth: 1,
       fill: 3,
-      borderColor: "#DCDCDC",
-      backgroundColor: "#DCDCDC",
+      borderColor: cssVar("--graph-range"),
+      backgroundColor: cssVar("--graph-range"),
       tension: 0.2,
     },
     {
@@ -92,7 +93,7 @@ export default function HistoryChart({
       pointRadius: 0,
       borderWidth: 1,
       fill: false,
-      borderColor: "#DCDCDC",
+      borderColor: cssVar("--graph-range"),
       tension: 0.2,
     },
   ]
@@ -126,7 +127,7 @@ export default function HistoryChart({
   } as any
 
   return (
-    <div {...rest} data-component={name} style={{ backgroundColor: "white" }}>
+    <div {...rest} data-component={name}>
       <div style={{ height: "99%", width: "99%", position: "relative" }}>
         <Line datasetIdKey="id" data={{ labels, datasets }} options={options} />
       </div>

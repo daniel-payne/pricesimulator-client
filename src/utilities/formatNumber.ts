@@ -4,8 +4,8 @@ function round(precision: number, number: number) {
   return parseFloat(number.toPrecision(precision))
 }
 
-export default function formatNumber(input: number, precision: number = 6) {
-  if (typeof input === "undefined" || input === null) return ""
+export default function formatNumber(input: number | undefined | null, precision: number = 6) {
+  if (input == null) return ""
 
   const number = toNumeric(input) ?? 0
 

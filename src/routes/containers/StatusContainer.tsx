@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useParams } from "react-router-dom"
 
 import StatusHeader from "@/display/elements/header/StatusHeader"
 import StatusFooter from "@/display/elements/footer/StatusFooter"
@@ -10,10 +10,12 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function StatusContainer({ name = "StatusContainer", ...rest }: PropsWithChildren<ComponentProps>) {
+  const { focus } = useParams()
+
   return (
     <div {...rest} data-component={name}>
       <div className="h-full w-full flex flex-col gap-0 ">
-        <StatusHeader />
+        <StatusHeader focus={focus} />
         <div className="flex-auto overflow-auto">
           <Outlet />
         </div>
