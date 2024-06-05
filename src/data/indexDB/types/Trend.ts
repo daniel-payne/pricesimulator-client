@@ -1,11 +1,16 @@
 export type Trend = {
   symbol: string
 
-  timestamps: number[]
-  opens: number[]
-  highs: number[]
-  lows: number[]
-  closes: number[]
+  firstActiveTimestamp: number | null
+  firstInterdayTimestamp: number | null
 
-  timegaps: number[]
+  timestamps: Array<number | null>
+  opens: Array<number | null>
+  highs: Array<number | null>
+  lows: Array<number | null>
+  closes: Array<number | null>
+  volumes: Array<number | null>
+
+  timegaps: Array<number | null>
+  interdays: Array<number | null>
 }

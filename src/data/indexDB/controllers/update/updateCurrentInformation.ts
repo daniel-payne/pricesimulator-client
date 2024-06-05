@@ -1,9 +1,9 @@
-import getStatus from "../controllers/get/getStatus"
-import getTrends from "../controllers/get/getTrends"
-import calculateIndexForSymbolDay from "./calculateIndexForSymbolDay"
-import calculatePriceForSymbolIndex from "./calculatePriceForSymbolIndex"
+import getStatus from "../get/getStatus"
+import getTrends from "../get/getTrends"
+import calculateIndexForSymbolDay from "../../calculate/calculateIndexForSymbolDay"
+import calculatePriceForSymbolIndex from "../../calculate/calculatePriceForSymbolIndex"
 
-export default async function calculateNewStatus() {
+export default async function updateCurrentInformation() {
   const oldStatus = await getStatus()
   // const markets = await getMarkets()
   const trends = await getTrends()
@@ -20,14 +20,11 @@ export default async function calculateNewStatus() {
   // const activeTrades = trades.filter((trade) => trade.isTradeActive === true)
   // const inactiveTrades = trades.filter((trade) => trade.isTradeActive === false)
 
-  newStatus.trendCountForSymbol = {}
   newStatus.currentIndexForSymbol = {}
   newStatus.currentPriceForSymbol = {}
 
   for (const trend of trends) {
     const { symbol } = trend
-
-    const trendCount = trend?.timestamps?.length
 
     const currentIndexForSymbol = oldStatus?.currentIndexForSymbol ?? {}
 
@@ -36,7 +33,6 @@ export default async function calculateNewStatus() {
     const currentIndex = await calculateIndexForSymbolDay(symbol, day, currentPosition)
     const currentPrice = await calculatePriceForSymbolIndex(symbol, currentIndex.currentPosition)
 
-    newStatus.trendCountForSymbol[symbol] = trendCount
     newStatus.currentIndexForSymbol[symbol] = currentIndex
     newStatus.currentPriceForSymbol[symbol] = currentPrice
   }

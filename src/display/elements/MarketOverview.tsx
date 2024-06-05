@@ -1,7 +1,7 @@
 import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 
-import { FaExpand, FaHeart } from "react-icons/fa6"
+import { FaArrowUpRightFromSquare, FaHeart } from "react-icons/fa6"
 
 import { Link } from "react-router-dom"
 import HistoryChart from "../components/HistoryChart"
@@ -12,6 +12,9 @@ import YesterdayMovementDisplay from "../components/YesterdayMovementDisplay"
 import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
+import { useDataState } from "@keldan-systems/state-mutex"
+import type { Range } from "../components/HistoryRangeChooser"
+import formatTimestamp from "@/utilities/formatTimestamp"
 
 type ComponentProps = {
   symbol: string
@@ -21,22 +24,12 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-const RANGE = 30
-
 export default function MarketOverview({ symbol, showGraphs = true, showActions = true, name = "MarketCard", ...rest }: PropsWithChildren<ComponentProps>) {
   const market = useMarketForSymbol(symbol)
   const price = useCurrentPriceForSymbol(symbol)
   const trend = useTrendForSymbol(symbol)
 
-  const currentPosition = price?.currentIndex ?? 0
-
-  const start = currentPosition > RANGE ? currentPosition - RANGE : 0
-  const end = currentPosition
-
-  const timestamps = trend?.timestamps?.slice(start, end) ?? []
-  const highs = trend?.highs?.slice(start, end) ?? []
-  const lows = trend?.lows?.slice(start, end) ?? []
-  const closes = trend?.closes?.slice(start, end) ?? []
+  const range = useDataState<Range>("range")
 
   if (market == null) {
     return (
@@ -69,15 +62,18 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
             </div>
             <div className="flex flex-row justify-between gap-2">
               <FaHeart className="fg--subheading my-1" />
-              <Link to={`/markets/${market.symbol}/detail`}>
-                <FaExpand className="fg--subheading my-1" />
+              <Link to={`/markets/${market.symbol}/detail`} target="_blank">
+                <FaArrowUpRightFromSquare className="fg--subheading my-1" />
               </Link>
             </div>
           </div>
           {showGraphs && (
             <div className="flex-auto  my-2 overflow-hidden">
-              <HistoryChart timestamps={timestamps} highs={highs} lows={lows} closes={closes} price={price} />
-              {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(price, null, 2)}</pre> */}
+              <HistoryChart trend={trend} price={price} range={range} />
+              {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(market, null, 2)}</pre>*/}
+              {/* <div className=" ">length {trend?.timestamps?.length}</div> */}
+              {/* <div className=" ">firstActiveTimestamp {formatTimestamp(trend?.firstActiveTimestamp)}</div> */}
+              {/* <div className=" ">firstInterdayTimestamp {formatTimestamp(trend?.firstInterdayTimestamp)}</div> */}
             </div>
           )}
           <div className="flex flex-row justify-between items-center">

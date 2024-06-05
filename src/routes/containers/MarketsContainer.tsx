@@ -1,7 +1,7 @@
 import { Outlet, useParams } from "react-router-dom"
 
-import StatusHeader from "@/display/elements/header/StatusHeader"
-import StatusFooter from "@/display/elements/footer/StatusFooter"
+import MarketsHeader from "@/display/elements/header/MarketsHeader"
+import MarketsFooter from "@/display/elements/footer/MarketsFooter"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -9,17 +9,17 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function StatusContainer({ name = "StatusContainer", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketsContainer({ name = "MarketsContainer", ...rest }: PropsWithChildren<ComponentProps>) {
   const { focus } = useParams()
 
   return (
     <div {...rest} data-component={name}>
       <div className="h-full w-full flex flex-col gap-0 ">
-        <StatusHeader focus={focus} />
+        <MarketsHeader focus={focus} />
         <div className="flex-auto overflow-auto">
           <Outlet />
         </div>
-        <StatusFooter />
+        <MarketsFooter />
       </div>
     </div>
   )

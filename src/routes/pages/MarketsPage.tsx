@@ -5,9 +5,9 @@ import synchronizeAllMarkets from "@/data/indexDB/controllers/synchronize/synchr
 import useMarketCategories from "@/data/indexDB/hooks/useMarketCategories"
 import useStatus from "@/data/indexDB/hooks/useStatus"
 import MarketsCategory from "@/display/components/MarketsCategory"
+import { useDataState } from "@keldan-systems/state-mutex"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import { useSearchParams } from "react-router-dom"
 
 export async function loader() {
   synchronizeAllMarkets()
@@ -22,9 +22,9 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketsPage({ name = "MarketsPage", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [searchParams] = useSearchParams()
+  const view = useDataState<string>("view")
 
-  const showFavorites = searchParams.get("view") === "favorites"
+  const showFavorites = view === "favorites"
 
   const status = useStatus()
   const categories = useMarketCategories()

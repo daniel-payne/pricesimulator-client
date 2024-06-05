@@ -25,6 +25,6 @@ export async function controller(db: PriceSimulatorDexie, newStatus: Status = {}
   }
 }
 
-export default async function updateStatus(newStatus: Status = {}) {
+export default async function updateStatusValues(newStatus: Status = {}) {
   return await controller(db, newStatus)
 }

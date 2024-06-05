@@ -1,10 +1,10 @@
 import MarketOverview from "../elements/MarketOverview"
 
-import { Suspense, type HTMLAttributes, type PropsWithChildren } from "react"
-
 import type { Category } from "@/data/indexDB/types/Category"
 import { Status } from "@/data/indexDB/types/Status"
-import { useQueryState } from "@keldan-systems/state-mutex"
+import { useDataState } from "@keldan-systems/state-mutex"
+
+import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
   status?: Status
@@ -17,7 +17,7 @@ const LARGE_CLASSNAMES = "p-2 w-[100%] sm:w-[50%] md:w-[33.3%] lg:w-[25%] xl:w-[
 const COMPACT_CLASSNAMES = "p-2 w-[100%] sm:w-[33.3%] md:w-[25%] lg:w-[20%] xl:w-[12.5%] h-24"
 
 export default function MarketsCategory({ status, category, name = "MarketsCategory", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [view] = useQueryState("view")
+  const view = useDataState<string>("view")
 
   const markets = category.markets.filter((market) => {
     const currentIndexForSymbol = status?.currentIndexForSymbol ?? {}
@@ -39,9 +39,7 @@ export default function MarketsCategory({ status, category, name = "MarketsCateg
 
       <div className="flex-auto flex flex-row flex-wrap gap-0 justify-start items-start">
         {markets?.map((market) => (
-          <Suspense fallback={<div>Loading...</div>} key={market.symbol}>
-            <MarketOverview className={classNames} showGraphs={showDetails} showActions={showDetails} symbol={market.symbol} key={market.symbol} />
-          </Suspense>
+          <MarketOverview className={classNames} showGraphs={showDetails} showActions={showDetails} symbol={market.symbol} key={market.symbol} />
         ))}
       </div>
     </div>

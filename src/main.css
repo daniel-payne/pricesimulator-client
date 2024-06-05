@@ -36,12 +36,14 @@
   --success-b: rgba(92, 120, 41, 1);
 
   --graph-range: rgba(102, 102, 102, 1);
+  --graph-point: rgba(150, 150, 150, 1);
   --graph-buy: rgba(56, 181, 220, 1);
   --graph-sell: rgba(219, 212, 43, 1);
 
   --outcome-loss: rgba(244, 85, 85, 1);
   --outcome-partial: rgba(219, 212, 43, 1);
   --outcome-profit: rgba(31, 158, 58, 1);
+  --outcome-neutral: rgba(2, 153, 204, 1);
 
   --action-a: rgba(148, 175, 199, 1);
   --action-b: rgba(193, 154, 154, 1);
@@ -83,7 +85,7 @@
     color: var(--outcome-loss);
   }
   .fg-price-info--no-movement {
-    color: var(--info-a);
+    color: var(--outcome-neutral);
   }
 }
 

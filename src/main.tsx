@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-import StatusContainer from "@/routes/containers/StatusContainer"
+import MarketsContainer from "@/routes/containers/MarketsContainer"
 import CurrentContainer from "@/routes/containers/CurrentContainer"
 import AdministrationContainer from "@/routes/containers/AdministrationContainer"
 
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
   },
   {
     path: "markets/:focus",
-    element: <StatusContainer className="h-full w-full" />,
+    element: <MarketsContainer className="h-full w-full" />,
     errorElement: <ErrorPage className="h-full w-full" />,
     shouldRevalidate: () => true,
 

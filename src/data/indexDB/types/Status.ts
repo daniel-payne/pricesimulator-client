@@ -2,6 +2,13 @@ import { ScenarioSpeed } from "../enums/ScenarioSpeed"
 import { Index } from "./Index"
 import { Price } from "./Price"
 
+type DataStatus = {
+  trendCount?: number
+  firstActiveTimestamp?: number
+  firstInterdayTimestamp?: number
+  isMarketOpen?: boolean
+}
+
 export type Status = {
   id?: string
 
@@ -13,9 +20,10 @@ export type Status = {
 
   isTimerActive?: boolean
 
-  trendCountForSymbol?: Record<string, number>
+  dataStatusForSymbol?: Record<string, DataStatus | null | undefined>
   currentIndexForSymbol?: Record<string, Index | null | undefined>
   currentPriceForSymbol?: Record<string, Price | null | undefined>
+
   currentMarginForReference?: Record<string, number>
 
   deposits?: Array<{ day: string; amount: number }>

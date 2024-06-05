@@ -5,12 +5,12 @@ import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 import { DEFAULT_START } from "@/data/indexDB/constants/DEFAULT_START"
 import { ONE_DAY } from "@/data/indexDB/constants/ONE_DAY"
 
-import updateStatus from "@/data/indexDB/controllers/update/updateStatus"
+import updateStatus from "@/data/indexDB/controllers/update/updateStatusValues"
 
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 // import updateStatusForDay from "../update/updateStatusForCurrentDay"
 import getStatus from "../get/getStatus"
-import calculateNewStatus from "../../calculate/calculateNewStatus"
+import calculateNewStatus from "../update/updateCurrentInformation"
 
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
   db.transaction("rw", ["status", "trends", "markets"], async () => {
