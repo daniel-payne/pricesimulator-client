@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import useStatus from "@/data/indexDB/hooks/useStatus"
+import useTimer from "@/data/indexDB/hooks/useTimer"
 import formatTimestamp from "@/utilities/formatTimestamp"
 import formatTimestampDay from "@/utilities/formatTimestampDay"
 
@@ -10,9 +10,9 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildren<ComponentProps>) {
-  const status = useStatus()
+  const timer = useTimer()
 
-  const { currentDay } = status ?? {}
+  const { currentDay } = timer ?? {}
 
   return (
     <div {...rest} data-component={name}>

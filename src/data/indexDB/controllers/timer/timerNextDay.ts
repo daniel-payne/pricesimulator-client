@@ -5,16 +5,16 @@ import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 import { DEFAULT_START } from "@/data/indexDB/constants/DEFAULT_START"
 import { ONE_DAY } from "@/data/indexDB/constants/ONE_DAY"
 
-import updateStatus from "@/data/indexDB/controllers/update/updateStatusValues"
+import updateTimer from "@/data/indexDB/controllers/update/updateTimer"
 
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 // import updateStatusForDay from "../update/updateStatusForCurrentDay"
-import getStatus from "../get/getStatus"
-import calculateNewStatus from "../update/updateCurrentInformation"
+import getTimer from "../get/getTimer"
+// import calculateNewStatus from "../update/updateCurrentInformation"
 
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
-  db.transaction("rw", ["status", "trends", "markets"], async () => {
-    const status = await getStatus()
+  db.transaction("rw", ["timer", "statuses", "markets"], async () => {
+    const status = await getTimer()
 
     const currentDay = status?.currentDay
 
@@ -26,22 +26,23 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
       const newDate = new Date(oldDate.getTime() + ONE_DAY)
 
       const newDay = newDate.toISOString().substring(0, 10)
+      const newTimestamp = newDate.getTime()
 
       if (takeControl === true) {
-        await updateStatus({ id: db.id, currentDay: newDay, isTimerActive: false })
+        await updateTimer({ id: db.id, currentDay: newDay, currentTimestamp: newTimestamp, isTimerActive: false })
       } else {
-        await updateStatus({ currentDay: newDay })
+        await updateTimer({ currentDay: newDay, currentTimestamp: newTimestamp })
       }
 
-      const newStatus = await calculateNewStatus()
+      // const newStatus = await calculateNewStatus()
 
-      updateStatus(newStatus)
+      // updateStatus(newStatus)
     }
   })
     .then(async () => {
-      const status = await db.status.limit(1).first()
+      const timer = await db.timer.limit(1).first()
 
-      const { speed, isTimerActive } = status ?? {}
+      const { speed, isTimerActive } = timer ?? {}
 
       if (isTimerActive === true) {
         db.timeout = window.setTimeout(() => {

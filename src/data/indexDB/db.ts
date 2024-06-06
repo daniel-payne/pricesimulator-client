@@ -1,75 +1,59 @@
 import Dexie, { Table } from "dexie"
 
-import type { Status } from "./types/Status"
-import type { Scenario } from "./types/Scenario"
-import type { Market } from "./types/Market"
-import type { Trend } from "./types/Trend"
-import type { Trade } from "./types/Trade"
+import type { Timer } from "@/data/indexDB/types/Timer"
+import type { Scenario } from "@/data/indexDB/types/Scenario"
+import type { Market } from "@/data/indexDB/types/Market"
+import type { Status } from "@/data/indexDB/types/Status"
+import type { Data } from "@/data/indexDB/types/Data"
+import type { Index } from "@/data/indexDB/types/Index"
+import type { Price } from "@/data/indexDB/types/Price"
 
 import generateID from "@/utilities/generateID"
-
-import { controller as getStatus } from "./controllers/get/getStatus"
-import { controller as getMarkets } from "./controllers/get/getMarkets"
-import { controller as getScenarios } from "./controllers/get/getScenarios"
 
 export class PriceSimulatorDexie extends Dexie {
   id: string
   timeout: number | null = null
 
-  scenariosCache: Record<string, Scenario> = {}
-  marketsCache: Record<string, Market> = {}
-  trendsCache: Record<string, Trend> = {}
-
-  status!: Table<Status>
+  timer!: Table<Timer>
 
   scenarios!: Table<Scenario>
   markets!: Table<Market>
-  trends!: Table<Trend>
-  trades!: Table<Trade>
+
+  statuses!: Table<Status>
+
+  timestamps!: Table<Data>
+  opens!: Table<Data>
+  highs!: Table<Data>
+  lows!: Table<Data>
+  closes!: Table<Data>
+  volumes!: Table<Data>
+
+  indexes!: Table<Index>
+  prices!: Table<Price>
 
   constructor() {
     super("PriceSimulator")
 
-    this.version(20).stores({
-      status: "id",
+    this.version(1).stores({
+      timer: "id",
 
       scenarios: "code, name",
+      markets: "symbol, name",
 
-      markets: "symbol",
-      trends: "symbol",
+      statuses: "symbol",
 
-      trades: "ref, symbol, isOpen",
+      timestamps: "symbol",
+      opens: "symbol",
+      highs: "symbol",
+      lows: "symbol",
+      closes: "symbol",
+      volumes: "symbol",
+
+      indexes: "symbol",
+      prices: "symbol",
     })
 
     this.id = generateID()
-  }
-
-  async loadCache() {
-    this.markets?.toCollection()?.modify({ dataStatus: undefined })
-
-    await getStatus(this)
-    await getScenarios(this)
-    await getMarkets(this)
-
-    const scenarios = await this.scenarios.toArray()
-    const markets = await this.markets.toArray()
-    const trends = await this.trends.toArray()
-
-    this.scenariosCache = {}
-    this.marketsCache = {}
-    this.trendsCache = {}
-
-    scenarios?.forEach((scenario) => {
-      this.scenariosCache[scenario.code] = scenario
-    })
-
-    markets?.forEach((market) => {
-      this.marketsCache[market.symbol] = market
-    })
-
-    trends?.forEach((trend) => {
-      this.trendsCache[trend.symbol] = trend
-    })
   }
 }
 
@@ -78,20 +62,16 @@ export class PriceSimulatorDexie extends Dexie {
 const db = new PriceSimulatorDexie()
 
 db.on("ready", function () {
-  db.loadCache()
-
-  window.addEventListener("onbeforeunload", async () => {
-    const id = db.id
-
-    const collection = await db.status.limit(1)
-    const currentStatus = await collection.first()
-
-    const newStatus = { isTimerActive: false }
-
-    if (currentStatus?.id === id) {
-      await collection.modify({ ...currentStatus, ...newStatus, id })
-    }
-  })
+  // db.loadCache()
+  // window.addEventListener("onbeforeunload", async () => {
+  //   const id = db.id
+  //   const collection = await db.status.limit(1)
+  //   const currentStatus = await collection.first()
+  //   const newStatus = { isTimerActive: false }
+  //   if (currentStatus?.id === id) {
+  //     await collection.modify({ ...currentStatus, ...newStatus, id })
+  //   }
+  // })
 })
 
 export default db

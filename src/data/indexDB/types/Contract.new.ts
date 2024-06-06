@@ -1,5 +1,5 @@
 import type { Trade } from "@/data/indexDB/types/Trade"
-import type { Option } from "@/data/indexDB/types/Option"
+import type { Option } from "@/data/indexDB/types/Option.new"
 
 import type { ContractType } from "@/data/indexDB/enums/ContractType"
 import type { ContractStatus } from "@/data/indexDB/enums/ContractStatus"

@@ -1,6 +1,6 @@
 import db from "../../db"
 
-import updateStatus from "../update/updateStatusValues"
+import updateStatus from "../update/updateTimer"
 
 import type { PriceSimulatorDexie } from "../../db"
 

@@ -2,16 +2,24 @@ import { useLiveQuery } from "dexie-react-hooks"
 
 import db from "@/data/indexDB/db"
 
+import type { Scenario } from "@/data/indexDB/types/Scenario"
+import { useEffect } from "react"
+
+import getScenarios from "../controllers/get/getScenarios"
 import compareObjectsBy from "@/utilities/compareObjectsBy"
 
-import type { Scenario } from "@/data/indexDB/types/Scenario"
-
-export default function useScenarios(): Array<Scenario> | undefined {
+export default function useTimer(): Array<Scenario> | undefined {
   const scenarios = useLiveQuery(async () => {
-    const data = await db.scenarios?.toArray()
-
-    return data?.sort(compareObjectsBy("displayOrder"))
+    return await db.scenarios?.toArray()
   })
+
+  useEffect(() => {
+    if ((scenarios?.length ?? 0) < 1) {
+      getScenarios()
+    }
+  }, [scenarios])
+
+  scenarios?.sort(compareObjectsBy("displayOrder"))
 
   return scenarios
 }
