@@ -4,7 +4,8 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 import { FaArrowTrendUp, FaArrowTrendDown, FaArrowRight, FaMinus } from "react-icons/fa6"
 
 type ComponentProps = {
-  price?: Price
+  price?: Price | null | undefined
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 

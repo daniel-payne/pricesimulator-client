@@ -37,19 +37,20 @@ const CurrentData = ({ symbol }: { symbol: string }) => {
   return (
     <div className="">
       {/* {JSON.stringify(price, null, 2)} */}
-      {price?.marketClosed ? price.lastClose : price?.midDayPrice}
+      {price?.marketClosed ? price.lastClose : price?.midDayPrice} &nbsp;
     </div>
   )
 }
 
 const MarketData = ({ market }: { market: Market }) => {
   return (
-    <div className="p-2 border border-primary rounded-lg  w-96" key={market.code}>
-      <div className="text-primary">
-        {market.name} {market.symbol}
+    <div className="p-2 border border-primary rounded-lg  w-64" key={market.code}>
+      <div className="truncated">
+        <span className="text-primary">{market.name}</span>
+        <span className="text-secondary ps-2 text-xs">{market.symbol}</span>
       </div>
-      <div className="text-secondary">{market.description} &nbsp;</div>
-      <StatusData symbol={market.symbol} />
+      {/* <div className="text-secondary">{market.description} &nbsp;</div> */}
+      {/* <StatusData symbol={market.symbol} /> */}
       <CurrentData symbol={market.symbol} />
     </div>
   )

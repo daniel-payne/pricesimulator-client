@@ -18,7 +18,7 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 import type { Range } from "@/display/components/HistoryRangeChooser"
 
 import cssVar from "@/utilities/cssVar"
-import { Trend } from "@/data/indexDB/types/Trend"
+import { Datum } from "@/data/indexDB/types/Datum"
 
 const LOOKBACK = {
   at: 999999,
@@ -29,7 +29,7 @@ const LOOKBACK = {
 }
 
 type ComponentProps = {
-  trend?: Trend
+  datum?: Datum
   price?: any
   range?: Range
 
@@ -37,7 +37,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function HistoryChart({
-  trend = {} as Trend,
+  datum = {} as Datum,
   price = {},
   range = "1m",
 
@@ -51,13 +51,14 @@ export default function HistoryChart({
   const start = currentPosition > lookback ? currentPosition - lookback : 0
   const end = currentPosition
 
-  const timestamps = trend?.timestamps?.slice(start, end) ?? []
-  const highs = trend?.highs?.slice(start, end) ?? []
-  const lows = trend?.lows?.slice(start, end) ?? []
-  // const opens = trend?.opens?.slice(start, end) ?? []
-  const closes = trend?.closes?.slice(start, end) ?? []
+  const timestamps = datum?.timestamps?.values?.slice(start, end) ?? []
+  const highs = datum?.highs?.values?.slice(start, end) ?? []
+  const lows = datum?.lows?.values?.slice(start, end) ?? []
+  // const opens = datum?.opens?.values?.slice(start, end) ?? []
+  const closes = datum?.closes?.values?.slice(start, end) ?? []
 
-  if (timestamps == null || timestamps.length === 0 || !Array.isArray(timestamps)) {
+  if (timestamps == null || timestamps.length === 0) {
+    // || !Array.isArray(timestamps)) {
     return <div>No Data for </div>
   }
 

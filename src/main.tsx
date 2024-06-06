@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-// import MarketsContainer from "@/routes/containers/MarketsContainer"
+import MarketsContainer from "@/routes/containers/MarketsContainer"
 // import CurrentContainer from "@/routes/containers/CurrentContainer"
 // import AdministrationContainer from "@/routes/containers/AdministrationContainer"
 
@@ -13,8 +13,10 @@ import ErrorPage from "@/routes/pages/ErrorPage"
 import DataPage from "@/routes/pages/DataPage"
 import PricesPage from "./routes/pages/PricesPage"
 
+import MarketsPage, { loader as marketsLoader } from "@/routes/pages/MarketsPage"
+
 // import ActionsPage from "@/routes/pages/ActionsPage"
-// import MarketsPage, { loader as marketsLoader } from "@/routes/pages/MarketsPage"
+
 // import TradesPage from "@/routes/pages/TradesPage"
 // import ScenariosPage, { loader as scenariosLoader } from "@/routes/pages/ScenariosPage"
 // import MarketPage from "@/routes/pages/MarketPage"
@@ -39,21 +41,20 @@ const router = createBrowserRouter([
   //   errorElement: <ErrorPage className="h-full w-full" />,
   //   loader: scenariosLoader,
   // },
-  // {
-  //   path: "markets/:focus",
-  //   element: <MarketsContainer className="h-full w-full" />,
-  //   errorElement: <ErrorPage className="h-full w-full" />,
-  //   shouldRevalidate: () => true,
+  {
+    path: "markets/:focus",
+    element: <MarketsContainer className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
 
-  //   children: [
-  //     { index: true, element: <MarketsPage className="h-full w-full" />, loader: marketsLoader },
-  //     {
-  //       path: "detail",
-  //       element: <MarketPage className="h-full w-full" />,
-  //       errorElement: <ErrorPage className="h-full w-full" />,
-  //     },
-  //   ],
-  // },
+    children: [
+      { index: true, element: <MarketsPage className="h-full w-full" />, loader: marketsLoader },
+      //   {
+      //     path: "detail",
+      //     element: <MarketPage className="h-full w-full" />,
+      //     errorElement: <ErrorPage className="h-full w-full" />,
+      //   },
+    ],
+  },
   // {
   //   path: "scenario/:id",
   //   element: <ScenarioPage className="h-full w-full" />,

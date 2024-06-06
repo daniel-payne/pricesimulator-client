@@ -3,14 +3,7 @@ import { useEffect } from "react"
 
 import getDataForSymbol from "../controllers/get/getDataForSymbol"
 import { useSharedState } from "@keldan-systems/state-mutex"
-
-type Datum = {
-  timestamps: Data | undefined
-  opens: Data | undefined
-  highs: Data | undefined
-  lows: Data | undefined
-  closes: Data | undefined
-}
+import type { Datum } from "../types/Datum"
 
 export default function useDatumForSymbol(symbol: string | undefined): Datum | undefined {
   const [timestamps, setTimestamps] = useSharedState<Data | undefined>(`timestamps-${symbol}`, undefined)

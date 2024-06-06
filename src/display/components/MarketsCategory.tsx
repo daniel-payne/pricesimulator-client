@@ -1,13 +1,15 @@
+import useStatuses from "@/data/indexDB/hooks/useStatuses"
 import MarketOverview from "../elements/MarketOverview"
 
 import type { Category } from "@/data/indexDB/types/Category"
-import { Status } from "@/data/indexDB/types/Status"
+
 import { useDataState } from "@keldan-systems/state-mutex"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
+import useTimer from "@/data/indexDB/hooks/useTimer"
+
 type ComponentProps = {
-  status?: Status
   category: Category
 
   name?: string
@@ -16,14 +18,20 @@ type ComponentProps = {
 const LARGE_CLASSNAMES = "p-2 w-[100%] sm:w-[50%] md:w-[33.3%] lg:w-[25%] xl:w-[20%] h-64"
 const COMPACT_CLASSNAMES = "p-2 w-[100%] sm:w-[33.3%] md:w-[25%] lg:w-[20%] xl:w-[12.5%] h-24"
 
-export default function MarketsCategory({ status, category, name = "MarketsCategory", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketsCategory({ category, name = "MarketsCategory", ...rest }: PropsWithChildren<ComponentProps>) {
   const view = useDataState<string>("view")
+  const timer = useTimer()
+
+  const statuses = useStatuses()
+
+  const currentTimestamp = timer?.currentTimestamp
 
   const markets = category.markets.filter((market) => {
-    const currentIndexForSymbol = status?.currentIndexForSymbol ?? {}
-    const currentIndex = currentIndexForSymbol[market.symbol] ?? ({} as any)
+    const status = statuses?.find((status) => status.symbol === market.symbol)
 
-    return currentIndex.isMarketActive === true
+    const firstActiveTimestamp = status?.firstActiveTimestamp
+
+    return (firstActiveTimestamp ?? 0) >= (currentTimestamp ?? 1)
   })
 
   const classNames = view === "compact" ? COMPACT_CLASSNAMES : LARGE_CLASSNAMES

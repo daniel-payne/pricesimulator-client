@@ -1,6 +1,6 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-import useStatus from "@/data/indexDB/hooks/useStatus"
+import useTimer from "@/data/indexDB/hooks/useTimer"
 import formatTimestampDay from "@/utilities/formatTimestampDay"
 import formatTimestamp from "@/utilities/formatTimestamp"
 
@@ -18,9 +18,9 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketsHeader({ focus, name = "MarketsHeader", ...rest }: PropsWithChildren<ComponentProps>) {
-  const status = useStatus()
+  const timer = useTimer()
 
-  const { currentDay } = status ?? {}
+  const { currentDay } = timer ?? {}
 
   return (
     <div {...rest} data-controller={name}>

@@ -4,7 +4,7 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 import { Link } from "react-router-dom"
 
 type ComponentProps = {
-  price?: Price
+  price?: Price | null | undefined
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
