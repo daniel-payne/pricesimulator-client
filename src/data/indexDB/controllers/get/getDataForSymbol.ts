@@ -23,7 +23,6 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
 
   if (timestamps == null && (status == null || status?.state === "empty")) {
     db.statuses.put({ symbol, state: "retrieving" })
-    console.info("Retrieving data for symbol: " + symbol)
 
     const data = await loadDataForSymbol(symbol)
 
@@ -35,7 +34,6 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     volumes = { symbol, values: data.volumes }
 
     db.statuses.update(symbol, { state: "processing" })
-    console.info("Processing data for symbol: " + symbol)
 
     const timegaps = timestamps.values.map((value: number, index: number) => {
       if (index === 0) {
@@ -81,7 +79,6 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     }
 
     db.statuses.update(symbol, { state: "storing" })
-    console.info("Storing data for symbol: " + symbol)
 
     await db.timestamps.put(timestamps).catch(Dexie.BulkError, function (e) {
       console.error("loadScenarios Loading Error: " + e.failures.length)
@@ -112,7 +109,6 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     })
 
     db.statuses.put({ symbol, state: "loaded", firstActiveTimestamp, firstInterdayTimestamp })
-    console.info("Loaded data for symbol: " + symbol)
   }
 
   return { timestamps, opens, highs, lows, closes, volumes }

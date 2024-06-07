@@ -60,7 +60,7 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
                 </p>
               </div>
               <div className="card-actions justify-end p-4">
-                <Link to="/status/markets">
+                <Link to="/markets/overview">
                   <button className="btn btn-primary">Dive in and start trading</button>
                 </Link>
               </div>

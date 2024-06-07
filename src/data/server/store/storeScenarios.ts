@@ -7,7 +7,5 @@ export default async function storeScenarios(scenarios: any) {
     console.error("Store Scenarios Error: " + e.failures.length)
   })
 
-  console.log("Scenarios Stored : " + scenarios.length)
-
   return scenarios
 }

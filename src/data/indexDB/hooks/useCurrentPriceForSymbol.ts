@@ -16,20 +16,16 @@ export default function useCurrentPriceForSymbol(symbol: string): Price | null |
   const datum = useDatumForSymbol(symbol)
   const timer = useTimer()
 
-  useEffect(
-    () => {
-      const run = async () => {
-        if (timer?.currentTimestamp != null && datum?.timestamps?.values != null) {
-          const newIndex = await calculateIndexForTimestamp(datum.timestamps.values, timer.currentTimestamp, index)
+  useEffect(() => {
+    const run = async () => {
+      if (timer?.currentTimestamp != null && datum?.timestamps?.values != null) {
+        const newIndex = await calculateIndexForTimestamp(datum.timestamps.values, timer.currentTimestamp, index)
 
-          setIndex(newIndex)
-        }
+        setIndex(newIndex)
       }
-      run()
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [timer, datum]
-  )
+    }
+    run()
+  }, [timer, datum, index, setIndex])
 
   useEffect(
     () => {

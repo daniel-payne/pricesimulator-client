@@ -7,7 +7,5 @@ export default async function storeMarkets(markets: any) {
     console.error("Store Markets Error: " + e.failures.length)
   })
 
-  console.log("Markets Stored : " + markets.length)
-
   return markets
 }

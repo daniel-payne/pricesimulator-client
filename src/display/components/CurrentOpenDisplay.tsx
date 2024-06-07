@@ -33,7 +33,7 @@ export default function CurrentOpenDisplay({ price, name = "CurrentOpenDisplay",
 
   return (
     <div {...rest} data-component={name}>
-      <Link to={`/test/data/${price?.symbol}`} target="_blank">
+      <Link to={`/prices/${price?.symbol}`} target="_blank">
         <div className={displayClasses}>{formatNumber(displayValue)}</div>
       </Link>
     </div>

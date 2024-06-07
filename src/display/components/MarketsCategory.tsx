@@ -8,6 +8,7 @@ import { useDataState } from "@keldan-systems/state-mutex"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 import useTimer from "@/data/indexDB/hooks/useTimer"
+import formatTimestamp from "@/utilities/formatTimestamp"
 
 type ComponentProps = {
   category: Category
@@ -31,7 +32,9 @@ export default function MarketsCategory({ category, name = "MarketsCategory", ..
 
     const firstActiveTimestamp = status?.firstActiveTimestamp
 
-    return (firstActiveTimestamp ?? 0) >= (currentTimestamp ?? 1)
+    const isActive = (firstActiveTimestamp ?? 1) <= (currentTimestamp ?? 0)
+
+    return isActive
   })
 
   const classNames = view === "compact" ? COMPACT_CLASSNAMES : LARGE_CLASSNAMES

@@ -5,10 +5,10 @@ export default async function calculateIndexForTimestamp(timestamps: Array<numbe
 
   let doSearch = !!(timestamps != null) && !!(timestamps.length > 0)
 
-  if (doSearch === true && timestamps[0] > timestamp) {
+  if (doSearch === true && timestamp < timestamps[0]) {
     doSearch = false
   }
-  if (doSearch === true && timestamps[timestamps.length - 1] < timestamp) {
+  if (doSearch === true && timestamp > timestamps[timestamps.length - 1]) {
     doSearch = false
   }
 

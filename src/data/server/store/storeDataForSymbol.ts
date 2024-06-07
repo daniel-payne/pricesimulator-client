@@ -7,7 +7,5 @@ export default async function storeDataForSymbol(symbol: string, trend: any) {
     console.error(`Timestamps for ${symbol} Store Errors : ${e.failures.length}`)
   })
 
-  console.log(`Timestamps for ${symbol} Stored : ${trend.timestamps.length}`)
-
   return trend
 }

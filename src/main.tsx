@@ -14,12 +14,13 @@ import DataPage from "@/routes/pages/DataPage"
 import PricesPage from "./routes/pages/PricesPage"
 
 import MarketsPage, { loader as marketsLoader } from "@/routes/pages/MarketsPage"
+import MarketPage from "@/routes/pages/MarketPage"
 
 // import ActionsPage from "@/routes/pages/ActionsPage"
 
 // import TradesPage from "@/routes/pages/TradesPage"
 // import ScenariosPage, { loader as scenariosLoader } from "@/routes/pages/ScenariosPage"
-// import MarketPage from "@/routes/pages/MarketPage"
+
 // import ScenarioPage from "@//routes/pages/ScenarioPage"
 // import SettingsPage from "./routes/pages/SettingsPage"
 // import StatusPage from "./routes/pages/StatusPage"
@@ -48,11 +49,11 @@ const router = createBrowserRouter([
 
     children: [
       { index: true, element: <MarketsPage className="h-full w-full" />, loader: marketsLoader },
-      //   {
-      //     path: "detail",
-      //     element: <MarketPage className="h-full w-full" />,
-      //     errorElement: <ErrorPage className="h-full w-full" />,
-      //   },
+      {
+        path: "detail",
+        element: <MarketPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
     ],
   },
   // {
@@ -97,6 +98,11 @@ const router = createBrowserRouter([
   //   ],
   // },
   {
+    path: "prices/:symbol",
+    element: <PricesPage className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+  },
+  {
     path: "test",
     errorElement: <ErrorPage className="h-full w-full" />,
     children: [
@@ -108,11 +114,6 @@ const router = createBrowserRouter([
       {
         path: "data",
         element: <DataPage className="h-full w-full" />,
-        errorElement: <ErrorPage className="h-full w-full" />,
-      },
-      {
-        path: "prices/:symbol",
-        element: <PricesPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
       },
     ],

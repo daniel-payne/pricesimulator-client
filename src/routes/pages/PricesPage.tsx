@@ -6,6 +6,7 @@
 // import useStatus from "@/data/indexDB/hooks/useStatus"
 
 // import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
+import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 import useDatumForSymbol from "@/data/indexDB/hooks/useDatumForSymbol"
 import formatNumber from "@/utilities/formatNumber"
 import formatTimestamp from "@/utilities/formatTimestamp"
@@ -48,7 +49,7 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
   // const { timestamps, opens, highs, lows, closes } = datum ?? {}
 
   // const itemData = [timestamps, opens, highs, lows, closes]
-  // const price = useCurrentPriceForSymbol(symbol)
+  const price = useCurrentPriceForSymbol(symbol)
 
   return (
     <div {...rest} data-component={name}>
@@ -58,8 +59,8 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
             className="List"
             itemData={datum ?? {}}
             height={height}
-            // rowCount={(price?.currentIndex ?? -1) + 1}
-            rowCount={datum?.timestamps?.values.length ?? 0}
+            rowCount={(price?.currentIndex ?? -1) + 1}
+            //rowCount={datum?.timestamps?.values.length ?? 0}
             columnCount={5}
             rowHeight={35}
             columnWidth={200}

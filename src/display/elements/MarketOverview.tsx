@@ -69,6 +69,8 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
           {showGraphs && (
             <div className="flex-auto  my-2 overflow-hidden">
               <HistoryChart datum={datum} price={price} range={range} />
+
+              {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(price, null, 2)}</pre> */}
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(market, null, 2)}</pre>*/}
               {/* <div className=" ">length {datum?.timestamps?.values?.length}</div> */}
               {/* <div className=" ">firstActiveTimestamp {formatTimestamp(trend?.firstActiveTimestamp)}</div> */}

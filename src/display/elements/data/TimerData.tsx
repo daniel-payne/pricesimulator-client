@@ -1,4 +1,5 @@
 import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
+import timerReset from "@/data/indexDB/controllers/timer/timerReset"
 import timerStart from "@/data/indexDB/controllers/timer/timerStart"
 import timerStop from "@/data/indexDB/controllers/timer/timerStop"
 import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
@@ -32,8 +33,11 @@ export default function TimerData({ name = "TimerData", ...rest }: PropsWithChil
         <button className="btn btn-sm btn-warning" onClick={() => timerStop()}>
           Stop
         </button>
-        <button className="btn btn-sm btn-error" onClick={() => timerStop()}>
+        <button className="btn btn-sm btn-error" onClick={() => timerReset()}>
           Reset
+        </button>
+        <button className="btn btn-sm btn-error" onClick={() => timerReset("2020-10-01")}>
+          Reset 10/01/2020
         </button>
         <div>{formatTimestamp(timer?.currentDay)}</div>
         <div>{timer?.isTimerActive ? "ACTIVE" : ""}</div>

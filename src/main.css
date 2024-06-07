@@ -73,6 +73,18 @@
     border-color: var(--text-d);
   }
 
+  .btn-buy {
+    color: var(--background-d) !important;
+    background-color: var(--action-buy) !important;
+    border-top-right-radius: 0 !important;
+  }
+
+  .btn-sell {
+    color: var(--background-d) !important;
+    background-color: var(--action-sell) !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
   /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 
   .fg-price-info--closed {
