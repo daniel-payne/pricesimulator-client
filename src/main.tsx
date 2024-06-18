@@ -11,10 +11,10 @@ import HomePage from "@/routes/pages/HomePage"
 import ErrorPage from "@/routes/pages/ErrorPage"
 
 import DataPage from "@/routes/pages/DataPage"
-import PricesPage from "./routes/pages/PricesPage"
+// import PricesPage from "./routes/pages/PricesPage"
 
-import MarketsPage, { loader as marketsLoader } from "@/routes/pages/MarketsPage"
-import MarketPage from "@/routes/pages/MarketPage"
+import MarketsPage from "@/routes/pages/MarketsPage"
+import ContractPage from "@/routes/pages/ContractPage"
 
 // import ActionsPage from "@/routes/pages/ActionsPage"
 
@@ -29,6 +29,8 @@ import MarketPage from "@/routes/pages/MarketPage"
 import "@/data/indexDB/db"
 
 import "./main.css"
+import IndexDBData from "./routes/pages/data/IndexDBData"
+import PricesData from "./routes/pages/data/PricesData"
 
 const router = createBrowserRouter([
   {
@@ -48,10 +50,10 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage className="h-full w-full" />,
 
     children: [
-      { index: true, element: <MarketsPage className="h-full w-full" />, loader: marketsLoader },
+      { index: true, element: <MarketsPage className="h-full w-full" /> },
       {
-        path: "detail",
-        element: <MarketPage className="h-full w-full" />,
+        path: "contract",
+        element: <ContractPage className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
       },
     ],
@@ -97,11 +99,11 @@ const router = createBrowserRouter([
   //     },
   //   ],
   // },
-  {
-    path: "prices/:symbol",
-    element: <PricesPage className="h-full w-full" />,
-    errorElement: <ErrorPage className="h-full w-full" />,
-  },
+  // {
+  //   path: "prices/:symbol",
+  //   element: <PricesPage className="h-full w-full" />,
+  //   errorElement: <ErrorPage className="h-full w-full" />,
+  // },
   {
     path: "test",
     errorElement: <ErrorPage className="h-full w-full" />,
@@ -114,6 +116,22 @@ const router = createBrowserRouter([
       {
         path: "data",
         element: <DataPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
+    ],
+  },
+  {
+    path: "data",
+    errorElement: <ErrorPage className="h-full w-full" />,
+    children: [
+      {
+        path: ":source",
+        element: <IndexDBData className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
+      {
+        path: "prices/:symbol",
+        element: <PricesData className="h-full w-full" />,
         errorElement: <ErrorPage className="h-full w-full" />,
       },
     ],

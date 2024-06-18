@@ -1,1 +1,1 @@
-export const DEFAULT_SPREAD = 0.007
+export const DEFAULT_SPREAD = 0.001

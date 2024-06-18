@@ -5,16 +5,16 @@ import timerNextDay from "./timerNextDay"
 import { ScenarioSpeed } from "../../enums/ScenarioSpeed"
 
 import type { PriceSimulatorDexie } from "../../db"
-import updateStatus from "../update/updateTimer"
+import updateTimer from "../update/updateTimer"
 
 export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed) {
   if (db.timeout != null) {
     window.clearTimeout(db.timeout)
   }
   if (speed != null) {
-    updateStatus({ speed, isTimerActive: true })
+    await updateTimer({ speed, isTimerActive: true })
   } else {
-    updateStatus({ isTimerActive: true })
+    await updateTimer({ isTimerActive: true })
   }
   timerNextDay()
 }

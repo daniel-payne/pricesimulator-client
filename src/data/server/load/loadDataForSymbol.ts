@@ -7,5 +7,7 @@ export default async function loadDataForSymbol(symbol: string) {
 
   const json = await response.json()
 
-  return json
+  const result = { symbol, ...json }
+
+  return result
 }

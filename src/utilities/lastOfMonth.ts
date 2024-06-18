@@ -13,7 +13,11 @@ function getLastDayOccurence(date: Date, day: string) {
   return d
 }
 
-export default function lastOfMonth(currentDate: Date | string, dayOfWeek: string = "MON", addMonths: number = 0) {
+export default function lastOfMonth(currentDate: number | Date | string | null | undefined, dayOfWeek: string = "MON", addMonths: number = 0) {
+  if (currentDate == null) {
+    return undefined
+  }
+
   const futureDate = new Date(currentDate)
 
   futureDate.setMonth(futureDate.getMonth() + addMonths)

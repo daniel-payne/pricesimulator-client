@@ -1,4 +1,3 @@
-import useStatuses from "@/data/indexDB/hooks/useStatuses"
 import MarketOverview from "../elements/MarketOverview"
 
 import type { Category } from "@/data/indexDB/types/Category"
@@ -8,7 +7,8 @@ import { useDataState } from "@keldan-systems/state-mutex"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 import useTimer from "@/data/indexDB/hooks/useTimer"
-import formatTimestamp from "@/utilities/formatTimestamp"
+
+import readDataForSymbol from "@/data/indexDB/controllers/read/readDataForSymbol"
 
 type ComponentProps = {
   category: Category
@@ -23,14 +23,16 @@ export default function MarketsCategory({ category, name = "MarketsCategory", ..
   const view = useDataState<string>("view")
   const timer = useTimer()
 
-  const statuses = useStatuses()
-
   const currentTimestamp = timer?.currentTimestamp
 
-  const markets = category.markets.filter((market) => {
-    const status = statuses?.find((status) => status.symbol === market.symbol)
+  if (currentTimestamp == null) {
+    return <div>{JSON.stringify(timer)}</div>
+  }
 
-    const firstActiveTimestamp = status?.firstActiveTimestamp
+  const markets = category.markets.filter((market) => {
+    const data = readDataForSymbol(market.symbol)
+
+    const firstActiveTimestamp = data?.firstActiveTimestamp
 
     const isActive = (firstActiveTimestamp ?? 1) <= (currentTimestamp ?? 0)
 

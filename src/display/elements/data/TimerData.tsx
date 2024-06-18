@@ -5,6 +5,7 @@ import timerStop from "@/data/indexDB/controllers/timer/timerStop"
 import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import formatTimestamp from "@/utilities/formatTimestamp"
+import formatTimestampDay from "@/utilities/formatTimestampDay"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
@@ -39,7 +40,9 @@ export default function TimerData({ name = "TimerData", ...rest }: PropsWithChil
         <button className="btn btn-sm btn-error" onClick={() => timerReset("2020-10-01")}>
           Reset 10/01/2020
         </button>
-        <div>{formatTimestamp(timer?.currentDay)}</div>
+        <div>
+          {formatTimestampDay(timer?.currentDay)} {formatTimestamp(timer?.currentDay)} {timer?.currentTimestamp}
+        </div>
         <div>{timer?.isTimerActive ? "ACTIVE" : ""}</div>
       </div>
       {/* <pre className="border border-primary rounded-lg  m-2 p-2">{JSON.stringify(timer, null, 2)}</pre> */}

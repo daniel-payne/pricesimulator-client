@@ -1,14 +1,16 @@
 import Dexie, { Table } from "dexie"
 
+import generateID from "@/utilities/generateID"
+
+import { controller as loadData } from "@/data/indexDB/controllers/load/loadData"
+
+import type { Quote } from "./types/Quote"
+import type { Trade } from "./types/Trade"
 import type { Timer } from "@/data/indexDB/types/Timer"
 import type { Scenario } from "@/data/indexDB/types/Scenario"
 import type { Market } from "@/data/indexDB/types/Market"
-import type { Status } from "@/data/indexDB/types/Status"
 import type { Data } from "@/data/indexDB/types/Data"
-import type { Index } from "@/data/indexDB/types/Index"
 import type { Price } from "@/data/indexDB/types/Price"
-
-import generateID from "@/utilities/generateID"
 
 export class PriceSimulatorDexie extends Dexie {
   id: string
@@ -19,38 +21,34 @@ export class PriceSimulatorDexie extends Dexie {
   scenarios!: Table<Scenario>
   markets!: Table<Market>
 
-  statuses!: Table<Status>
+  data!: Table<Data>
 
-  timestamps!: Table<Data>
-  opens!: Table<Data>
-  highs!: Table<Data>
-  lows!: Table<Data>
-  closes!: Table<Data>
-  volumes!: Table<Data>
-
-  indexes!: Table<Index>
   prices!: Table<Price>
+
+  quotes!: Table<Quote>
+
+  activeTrades!: Table<Trade>
+  inactiveTrades!: Table<Trade>
+
+  dataCache: Record<string, Data | undefined | null> = {}
+  pricesCache: Record<string, Price | undefined | null> = {}
 
   constructor() {
     super("PriceSimulator")
 
-    this.version(1).stores({
+    this.version(12).stores({
       timer: "id",
 
       scenarios: "code, name",
       markets: "symbol, name",
 
-      statuses: "symbol",
-
-      timestamps: "symbol",
-      opens: "symbol",
-      highs: "symbol",
-      lows: "symbol",
-      closes: "symbol",
-      volumes: "symbol",
-
-      indexes: "symbol",
+      data: "symbol",
       prices: "symbol",
+
+      quotes: "symbol",
+
+      activeTrades: "symbol, id",
+      inactiveTrades: "id, symbol, closedAt",
     })
 
     this.id = generateID()
@@ -62,7 +60,7 @@ export class PriceSimulatorDexie extends Dexie {
 const db = new PriceSimulatorDexie()
 
 db.on("ready", function () {
-  // db.loadCache()
+  loadData(db)
   // window.addEventListener("onbeforeunload", async () => {
   //   const id = db.id
   //   const collection = await db.status.limit(1)

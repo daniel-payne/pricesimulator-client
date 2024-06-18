@@ -13,7 +13,14 @@ export async function controller(db: PriceSimulatorDexie, newValues: Timer = {})
   const collection = await db.timer.limit(1)
   const currentTimer = await collection.first()
 
-  const defaultTimer = { id, speed: ScenarioSpeed.slow, startDay: DEFAULT_START, currentDay: DEFAULT_START, isTimerActive: false }
+  const defaultTimer = {
+    id,
+    speed: ScenarioSpeed.slow,
+    startDay: DEFAULT_START,
+    currentDay: DEFAULT_START,
+    currentTimestamp: new Date(DEFAULT_START).getTime(),
+    isTimerActive: false,
+  }
 
   let updatedTimer: Timer | undefined
 

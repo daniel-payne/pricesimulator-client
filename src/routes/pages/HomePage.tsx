@@ -5,12 +5,16 @@ import useTimer from "@/data/indexDB/hooks/useTimer"
 import formatTimestamp from "@/utilities/formatTimestamp"
 import formatTimestampDay from "@/utilities/formatTimestampDay"
 
+import { useDataState } from "@keldan-systems/state-mutex"
+
 type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildren<ComponentProps>) {
   const timer = useTimer()
+
+  const applicationStatus = useDataState<any>("APPLICATION-STATUS")
 
   const { currentDay } = timer ?? {}
 
@@ -70,6 +74,9 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
             <span className="text-sm">Currently in the game it is &nbsp;</span>
             <span className="text-sm">{formatTimestampDay(currentDay)}, </span>
             <span className="text-lg">{formatTimestamp(currentDay)}</span>
+          </div>
+          <div className="font-light leading-none tracking-tight text-gray-500">
+            <span>{applicationStatus?.message}</span>
           </div>
         </div>
         {/* aside */}

@@ -6,7 +6,7 @@ import { FaArrowUpRightFromSquare, FaHeart } from "react-icons/fa6"
 import { Link } from "react-router-dom"
 import HistoryChart from "../components/HistoryChart"
 
-import useDatumForSymbol from "@/data/indexDB/hooks/useDatumForSymbol"
+import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
 
 import YesterdayMovementDisplay from "../components/YesterdayMovementDisplay"
 import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
@@ -14,6 +14,8 @@ import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { useDataState } from "@keldan-systems/state-mutex"
 import type { Range } from "../components/HistoryRangeChooser"
+
+import useTimer from "@/data/indexDB/hooks/useTimer"
 
 type ComponentProps = {
   symbol: string
@@ -26,7 +28,9 @@ type ComponentProps = {
 export default function MarketOverview({ symbol, showGraphs = true, showActions = true, name = "MarketCard", ...rest }: PropsWithChildren<ComponentProps>) {
   const market = useMarketForSymbol(symbol)
   const price = useCurrentPriceForSymbol(symbol)
-  const datum = useDatumForSymbol(symbol)
+  const data = useDataForSymbol(symbol)
+
+  const timer = useTimer()
 
   const range = useDataState<Range>("range")
 
@@ -68,11 +72,15 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
           </div>
           {showGraphs && (
             <div className="flex-auto  my-2 overflow-hidden">
-              <HistoryChart datum={datum} price={price} range={range} />
+              {/* <div>
+                {status?.state ?? "No State"} {status?.message}
+              </div> */}
+              {/* <pre>{JSON.stringify(status, null, 2)}</pre> */}
+              <HistoryChart data={data} price={price} range={range} status={status} timer={timer} />
 
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(price, null, 2)}</pre> */}
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(market, null, 2)}</pre>*/}
-              {/* <div className=" ">length {datum?.timestamps?.values?.length}</div> */}
+              {/* <div className=" ">length {datum?.timestamps?.length}</div> */}
               {/* <div className=" ">firstActiveTimestamp {formatTimestamp(trend?.firstActiveTimestamp)}</div> */}
               {/* <div className=" ">firstInterdayTimestamp {formatTimestamp(trend?.firstInterdayTimestamp)}</div> */}
             </div>
@@ -87,8 +95,8 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
                 {/* <Link to={`/test/data/${market.symbol}`} target="_blank">
                   <button>Option</button>
                 </Link> */}
-                <button>Buy</button>
-                <button>Sell</button>
+                <button className="btn btn-xs  btn-buy">Buy</button>
+                <button className="btn btn-xs  btn-sell">Sell</button>
               </div>
             )}
           </div>

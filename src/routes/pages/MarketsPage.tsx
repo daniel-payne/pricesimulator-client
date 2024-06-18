@@ -8,24 +8,22 @@ import { useDataState } from "@keldan-systems/state-mutex"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-export async function loader() {
-  // synchronizeAllMarkets()
-
-  // timerStart(ScenarioSpeed.slow)
-
-  return null
-}
-
 type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketsPage({ name = "MarketsPage", ...rest }: PropsWithChildren<ComponentProps>) {
+  const applicationState: any = useDataState("APPLICATION-STATUS")
+
   const view = useDataState<string>("view")
 
   const showFavorites = view === "favorites"
 
   const categories = useMarketCategories()
+
+  if (applicationState?.dataLoaded !== true) {
+    return <div className="p-2 text-xl font-bold">{applicationState?.message}</div>
+  }
 
   return (
     <div {...rest} data-component={name}>

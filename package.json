@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@keldan-systems/state-mutex": "^0.0.25",
+    "@keldan-systems/state-mutex": "^0.0.28",
     "@types/react-window": "^1.8.8",
     "@types/sort-by": "^1.2.3",
     "chartjs-adapter-date-fns": "^3.0.0",

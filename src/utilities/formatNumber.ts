@@ -1,7 +1,11 @@
 import toNumeric from "./toNumeric"
 
 function round(precision: number, number: number) {
-  return parseFloat(number.toPrecision(precision))
+  if (precision > 0) {
+    return parseFloat(number.toPrecision(precision))
+  }
+
+  return Math.round(number)
 }
 
 export default function formatNumber(input: number | undefined | null, precision: number = 6) {
@@ -21,7 +25,7 @@ export default function formatNumber(input: number | undefined | null, precision
 
   if (numberOfFloorDigits > precision) {
     return String(floorValue)
-  } else {
+  } else if (precision > 0) {
     const padding = isInteger ? precision - numberOfFloorDigits : precision - numberOfDigits + 1
 
     if (padding > 0) {

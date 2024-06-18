@@ -1,12 +1,9 @@
 import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 
-import { FaArrowUpRightFromSquare, FaHeart } from "react-icons/fa6"
-
-import { Link } from "react-router-dom"
 import HistoryChart from "../components/HistoryChart"
 
-import useDatumForSymbol from "@/data/indexDB/hooks/useDatumForSymbol"
+import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
 
 import YesterdayMovementDisplay from "../components/YesterdayMovementDisplay"
 import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
@@ -14,20 +11,26 @@ import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { useDataState } from "@keldan-systems/state-mutex"
 import type { Range } from "../components/HistoryRangeChooser"
-import QuoteManager from "./QuoteManager"
+import ContractManager from "./ContractManager"
+import ContractStrip from "./ContractStrip"
 
 type ComponentProps = {
-  symbol: string
+  symbol?: string
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketDetail({ symbol, name = "MarketDetail", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketContract({ symbol, name = "MarketContract", ...rest }: PropsWithChildren<ComponentProps>) {
   const market = useMarketForSymbol(symbol)
   const price = useCurrentPriceForSymbol(symbol)
-  const datum = useDatumForSymbol(symbol)
+  const data = useDataForSymbol(symbol)
 
   const range = useDataState<Range>("range")
+  const compact = useDataState<string>("compact")
+  const multiples = useDataState<string>("multiples")
+
+  const showCompact = compact?.toUpperCase() === "TRUE" || compact?.toUpperCase() === "YES"
+  const showMultiples = multiples?.toUpperCase() === "TRUE" || multiples?.toUpperCase() === "YES"
 
   if (market == null) {
     return
@@ -42,16 +45,15 @@ export default function MarketDetail({ symbol, name = "MarketDetail", ...rest }:
               <span className="fg--heading">{market.name}</span>
               <span className="fg--subheading ps-2 text-sm">{market.description}</span>
             </div>
-            <div className="flex flex-row justify-between gap-2">
-              <FaHeart className="fg--subheading my-1" />
-            </div>
           </div>
 
           <div className="flex-auto  my-2 overflow-hidden flex flex-row gap-2">
-            <HistoryChart className="flex-auto h-full w-full" datum={datum} price={price} range={range} />
-            <div className="h-full w-1/3 border border-primary rounded-lg p-2">
-              <QuoteManager className="h-full w-full" symbol={symbol} />
-            </div>
+            <HistoryChart className="flex-auto h-full w-full" data={data} price={price} range={range} />
+            {!showCompact && (
+              <div className="h-full w-1/3 border border-primary rounded-lg p-2">
+                <ContractManager className="h-full w-full overflow-y-auto" symbol={symbol} settings={{ showMultiples }} />
+              </div>
+            )}
           </div>
 
           <div className="flex flex-row justify-between items-center">
@@ -59,6 +61,7 @@ export default function MarketDetail({ symbol, name = "MarketDetail", ...rest }:
               <YesterdayMovementDisplay price={price} />
               <CurrentOpenDisplay price={price} />
             </div>
+            {showCompact && <ContractStrip symbol={symbol} showMultiples={showMultiples} />}
           </div>
         </div>
       </div>

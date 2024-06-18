@@ -1,20 +1,14 @@
-import { useLiveQuery } from "dexie-react-hooks"
-
-import db from "@/data/indexDB/db"
-
 import type { Category } from "@/data/indexDB/types/Category"
 import pluralWord from "@/utilities/pluralWord"
 import capitalizedWord from "@/utilities/capitalizedWord"
+import useMarkets from "./useMarkets"
 
 export default function useMarketCategories(): Array<Category> | undefined {
-  const markets = useLiveQuery(async () => {
-    return await db.markets?.toArray()
-  })
+  const markets = useMarkets()
 
   const categories: Array<Category> = []
 
   for (const market of markets || []) {
-    // const category = { name: market.category, markets: [] }
     const name = market.category
 
     let category = categories.find((category) => category.name === name)

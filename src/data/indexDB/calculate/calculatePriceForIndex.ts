@@ -3,15 +3,16 @@ import { DEFAULT_SPREAD } from "../constants/DEFAULT_SPREAD"
 
 export default async function calculatePriceForIndex(
   symbol: string,
-  timestamps?: Array<number>,
-  opens?: Array<number>,
-  highs?: Array<number>,
-  lows?: Array<number>,
-  closes?: Array<number>,
+  timestamps?: Array<number> | null | undefined,
+  opens?: Array<number> | null | undefined,
+  highs?: Array<number> | null | undefined,
+  lows?: Array<number> | null | undefined,
+  closes?: Array<number> | null | undefined,
   index?: number | undefined,
-  spread: number = DEFAULT_SPREAD
+  spread: number = DEFAULT_SPREAD,
+  timestamp?: number
 ) {
-  if (index == null || timestamps == null) {
+  if (index == null || timestamps == null || timestamp == null) {
     return null
   }
 
@@ -25,8 +26,6 @@ export default async function calculatePriceForIndex(
     const lastIndex = Math.abs(index) - 1
     const currentIndex = Math.abs(index)
     const nextIndex = Math.abs(index) + 1
-
-    const timestamp = timestamps[currentIndex]
 
     let open
     let high
@@ -43,59 +42,79 @@ export default async function calculatePriceForIndex(
     let bid
     let offer
 
-    if (marketClosed) {
-      lastOpen = currentIndex > 0 ? opens[currentIndex] : undefined
-      lastClose = currentIndex > 0 ? closes[currentIndex] : undefined
-      nextOpen = nextIndex <= indexEnd ? opens[nextIndex] : undefined
+    let closingBid
+    let closingOffer
 
-      if (nextOpen) {
-        bid = nextOpen * (1 + spread)
-        offer = nextOpen * (1 - spread)
+    let nextBid
+    let nextOffer
+
+    if (opens != null && highs != null && lows != null && closes != null) {
+      if (marketClosed) {
+        lastOpen = currentIndex > 0 ? opens[currentIndex] : undefined
+        lastClose = currentIndex > 0 ? closes[currentIndex] : undefined
+        nextOpen = nextIndex <= indexEnd ? opens[nextIndex] : undefined
+
+        if (nextOpen) {
+          nextBid = nextOpen * (1 + spread)
+          nextOffer = nextOpen * (1 - spread)
+        }
+      } else {
+        open = opens[currentIndex]
+        close = closes[currentIndex]
+        high = highs[currentIndex]
+        low = lows[currentIndex]
+
+        lastOpen = lastIndex > 0 ? opens[lastIndex] : undefined
+        lastClose = lastIndex > 0 ? closes[lastIndex] : undefined
+        nextOpen = nextIndex <= indexEnd ? opens[nextIndex] : undefined
+
+        midRangePrice = Math.random() * (high - low) + low
+        midDayPrice = Math.random() * Math.abs(open - close) + Math.min(open, close)
+
+        bid = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 + spread)
+        offer = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 - spread)
+
+        closingBid = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 + spread)
+        closingOffer = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 - spread)
+
+        if (nextOpen != null) {
+          nextBid = nextOpen * (1 + spread)
+          nextOffer = nextOpen * (1 - spread)
+        }
       }
-    } else {
-      // timestamp = trend.timestamps[currentIndex]
 
-      open = opens[currentIndex]
-      close = closes[currentIndex]
-      high = highs[currentIndex]
-      low = lows[currentIndex]
+      const hasIntraDayPrices = !(open === close && high === low)
 
-      lastOpen = lastIndex > 0 ? opens[lastIndex] : undefined
-      lastClose = lastIndex > 0 ? closes[lastIndex] : undefined
+      price = {
+        symbol,
+        timestamp,
 
-      midRangePrice = Math.random() * (high - low) + low
-      midDayPrice = Math.random() * Math.abs(open - close) + Math.min(open, close)
+        marketClosed,
 
-      bid = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 + spread)
-      offer = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 - spread)
-    }
+        open,
+        high,
+        low,
+        close,
 
-    const hasIntraDayPrices = !(open === close && high === low)
+        lastOpen,
+        lastClose,
+        nextOpen,
 
-    price = {
-      symbol,
-      timestamp,
+        midRangePrice,
+        midDayPrice,
 
-      marketClosed,
+        bid,
+        offer,
 
-      open,
-      high,
-      low,
-      close,
+        closingBid,
+        closingOffer,
+        nextBid,
+        nextOffer,
 
-      lastOpen,
-      lastClose,
-      nextOpen,
+        currentIndex,
 
-      midRangePrice,
-      midDayPrice,
-
-      bid,
-      offer,
-
-      currentIndex,
-
-      hasIntraDayPrices,
+        hasIntraDayPrices,
+      }
     }
   }
 

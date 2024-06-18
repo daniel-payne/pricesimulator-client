@@ -3,16 +3,16 @@
 // import timerStart from "@/data/indexDB/controllers/timer/timerStart"
 // import timerStop from "@/data/indexDB/controllers/timer/timerStop"
 // import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
-// import useStatus from "@/data/indexDB/hooks/useStatus"
 
 // import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
-import useDatumForSymbol from "@/data/indexDB/hooks/useDatumForSymbol"
+import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
+
 import formatNumber from "@/utilities/formatNumber"
 import formatTimestamp from "@/utilities/formatTimestamp"
 import formatTimestampDay from "@/utilities/formatTimestampDay"
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import { useLoaderData, useParams, useSearchParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import AutoSizer from "react-virtualized-auto-sizer"
 import { FixedSizeGrid as Grid } from "react-window"
 
@@ -21,18 +21,18 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 const Cell = ({ data, columnIndex, rowIndex, style }: { data: any; columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {
-  let display: string | number = ""
+  let display: string | number | undefined = ""
 
   if (columnIndex === 0) {
-    display = formatTimestampDay(data?.timestamps.values[rowIndex]) + " " + formatTimestamp(data?.timestamps.values[rowIndex])
+    display = formatTimestampDay(data?.timestamps[rowIndex]) + " " + formatTimestamp(data?.timestamps[rowIndex])
   } else if (columnIndex === 1) {
-    display = formatNumber(data?.opens.values[rowIndex])
+    display = formatNumber(data?.opens[rowIndex])
   } else if (columnIndex === 2) {
-    display = formatNumber(data?.highs.values[rowIndex])
+    display = formatNumber(data?.highs[rowIndex])
   } else if (columnIndex === 3) {
-    display = formatNumber(data?.lows.values[rowIndex])
+    display = formatNumber(data?.lows[rowIndex])
   } else if (columnIndex === 4) {
-    display = formatNumber(data?.closes.values[rowIndex])
+    display = formatNumber(data?.closes[rowIndex])
   }
 
   return <div style={style}>{display}</div>
@@ -44,12 +44,16 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
 
   // const symbol = params.get("symbol") ?? ""
 
-  const datum = useDatumForSymbol(symbol)
+  const data = useDataForSymbol(symbol)
 
   // const { timestamps, opens, highs, lows, closes } = datum ?? {}
 
   // const itemData = [timestamps, opens, highs, lows, closes]
   const price = useCurrentPriceForSymbol(symbol)
+
+  if (data == null || price == null) {
+    return <div>Loading</div>
+  }
 
   return (
     <div {...rest} data-component={name}>
@@ -57,10 +61,10 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
         {({ height, width }) => (
           <Grid
             className="List"
-            itemData={datum ?? {}}
+            itemData={data ?? {}}
             height={height}
             rowCount={(price?.currentIndex ?? -1) + 1}
-            //rowCount={datum?.timestamps?.values.length ?? 0}
+            //rowCount={datum?.timestamps.length ?? 0}
             columnCount={5}
             rowHeight={35}
             columnWidth={200}

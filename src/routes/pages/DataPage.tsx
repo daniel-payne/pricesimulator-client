@@ -1,6 +1,6 @@
 import MarketsData from "@/display/elements/data/MarketsData"
 
-import ScenariosData from "@/display/elements/data/ScenariosData"
+// import ScenariosData from "@/display/elements/data/ScenariosData"
 
 import TimerData from "@/display/elements/data/TimerData"
 
@@ -13,9 +13,9 @@ type ComponentProps = {
 export default function TestPage({ name = "TestPage", ...rest }: PropsWithChildren<ComponentProps>) {
   return (
     <div {...rest} data-component={name}>
-      <div className="p-6">{name}</div>
+      <div className="px-2 py-4 text-2xl font-bold">{status?.message}</div>
       <TimerData />
-      <ScenariosData />
+      {/* <ScenariosData /> */}
       <MarketsData />
     </div>
   )

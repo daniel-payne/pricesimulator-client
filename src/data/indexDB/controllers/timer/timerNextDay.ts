@@ -8,18 +8,22 @@ import { ONE_DAY } from "@/data/indexDB/constants/ONE_DAY"
 import updateTimer from "@/data/indexDB/controllers/update/updateTimer"
 
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
-// import updateStatusForDay from "../update/updateStatusForCurrentDay"
+
 import getTimer from "../get/getTimer"
-// import calculateNewStatus from "../update/updateCurrentInformation"
+import getMarkets from "../get/getMarkets"
+import updatePrice from "../update/updatePrice"
+// import updateStatus from "../update/updateStatus"
 
 export async function controller(db: PriceSimulatorDexie, takeControl: boolean) {
-  db.transaction("rw", ["timer", "statuses", "markets"], async () => {
-    const status = await getTimer()
+  const timer = await getTimer()
+  const markets = await getMarkets()
 
-    const currentDay = status?.currentDay
+  db.transaction("rw", ["timer", "data", "markets", "prices", "activeTrades"], async () => {
+    const currentDay = timer?.currentDay
 
-    const isOwner = takeControl === true ? true : status?.id === db.id
-    const isTimerActive = takeControl === true ? true : status?.isTimerActive === true
+    const isOwner = takeControl === true ? true : timer?.id === db.id
+
+    let isTimerActive = takeControl === true ? true : timer?.isTimerActive === true
 
     if (isOwner && isTimerActive && currentDay != null) {
       const oldDate = new Date(currentDay ?? DEFAULT_START)
@@ -29,19 +33,19 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
       const newTimestamp = newDate.getTime()
 
       if (takeControl === true) {
-        await updateTimer({ id: db.id, currentDay: newDay, currentTimestamp: newTimestamp, isTimerActive: false })
+        isTimerActive = false
+
+        await updateTimer({ id: db.id, currentDay: newDay, currentTimestamp: newTimestamp, isTimerActive })
       } else {
         await updateTimer({ currentDay: newDay, currentTimestamp: newTimestamp })
       }
 
-      // const newStatus = await calculateNewStatus()
-
-      // updateStatus(newStatus)
+      for await (const market of markets) {
+        await updatePrice(market.symbol, newTimestamp)
+      }
     }
   })
     .then(async () => {
-      const timer = await db.timer.limit(1).first()
-
       const { speed, isTimerActive } = timer ?? {}
 
       if (isTimerActive === true) {

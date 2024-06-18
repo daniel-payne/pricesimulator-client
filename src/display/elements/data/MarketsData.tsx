@@ -1,9 +1,10 @@
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
-import useDatumForSymbol from "@/data/indexDB/hooks/useDatumForSymbol"
+import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
+
 import useMarkets from "@/data/indexDB/hooks/useMarkets"
-import useStatusForSymbol from "@/data/indexDB/hooks/useStatusForSymbol"
 
 import type { Market } from "@/data/indexDB/types/Market"
+import formatNumber from "@/utilities/formatNumber"
 import formatTimestamp from "@/utilities/formatTimestamp"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
@@ -12,32 +13,40 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-const DatumData = ({ symbol }: { symbol: string }) => {
-  const datum = useDatumForSymbol(symbol)
+const PriceData = ({ symbol }: { symbol: string }) => {
+  const price = useCurrentPriceForSymbol(symbol)
 
-  return <div className="">{datum?.opens?.values?.length} Prices</div>
-}
+  const currentPrice = price?.marketClosed ? price.lastClose : price?.midDayPrice
 
-const StatusData = ({ symbol }: { symbol: string }) => {
-  const status = useStatusForSymbol(symbol)
+  const classNamesCurrentPrice = currentPrice == null ? "font-light" : "font-bold"
+  const displayCurrentPrice = currentPrice == null ? "No Current Price" : formatNumber(currentPrice, 6)
 
   return (
     <div className="">
       <div>
-        {status?.state}, data From: {formatTimestamp(status?.firstActiveTimestamp)}{" "}
+        <span className={classNamesCurrentPrice}>{displayCurrentPrice}</span>
       </div>
-      <DatumData symbol={symbol} />
+      {/* <div>{formatTimestamp(price?.timestamp)}</div>
+      <pre>{JSON.stringify(price, null, 2)}</pre> */}
     </div>
   )
 }
 
-const CurrentData = ({ symbol }: { symbol: string }) => {
-  const price = useCurrentPriceForSymbol(symbol)
+const DataData = ({ symbol }: { symbol: string }) => {
+  const data = useDataForSymbol(symbol)
+
+  const count = data?.count ?? 0
+  const firstActiveTimestamp = data?.firstActiveTimestamp
+
+  const displayFirstActiveTimestamp = formatTimestamp(firstActiveTimestamp)
+
+  const classNamesCurrentPrice = count > 0 ? "font-bold" : "font-light"
 
   return (
     <div className="">
-      {/* {JSON.stringify(price, null, 2)} */}
-      {price?.marketClosed ? price.lastClose : price?.midDayPrice} &nbsp;
+      <span className={classNamesCurrentPrice}>{displayFirstActiveTimestamp}</span>
+      &nbsp;
+      <span className="text-xs">({count})</span>
     </div>
   )
 }
@@ -50,8 +59,9 @@ const MarketData = ({ market }: { market: Market }) => {
         <span className="text-secondary ps-2 text-xs">{market.symbol}</span>
       </div>
       {/* <div className="text-secondary">{market.description} &nbsp;</div> */}
-      {/* <StatusData symbol={market.symbol} /> */}
-      <CurrentData symbol={market.symbol} />
+
+      <DataData symbol={market.symbol} />
+      <PriceData symbol={market.symbol} />
     </div>
   )
 }

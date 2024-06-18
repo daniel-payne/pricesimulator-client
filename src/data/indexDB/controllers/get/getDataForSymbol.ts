@@ -3,51 +3,62 @@ import db from "@/data/indexDB/db"
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
 import loadDataForSymbol from "@/data/server/load/loadDataForSymbol"
+import { setState } from "@keldan-systems/state-mutex"
 import Dexie from "dexie"
 
 const TIMEGAP_CUTOFF = 10
 
-export async function controller(db: PriceSimulatorDexie, symbol: string | undefined) {
+export async function controller(db: PriceSimulatorDexie, symbol: string | undefined | null) {
   if (symbol == null) {
     return undefined
   }
 
-  const status = await db.statuses?.where({ symbol }).first()
+  if (db.dataCache[symbol] != null) {
+    return db.dataCache[symbol]
+  }
 
-  let timestamps = await db.timestamps?.where({ symbol })?.first()
-  let opens = await db.opens?.where({ symbol })?.first()
-  let highs = await db.highs?.where({ symbol })?.first()
-  let lows = await db.lows?.where({ symbol })?.first()
-  let closes = await db.closes?.where({ symbol })?.first()
-  let volumes = await db.volumes?.where({ symbol })?.first()
+  setState(symbol + "-STATE", { message: "Retrieving price data" })
 
-  if (timestamps == null && (status == null || status?.state === "empty")) {
-    db.statuses.put({ symbol, state: "retrieving" })
+  let data = await db.data?.where({ symbol })?.first()
 
-    const data = await loadDataForSymbol(symbol)
+  setState(symbol + "-STATE", { message: "Finished checking for local data" })
 
-    timestamps = { symbol, values: data.timestamps }
-    opens = { symbol, values: data.opens }
-    highs = { symbol, values: data.highs }
-    lows = { symbol, values: data.lows }
-    closes = { symbol, values: data.closes }
-    volumes = { symbol, values: data.volumes }
+  if (data != null) {
+    setState(symbol + "-STATE", { message: "Using Data straight from local data" })
 
-    db.statuses.update(symbol, { state: "processing" })
+    db.dataCache[symbol] = data
 
-    const timegaps = timestamps.values.map((value: number, index: number) => {
+    return db.dataCache[symbol]
+  } else {
+    setState(symbol + "-STATE", { state: "retrieving", message: "Retrieving data from server" })
+
+    data = await loadDataForSymbol(symbol)
+
+    const timestamps = data?.timestamps
+    const highs = data?.highs
+    const lows = data?.lows
+    const opens = data?.opens
+    const closes = data?.closes
+
+    if (timestamps == null || highs == null || lows == null || opens == null || closes == null) {
+      setState(symbol + "-STATE", { state: "error", message: "Error loading data" })
+
+      return undefined
+    }
+
+    setState(symbol + "-STATE", { state: "processing", message: "Processing data" })
+
+    const timegaps = data?.timestamps?.map((value: number, index: number) => {
       if (index === 0) {
         return null
       }
 
-      if (timestamps != null) {
-        return (value - timestamps.values[index - 1]) / (1000 * 60 * 60 * 24)
-      }
+      return (value - timestamps[index - 1]) / (1000 * 60 * 60 * 24)
     })
 
-    const interdays = timestamps.values.map((_: any, index: number) => {
+    const interdays = timestamps.map((_: any, index: number) => {
       if (highs != null && lows != null) {
-        return highs.values[index] - lows.values[index]
+        return highs[index] - lows[index]
       }
     })
 
@@ -56,64 +67,52 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
 
     let timeGapFound = false
 
-    if (timegaps.length && interdays.length) {
-      for (let i = timestamps.values.length - 1; i >= 0; i--) {
+    if (timegaps?.length && interdays.length) {
+      for (let i = timestamps.length - 1; i >= 0; i--) {
         const timegap = timegaps[i] ?? TIMEGAP_CUTOFF + 1
         const interday = interdays[i] ?? 0
 
         if (timeGapFound === false) {
           if (timegap <= TIMEGAP_CUTOFF) {
-            firstActiveTimestamp = timestamps.values[i]
+            firstActiveTimestamp = timestamps[i]
           } else if (i === 0 && timegap == null) {
-            firstActiveTimestamp = timestamps.values[i]
+            firstActiveTimestamp = timestamps[i]
           } else {
             timeGapFound = true
           }
         }
         if (timeGapFound === false) {
           if (interday > 0 && firstActiveTimestamp != null) {
-            firstInterdayTimestamp = timestamps.values[i]
+            firstInterdayTimestamp = timestamps[i]
           }
         }
       }
+
+      if (data != null) {
+        data.count = timestamps.length
+        data.firstActiveTimestamp = firstActiveTimestamp
+        data.firstInterdayTimestamp = firstInterdayTimestamp
+
+        setState(symbol + "-STATE", { state: "storing", message: "Storing data" })
+
+        await db.data.put(data).catch(Dexie.BulkError, function (e) {
+          console.error("loadScenarios Loading Error: " + e.failures.length)
+        })
+
+        setState(symbol + "-STATE", { state: "loaded", message: "Local data stored" })
+      } else {
+        setState(symbol + "-STATE", { state: "error", message: "Local data error" })
+      }
+    } else {
+      setState(symbol + "-STATE", { message: "Using Data from local data" })
     }
 
-    db.statuses.update(symbol, { state: "storing" })
+    db.dataCache[symbol] = data
 
-    await db.timestamps.put(timestamps).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    await db.timestamps.put(timestamps).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    await db.opens.put(opens).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    await db.highs.put(highs).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    await db.lows.put(lows).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    await db.closes.put(closes).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    await db.volumes.put(volumes).catch(Dexie.BulkError, function (e) {
-      console.error("loadScenarios Loading Error: " + e.failures.length)
-    })
-
-    db.statuses.put({ symbol, state: "loaded", firstActiveTimestamp, firstInterdayTimestamp })
+    return db.dataCache[symbol]
   }
-
-  return { timestamps, opens, highs, lows, closes, volumes }
 }
 
-export default function getDataForSymbol(symbol: string | undefined) {
+export default function getDataForSymbol(symbol: string | undefined | null) {
   return controller(db, symbol)
 }

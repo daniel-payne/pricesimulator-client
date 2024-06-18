@@ -11,7 +11,14 @@ export async function controller(db: PriceSimulatorDexie) {
   let timer = await db.timer.limit(1).first()
 
   if (timer == null) {
-    const defaultTimer = { id, speed: ScenarioSpeed.slow, startDay: DEFAULT_START, currentDay: DEFAULT_START, isTimerActive: false }
+    const defaultTimer = {
+      id,
+      speed: ScenarioSpeed.slow,
+      startDay: DEFAULT_START,
+      currentDay: DEFAULT_START,
+      currentTimestamp: new Date(DEFAULT_START).getTime(),
+      isTimerActive: false,
+    }
 
     timer = { ...defaultTimer, id }
 
