@@ -16,7 +16,7 @@ type ComponentProps = {
 const PriceData = ({ symbol }: { symbol: string }) => {
   const price = useCurrentPriceForSymbol(symbol)
 
-  const currentPrice = price?.marketClosed ? price.lastClose : price?.midDayPrice
+  const currentPrice = price?.isMarketClosed ? price.lastClose : price?.midDayPrice
 
   const classNamesCurrentPrice = currentPrice == null ? "font-light" : "font-bold"
   const displayCurrentPrice = currentPrice == null ? "No Current Price" : formatNumber(currentPrice, 6)

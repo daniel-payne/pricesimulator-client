@@ -1,6 +1,6 @@
 import binarySearch from "@/utilities/binarySearch"
 
-export default async function calculateIndexForTimestamp(timestamps: Array<number>, timestamp: number, indexHint: number = 0) {
+export default async function calculateIndexForTimestamp(timestamps: Array<number>, timestamp: number, indexHint: number | null | undefined = 0) {
   let index: number | undefined
 
   let doSearch = !!(timestamps != null) && !!(timestamps.length > 0)

@@ -1,5 +1,7 @@
 import { Price } from "../types/Price"
 import { DEFAULT_SPREAD } from "../constants/DEFAULT_SPREAD"
+import formatTimestampISO from "@/utilities/formatTimestampISO"
+import formatTimestampDay from "@/utilities/formatTimestampDay"
 
 export default async function calculatePriceForIndex(
   symbol: string,
@@ -12,7 +14,7 @@ export default async function calculatePriceForIndex(
   spread: number = DEFAULT_SPREAD,
   timestamp?: number
 ) {
-  if (index == null || timestamps == null || timestamp == null) {
+  if (index == null || timestamp == null || timestamps == null || highs == null || opens == null || lows == null || closes == null) {
     return null
   }
 
@@ -21,100 +23,132 @@ export default async function calculatePriceForIndex(
   let price: Price | undefined
 
   if (indexEnd != null) {
-    const marketClosed = index <= 0
+    const isMarketClosed = index <= 0
+    const maxIndex = timestamps.length - 1
 
-    const lastIndex = Math.abs(index) - 1
-    const currentIndex = Math.abs(index)
-    const nextIndex = Math.abs(index) + 1
+    let priorIndex
+    let priorTimestamp
+    let priorTimestampISO
+    let priorTimestampDay
+    let priorOpen
+    let priorClose
+    let priorClosingBid
+    let priorClosingAsk
 
-    let open
-    let high
-    let low
-    let close
+    let currentIndex
+    let currentTimestamp
+    let currentTimestampISO
+    let currentTimestampDay
+    let currentOpen
+    let currentHigh
+    let currentLow
+    let currentClose
+    let currentBid
+    let currentAsk
+    let currentMidRangePrice
+    let currentMidDayPrice
+    let currentClosingBid
+    let currentClosingAsk
 
-    let lastOpen
-    let lastClose
+    let nextIndex
+    let nextTimestamp
+    let nextTimestampISO
+    let nextTimestampDay
     let nextOpen
+    let nextOpeningBid
+    let nextOpeningAsk
 
-    let midRangePrice
-    let midDayPrice
+    let hasIntraDayPrices
 
-    let bid
-    let offer
+    if (isMarketClosed) {
+      priorIndex = Math.abs(index) - 1
+      nextIndex = Math.abs(index)
+    } else {
+      priorIndex = index - 1
+      currentIndex = index
+      nextIndex = index + 1
+    }
 
-    let closingBid
-    let closingOffer
+    if (priorIndex != null && priorIndex > 0) {
+      priorTimestamp = timestamps[priorIndex]
+      priorTimestampISO = formatTimestampISO(priorTimestamp)
+      priorTimestampDay = formatTimestampDay(priorTimestamp)
+      priorOpen = opens[priorIndex]
+      priorClose = closes[priorIndex]
 
-    let nextBid
-    let nextOffer
+      priorClosingBid = priorClose * (1 + spread)
+      priorClosingAsk = priorClose * (1 - spread)
+    }
 
-    if (opens != null && highs != null && lows != null && closes != null) {
-      if (marketClosed) {
-        lastOpen = currentIndex > 0 ? opens[currentIndex] : undefined
-        lastClose = currentIndex > 0 ? closes[currentIndex] : undefined
-        nextOpen = nextIndex <= indexEnd ? opens[nextIndex] : undefined
+    if (currentIndex != null && currentIndex <= maxIndex) {
+      currentTimestamp = timestamps[currentIndex]
+      currentTimestampISO = formatTimestampISO(currentTimestamp)
+      currentTimestampDay = formatTimestampDay(currentTimestamp)
+      currentOpen = opens[currentIndex]
+      currentClose = closes[currentIndex]
+      currentHigh = highs[currentIndex]
+      currentLow = lows[currentIndex]
 
-        if (nextOpen) {
-          nextBid = nextOpen * (1 + spread)
-          nextOffer = nextOpen * (1 - spread)
-        }
-      } else {
-        open = opens[currentIndex]
-        close = closes[currentIndex]
-        high = highs[currentIndex]
-        low = lows[currentIndex]
+      currentMidRangePrice = Math.random() * (currentHigh - currentLow) + currentLow
+      currentMidDayPrice = Math.random() * Math.abs(currentOpen - currentClose) + Math.min(currentOpen, currentClose)
 
-        lastOpen = lastIndex > 0 ? opens[lastIndex] : undefined
-        lastClose = lastIndex > 0 ? closes[lastIndex] : undefined
-        nextOpen = nextIndex <= indexEnd ? opens[nextIndex] : undefined
+      currentBid = ((3 * currentMidRangePrice + 1 * currentMidDayPrice) / 4) * (1 + spread)
+      currentAsk = ((3 * currentMidRangePrice + 1 * currentMidDayPrice) / 4) * (1 - spread)
 
-        midRangePrice = Math.random() * (high - low) + low
-        midDayPrice = Math.random() * Math.abs(open - close) + Math.min(open, close)
+      currentClosingBid = currentClose * (1 + spread)
+      currentClosingAsk = currentClose * (1 - spread)
 
-        bid = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 + spread)
-        offer = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 - spread)
+      hasIntraDayPrices = !(currentOpen === currentClose && currentHigh === currentLow)
+    }
 
-        closingBid = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 + spread)
-        closingOffer = ((3 * midRangePrice + 1 * midDayPrice) / 4) * (1 - spread)
+    if (nextIndex != null && nextIndex <= maxIndex) {
+      nextTimestamp = timestamps[nextIndex]
+      nextTimestampISO = formatTimestampISO(nextTimestamp)
+      nextTimestampDay = formatTimestampDay(nextTimestamp)
+      nextOpen = opens[nextIndex]
 
-        if (nextOpen != null) {
-          nextBid = nextOpen * (1 + spread)
-          nextOffer = nextOpen * (1 - spread)
-        }
-      }
+      nextOpeningBid = nextOpen * (1 + spread)
+      nextOpeningAsk = nextOpen * (1 - spread)
+    }
 
-      const hasIntraDayPrices = !(open === close && high === low)
+    price = {
+      symbol,
 
-      price = {
-        symbol,
-        timestamp,
+      currentIndex,
 
-        marketClosed,
+      isMarketClosed,
 
-        open,
-        high,
-        low,
-        close,
+      currentTimestamp,
+      currentTimestampISO,
+      currentTimestampDay,
+      currentOpen,
+      currentHigh,
+      currentLow,
+      currentClose,
+      currentMidRangePrice,
+      currentMidDayPrice,
+      currentBid,
+      currentAsk,
+      currentClosingAsk,
+      currentClosingBid,
 
-        lastOpen,
-        lastClose,
-        nextOpen,
+      priorIndex,
+      priorTimestamp,
+      priorTimestampISO,
+      priorTimestampDay,
+      priorOpen,
+      priorClose,
+      priorClosingBid,
+      priorClosingAsk,
 
-        midRangePrice,
-        midDayPrice,
+      nextIndex,
+      nextTimestamp,
+      nextTimestampISO,
+      nextTimestampDay,
+      nextOpeningBid,
+      nextOpeningAsk,
 
-        bid,
-        offer,
-
-        closingBid,
-        closingOffer,
-        nextBid,
-        nextOffer,
-
-        currentIndex,
-
-        hasIntraDayPrices,
-      }
+      hasIntraDayPrices,
     }
   }
 

@@ -34,7 +34,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   const closes = data?.closes
 
   if (timestamps != null) {
-    const index = await calculateIndexForTimestamp(timestamps, timestamp, currentPrice?.currentIndex)
+    const index = await calculateIndexForTimestamp(timestamps, timestamp, currentPrice?.currentIndex ?? currentPrice?.priorIndex)
 
     const price = await calculatePriceForIndex(symbol, timestamps, opens, highs, lows, closes, index, spread, timestamp)
 
@@ -50,12 +50,14 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
       if (activeTrade != null) {
         const newTrade = structuredClone(activeTrade)
 
-        newTrade.currentPrice = newTrade.direction === "CALL" ? price.bid : price.offer
+        const currentPrice = newTrade.direction === "CALL" ? price.priorClosingBid : price.priorClosingAsk
+        const currentProfit =
+          (currentPrice - newTrade.entryPrice) * (market?.dollarModifier ?? 1) * newTrade.notional * (newTrade.direction === "CALL" ? 1 : -1)
 
-        newTrade.priceDifferential = newTrade.currentPrice - newTrade.entryPrice
-        newTrade.dollarDifferential = newTrade.priceDifferential * (market?.dollarModifier ?? 1)
-        newTrade.currentProfit = newTrade.dollarDifferential * newTrade.notional * (newTrade.direction === "CALL" ? 1 : -1)
-        newTrade.currentNotional = newTrade.notional + newTrade.currentProfit
+        newTrade.margin = {
+          currentPrice,
+          currentProfit,
+        }
 
         await db.activeTrades.put(newTrade).catch(Dexie.BulkError, function (e) {
           console.error("getPriceForSymbolAndTimestamp Pricing Error: " + e.failures.length)

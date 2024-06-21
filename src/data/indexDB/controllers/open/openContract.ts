@@ -9,6 +9,7 @@ import getMarketForSymbol from "../get/getMarketForSymbol"
 import generateID from "@/utilities/generateID"
 
 import { DEFAULT_CONTRACT_COST } from "../../constants/DEFAULT_CONTRACT_COST"
+import lastOfMonth from "@/utilities/lastOfMonth"
 
 export async function controller(db: PriceSimulatorDexie, symbol: string, direction: "CALL" | "PUT", size: 0.25 | 0.5 | 1 | 2) {
   const activeTrade = await db.activeTrades?.where({ symbol }).first()
@@ -23,56 +24,50 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
 
   const price = await db.prices?.where({ symbol }).first()
 
-  const currentTimestamp = timer?.currentTimestamp
+  const entryTimestamp = timer?.currentTimestamp
+  const expiryTimestamp = lastOfMonth(timer?.currentTimestamp, "WED", 3)?.getTime()
 
-  // const timestamps = data?.timestamps
-  // const opens = data?.opens
-  // const highs = data?.highs
-  // const lows = data?.lows
-  // const closes = data?.closes
+  let entryPrice
+  let entryCost
 
-  const tradePrice = price?.marketClosed ? price?.nextOpen : price?.close
+  if (size === 1) {
+    if (price?.isMarketClosed) {
+      entryPrice = price?.nextOpen
+    } else {
+      entryPrice = price?.currentClose
+    }
 
-  let notionalPrice
-
-  if (tradePrice) {
-    notionalPrice = direction === "CALL" ? tradePrice + DEFAULT_CONTRACT_COST : tradePrice - DEFAULT_CONTRACT_COST
+    entryCost = DEFAULT_CONTRACT_COST
+  } else {
+    if (price?.isMarketClosed) {
+      entryPrice = direction === "CALL" ? price?.nextBid : price?.nextAsk
+    } else {
+      entryPrice = direction === "CALL" ? price?.currentBid : price?.currentAsk
+    }
   }
 
-  if (market != null && currentTimestamp != null && notionalPrice != null) {
-    // const spread = market.spread
+  if (market != null && entryTimestamp != null && entryPrice != null) {
+    const notional = size * market.contractSize * (market?.dollarModifier ?? 1) * entryPrice
 
-    const notional = size * market.contractSize * market.dollarModifier * notionalPrice
-
-    // const index = await calculateIndexForTimestamp(timestamps, currentTimestamp)
-
-    // const price = await calculatePriceForIndex(symbol, timestamps, opens, highs, lows, closes, index, spread, currentTimestamp)
+    const entryValue = notional * entryPrice
 
     if (price != null) {
-      let entryPrice
-
-      if (price.marketClosed) {
-        entryPrice = direction === "CALL" ? price.nextBid : price.nextOffer
-      } else {
-        if (Math.random() > 0.85 && size !== 1) {
-          entryPrice = direction === "CALL" ? price.bid : price.offer
-        } else {
-          entryPrice = direction === "CALL" ? price.closingBid : price.closingOffer
-        }
-      }
-
       const newContract = {
         id: generateID(),
         symbol,
         direction,
         size,
         notional,
+        entryValue,
         entryPrice,
-        entryTimestamp: currentTimestamp,
+        entryCost,
+        entryTimestamp,
         exitPrice: undefined,
+        exitValue: undefined,
+        exitCost: undefined,
         exitTimestamp: undefined,
+        expiryTimestamp,
         profit: undefined,
-        status: "OPEN",
       }
 
       await db.activeTrades?.add(newContract)

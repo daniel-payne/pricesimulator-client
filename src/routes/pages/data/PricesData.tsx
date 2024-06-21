@@ -23,19 +23,43 @@ type ComponentProps = {
 const Cell = ({ data, columnIndex, rowIndex, style }: { data: any; columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {
   let display: string | number | undefined = ""
 
-  if (columnIndex === 0) {
-    display = formatTimestampDay(data?.timestamps[rowIndex]) + " " + formatTimestamp(data?.timestamps[rowIndex])
-  } else if (columnIndex === 1) {
-    display = formatNumber(data?.opens[rowIndex])
-  } else if (columnIndex === 2) {
-    display = formatNumber(data?.highs[rowIndex])
-  } else if (columnIndex === 3) {
-    display = formatNumber(data?.lows[rowIndex])
-  } else if (columnIndex === 4) {
-    display = formatNumber(data?.closes[rowIndex])
+  const displayStyle = { ...style }
+
+  if (rowIndex === 0) {
+    // displayStyle.position = "absolute"
+    // displayStyle.top = 0
+    // displayStyle.zIndex = 99
+
+    if (columnIndex === 0) {
+      display = "index"
+    } else if (columnIndex === 1) {
+      display = "date"
+    } else if (columnIndex === 2) {
+      display = "opens"
+    } else if (columnIndex === 3) {
+      display = "highs"
+    } else if (columnIndex === 4) {
+      display = "lows"
+    } else if (columnIndex === 5) {
+      display = "closes"
+    }
+  } else {
+    if (columnIndex === 0) {
+      display = rowIndex
+    } else if (columnIndex === 1) {
+      display = formatTimestampDay(data?.timestamps[rowIndex]) + " " + formatTimestamp(data?.timestamps[rowIndex])
+    } else if (columnIndex === 2) {
+      display = formatNumber(data?.opens[rowIndex])
+    } else if (columnIndex === 3) {
+      display = formatNumber(data?.highs[rowIndex])
+    } else if (columnIndex === 4) {
+      display = formatNumber(data?.lows[rowIndex])
+    } else if (columnIndex === 5) {
+      display = formatNumber(data?.closes[rowIndex])
+    }
   }
 
-  return <div style={style}>{display}</div>
+  return <div style={displayStyle}>{display}</div>
 }
 
 export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithChildren<ComponentProps>) {
@@ -65,7 +89,7 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
             height={height}
             rowCount={(price?.currentIndex ?? -1) + 1}
             //rowCount={datum?.timestamps.length ?? 0}
-            columnCount={5}
+            columnCount={5 + 1}
             rowHeight={35}
             columnWidth={200}
             width={width}

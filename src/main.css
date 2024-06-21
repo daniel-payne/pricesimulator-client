@@ -136,6 +136,10 @@
     background-color: var(--outcome-loss-25) !important;
   }
 
+  .bg-neutral {
+    background-color: var(--outcome-neutral-25) !important;
+  }
+
   .border-profit {
     border-color: var(--outcome-profit) !important;
   }

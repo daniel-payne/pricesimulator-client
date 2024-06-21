@@ -29,7 +29,7 @@ export default function YesterdayMovementDisplay({ price, name = "YesterdayMovem
     className = "fg-price-info--no-movement"
   }
 
-  if (price?.marketClosed) {
+  if (price?.isMarketClosed) {
     className = "fg-price-info--closed"
   }
 

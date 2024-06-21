@@ -36,7 +36,7 @@ export default function StopContract({ market, price, trade, settings, onOrder, 
   const displayClassesSizeOne = trade.size === 1 ? "btn btn-sm btn-primary" : "hidden"
   const displayClassesSizeTwo = trade.size === 2 ? "btn btn-sm btn-primary" : "hidden"
 
-  const displayOrderEvent = price?.marketClosed ? "As soon as the market opens" : "As soon as you can before the market closes today"
+  const displayOrderEvent = price?.isMarketClosed ? "As soon as the market opens" : "As soon as you can before the market closes today"
 
   const classNamesBuy = trade.direction === "PUT" ? "btn btn-sm btn-primary btn-buy" : "hidden"
   const classNamesSell = trade.direction === "CALL" ? "btn btn-sm btn-primary btn-sell" : "hidden"

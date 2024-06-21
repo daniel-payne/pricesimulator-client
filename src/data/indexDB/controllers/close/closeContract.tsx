@@ -20,54 +20,41 @@ export async function controller(db: PriceSimulatorDexie, id: string) {
 
   const currentTimestamp = timer?.currentTimestamp
 
-  // const timestamps = data?.timestamps
-  // const opens = data?.opens
-  // const highs = data?.highs
-  // const lows = data?.lows
-  // const closes = data?.closes
+  if (activeTrade != null && market != null && currentTimestamp != null) {
+    let exitPrice
+    let exitCost
 
-  const tradePrice = price?.marketClosed ? price?.nextOpen : price?.close
-
-  let notionalPrice
-
-  if (activeTrade != null && tradePrice != null) {
-    notionalPrice = activeTrade.direction === "CALL" ? tradePrice + DEFAULT_CONTRACT_COST : tradePrice - DEFAULT_CONTRACT_COST
-  }
-
-  if (activeTrade != null && market != null && currentTimestamp != null && notionalPrice != null) {
-    // const spread = market.spread
-
-    // const notional = activeTrade.size * market.contractSize * market.dollarModifier * notionalPrice
-
-    // const index = await calculateIndexForTimestamp(timestamps, currentTimestamp)
-
-    // const price = await calculatePriceForIndex(symbol, timestamps, opens, highs, lows, closes, index, spread, currentTimestamp)
-
-    if (price != null) {
-      let exitPrice
-
-      if (price.marketClosed) {
-        exitPrice = activeTrade.direction === "CALL" ? price.nextBid : price.nextOffer
+    if (activeTrade.size === 1) {
+      if (price?.isMarketClosed) {
+        exitPrice = price?.nextOpen
       } else {
-        if (Math.random() > 0.85 && activeTrade.size !== 1) {
-          exitPrice = activeTrade.direction === "CALL" ? price.bid : price.offer
-        } else {
-          exitPrice = activeTrade.direction === "CALL" ? price.closingBid : price.closingOffer
-        }
+        exitPrice = price?.currentClose
       }
 
-      const newContract = structuredClone(activeTrade)
+      exitCost = DEFAULT_CONTRACT_COST
+    } else {
+      if (price?.isMarketClosed) {
+        exitPrice = activeTrade.direction === "CALL" ? price?.nextBid : price?.nextAsk
+      } else {
+        exitPrice = activeTrade.direction === "CALL" ? price?.currentBid : price?.currentAsk
+      }
+    }
 
-      newContract.exitPrice = exitPrice
-      newContract.exitTimestamp = currentTimestamp
+    if (exitPrice != null) {
+      if (price != null) {
+        const newContract = structuredClone(activeTrade)
 
-      newContract.profit = (newContract.exitPrice - newContract.entryPrice) * (market.dollarModifier ?? 1) * newContract.notional
-      newContract.status = "CLOSED"
+        newContract.exitPrice = exitPrice
+        newContract.exitCost = exitCost
+        newContract.exitTimestamp = currentTimestamp
 
-      await db.inactiveTrades?.put(newContract)
-      await db.activeTrades?.delete(newContract.symbol)
+        newContract.profit = (newContract.exitPrice - newContract.entryPrice) * (market.dollarModifier ?? 1) * newContract.notional
 
-      return newContract
+        await db.inactiveTrades?.put(newContract)
+        await db.activeTrades?.delete(newContract.symbol)
+
+        return newContract
+      }
     }
   }
 

@@ -10,6 +10,7 @@ import ApplicationNavigation from "@/display/components/ApplicationNavigation"
 
 import HistoryRangeChooser from "@/display/components/HistoryRangeChooser"
 import DetailViewChooser from "@/display/components/DetailViewChooser"
+import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
 
 type ComponentProps = {
   focus?: string
@@ -37,6 +38,9 @@ export default function MarketsHeader({ focus, name = "MarketsHeader", ...rest }
         </div>
         {/* <DefaultElement name="CurrentDayDisplay">{currentDay}</DefaultElement> */}
         <div className="flex flex-row gap-2 justify-right items-center bg-base-200 p-2">
+          <button className="btn btn-sm btn-primary" onClick={() => timerNextDay(true)}>
+            Next
+          </button>
           <div className="w-4 font-bold text-right">{formatTimestampDay(currentDay)}</div>
           <div className="w-24 ps-2 text-sm text-right">{formatTimestamp(currentDay)}</div>
           <FaGear />

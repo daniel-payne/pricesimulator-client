@@ -9,7 +9,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function CurrentOpenDisplay({ price, name = "CurrentOpenDisplay", ...rest }: PropsWithChildren<ComponentProps>) {
-  const displayValue = price?.marketClosed ? price?.lastClose : price?.midDayPrice
+  const displayValue = price?.isMarketClosed ? price?.lastClose : price?.open
 
   if (displayValue == null) {
     return null
@@ -19,7 +19,7 @@ export default function CurrentOpenDisplay({ price, name = "CurrentOpenDisplay",
 
   let displayClasses
 
-  if (price?.marketClosed) {
+  if (price?.isMarketClosed) {
     displayClasses = "fg-price-info--closed"
   } else {
     if (overnightMovement > 0) {
@@ -33,7 +33,7 @@ export default function CurrentOpenDisplay({ price, name = "CurrentOpenDisplay",
 
   return (
     <div {...rest} data-component={name}>
-      <Link to={`/prices/${price?.symbol}`} target="_blank">
+      <Link to={`/data/prices/${price?.symbol}`} target="_blank">
         <div className={displayClasses}>{formatNumber(displayValue)}</div>
       </Link>
     </div>

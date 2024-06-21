@@ -12,6 +12,9 @@ import DisplayContract from "./DisplayContract"
 import closeContract from "@/data/indexDB/controllers/close/closeContract"
 import timerStart from "@/data/indexDB/controllers/timer/timerStart"
 import timerStop from "@/data/indexDB/controllers/timer/timerStop"
+// import formatTimestampISO from "@/utilities/formatTimestampISO"
+// import formatTimestampDay from "@/utilities/formatTimestampDay"
+// import formatTimestamp from "@/utilities/formatTimestamp"
 
 type Settings = {
   showMultiples?: boolean | null | undefined
@@ -58,13 +61,14 @@ export default function ContractManager({ symbol, settings, name = "ContractMana
       <ContractDescription market={market} price={price} timer={timer} settings={{ showMultiples }} />
       {trade == null && <StartContract market={market} price={price} settings={{ showMultiples }} onOrder={handleOpen} />}
       {trade != null && <StopContract market={market} price={price} trade={trade} settings={{ showMultiples }} onOrder={handleClose} />}
-      {trade != null && <DisplayContract market={market} price={price} trade={trade} settings={{ showMultiples }} />}
+      {trade != null && <DisplayContract market={market} price={price} trade={trade} timer={timer} settings={{ showMultiples }} />}
 
       {/* <TradeDescription trade={trade} /> */}
       {/* <pre>{JSON.stringify(trade, null, 2)}</pre> */}
 
       {/* <pre>{JSON.stringify(market, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(trade, null, 2)}</pre> */}
+      {/* <pre>{JSON.stringify(price, null, 2)}</pre> */}
       {/* <div className="divider">You Currently Own</div>
       <div className="flex flex-col justify-start items-center p-2 gap-4">
         <div>

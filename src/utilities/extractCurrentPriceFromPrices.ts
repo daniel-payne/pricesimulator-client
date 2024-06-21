@@ -31,7 +31,7 @@ export default function extractCurrentPriceFromDatum(symbol: string, data: Data,
     const lastClose = closes[lastIndex]
     const nextOpen = opens[lastIndex + 1]
 
-    return { symbol: symbol, day: lastDay, timestamp: lastTimestamp, marketClosed: true, index, lastClose, nextOpen }
+    return { symbol: symbol, day: lastDay, timestamp: lastTimestamp, isMarketClosed: true, index, lastClose, nextOpen }
   } else {
     const open = opens[index]
     const high = highs[index]
@@ -42,7 +42,7 @@ export default function extractCurrentPriceFromDatum(symbol: string, data: Data,
       symbol: symbol,
       timestamp: currentTimestamp,
       day: currentDay,
-      marketClosed: false,
+      isMarketClosed: false,
       index,
       open,
       high,

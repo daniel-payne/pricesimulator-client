@@ -1,29 +1,41 @@
+//         Call / Buy  @ Bid / Offer
+// Price
+//         Put  / Sell @ Ask
+
 export type Price = {
-  symbol: string
-  timestamp: number
+  isMarketClosed: boolean
 
-  day?: string
+  priorIndex: number | null | undefined
+  priorTimestamp: number | null | undefined
+  priorTimestampISO?: string | null | undefined
+  priorTimestampDay?: string | null | undefined
+  priorOpen?: number | null | undefined
+  priorClose?: number | null | undefined
 
-  open?: number
-  high?: number
-  low?: number
-  close?: number
+  currentIndex?: number | null | undefined
+  currentTimestamp?: number | null | undefined
+  currentTimestampISO?: string | null | undefined
+  currentTimestampDay?: string | null | undefined
+  currentOpen?: number | null | undefined
+  currentHigh?: number | null | undefined
+  currentLow?: number | null | undefined
+  currentClose?: number | null | undefined
+  currentMidRangePrice?: number | null | undefined
+  currentMidDayPrice?: number | null | undefined
+  currentBid?: number | null | undefined
+  currentAsk?: number | null | undefined
+  currentClosingBid?: number | null | undefined
+  currentClosingAsk?: number | null | undefined
 
-  marketClosed?: boolean
+  nextIndex?: number | null | undefined
+  nextTimestamp?: number | null | undefined
+  nextTimestampISO?: string | null | undefined
+  nextTimestampDay?: string | null | undefined
+  nextOpen?: number | null | undefined
+  nextOpeningBid?: number | null | undefined
+  nextOpeningAsk?: number | null | undefined
 
-  lastOpen?: number
-  lastClose?: number
-  nextOpen?: number
-
-  midRangePrice?: number
-  midDayPrice?: number
-
-  bid?: number
-  offer?: number
-
-  currentIndex?: number
-
-  hasIntraDayPrices?: boolean
+  hasIntraDayPrices?: boolean | null | undefined
 
   [index: string]: any
 }

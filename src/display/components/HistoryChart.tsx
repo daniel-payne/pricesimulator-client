@@ -22,16 +22,20 @@ import { Data } from "@/data/indexDB/types/Data"
 import { Status } from "@/data/indexDB/types/Status"
 import { Timer } from "@/data/indexDB/types/Timer"
 import { Price } from "@/data/indexDB/types/Price"
+import addTimestamp from "@/utilities/addTimestamp"
+import formatTimestampISO from "@/utilities/formatTimestampISO"
+// import { startOfMonth } from "date-fns"
 
-const LOOKBACK = {
-  at: 999999,
-  "5y": 5 * 52 * 5,
-  "1y": 52 * 5,
-  "3m": 12 * 5,
-  "1m": 4 * 5,
-}
+// const LOOKBACK = {
+//   at: 999999,
+//   "5y": 5 * 52 * 5,
+//   "1y": 52 * 5,
+//   "3m": 12 * 5,
+//   "1m": 4 * 5,
+// }
 
 type ComponentProps = {
+  timestamp: number | null | undefined
   data?: Data | null | undefined
   price?: Price | null | undefined
   range?: Range | null | undefined
@@ -41,17 +45,18 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function HistoryChart({
+export default function HighLowChart({
+  timestamp,
   data,
   price,
   status,
 
   range = "1m",
 
-  name = "HistoryChart",
+  name = "HighLowChart",
   ...rest
 }: PropsWithChildren<ComponentProps>) {
-  if (data == null || data?.timestamps == null) {
+  if (data == null || data?.timestamps == null || timestamp == null) {
     const message = status?.message ?? ""
 
     return <div>{message.length === 0 ? "Awaiting Data" : message}</div>
@@ -63,92 +68,73 @@ export default function HistoryChart({
     return <div>{message.length === 0 ? "Awaiting Prices" : message}</div>
   }
 
-  const currentPosition = price?.currentIndex ?? 0
+  const isMarketClosed = price?.isMarketClosed
 
-  const lookback = LOOKBACK[range ?? "1m"] ?? 30
+  const currentTimestamp = price?.currentTimestamp
+  const currentIndex = price?.currentIndex
+  const currentOpen = price?.currentOpen
 
-  const start = currentPosition > lookback ? currentPosition - lookback : 0
-  const end = currentPosition
+  const priorIndex = price?.priorIndex
+  const priorTimestamp = price?.priorTimestamp
+  const priorOpen = price?.priorOpen
+  const priorClose = price?.priorClose
 
-  const timestamps = data?.timestamps?.slice(start, end) ?? []
+  // const lookback = LOOKBACK[range ?? "1m"] ?? 30
 
-  const highs = data?.highs?.slice(start, end) ?? []
-  const lows = data?.lows?.slice(start, end) ?? []
-  const opens = data?.opens?.slice(start, end) ?? []
-  const closes = data?.closes?.slice(start, end) ?? []
+  // const start = currentPosition > lookback ? currentPosition - lookback : 0
+  const end = currentIndex ?? (priorIndex ?? 0) + 1
 
-  const labels = timestamps
-
-  const hideOpenPoints = timestamps.length > 30
-  const hideClosePoints = timestamps.length > 30
-
-  const openColor = (price?.open ?? 0) > closes[timestamps.length - 1] ? cssVar("--outcome-profit") : cssVar("--outcome-loss")
-
-  const calculateOpenColor = (context: any) => {
-    const datasets = context.chart.data.datasets
-
-    const currentOpen = datasets[0].data[context.dataIndex]
-
-    const lastClose = context.dataIndex > 0 ? datasets[1].data[context.dataIndex - 1] : undefined
-
-    return currentOpen > lastClose ? cssVar("--outcome-profit") : cssVar("--outcome-loss")
+  if (end == null) {
+    return <div>Error : No End</div>
   }
 
-  const calculateCloseColor = (context: any) => {
-    const datasets = context.chart.data.datasets
+  const highs = data?.highs?.slice(0, end) ?? []
+  const lows = data?.lows?.slice(0, end) ?? []
 
-    const currentOpen = datasets[0].data[context.dataIndex]
+  const labels = data?.timestamps?.slice(0, end) ?? []
 
-    const currentClose = datasets[1].data[context.dataIndex]
+  let priorAmount = -1
+  let priorPeriod = "days" as "days" | "weeks" | "months" | "years"
 
-    return currentClose > currentOpen ? cssVar("--outcome-profit") : cssVar("--outcome-loss")
+  if (range === "1m") {
+    priorAmount = -1
+    priorPeriod = "months"
+  } else if (range === "3m") {
+    priorAmount = -3
+    priorPeriod = "months"
+  } else if (range === "1y") {
+    priorAmount = -1
+    priorPeriod = "years"
+  } else if (range === "5y") {
+    priorAmount = -5
+    priorPeriod = "years"
   }
+
+  const startISO = range === "at" ? "1970-01-01" : formatTimestampISO(addTimestamp(timestamp, priorAmount, priorPeriod, false))
+  const endISO = formatTimestampISO(addTimestamp(timestamp, +1, "days", false))
+  // const currentISO = formatTimestampISO(currentTimestamp)
+
+  const pricePointValue = isMarketClosed ? priorClose : currentOpen
+  const pricePointISO = isMarketClosed ? formatTimestampISO(priorTimestamp) : formatTimestampISO(currentTimestamp)
+  const pricePointColor = isMarketClosed
+    ? (priorClose ?? 0) > (priorOpen ?? 0)
+      ? cssVar("--outcome-profit")
+      : cssVar("--outcome-loss")
+    : (currentOpen ?? 0) > (priorClose ?? 0)
+    ? cssVar("--outcome-profit")
+    : cssVar("--outcome-loss")
 
   const datasets = [
-    // {
-    //   label: "opens",
-    //   data: opens,
-    //   pointRadius: 0,
-    //   borderWidth: 1,
-    //   fill: false,
-    //   borderColor: openColor,
-    //   // borderColor: "#696969",
-    //   // tension: 0.3,
-    // },
-
-    {
-      label: "opens",
-      data: opens,
-      pointRadius: 4,
-      borderWidth: 0,
-      fill: false,
-      pointBackgroundColor: calculateOpenColor,
-      // borderColor: openColor,
-      // tension: 0.3,
-      pointStyle: "rect",
-      hidden: hideOpenPoints,
-    },
-    {
-      label: "close",
-      data: closes,
-      pointRadius: 4,
-      borderWidth: 0,
-      fill: false,
-      pointBackgroundColor: calculateCloseColor,
-      // borderColor: "#696969",
-      // tension: 0.3,
-      pointStyle: "circle",
-      hidden: hideClosePoints,
-    },
     {
       label: "high",
       data: highs,
       pointRadius: 0,
       borderWidth: 1,
-      fill: 3,
+      fill: 1,
       borderColor: cssVar("--graph-range"),
       backgroundColor: cssVar("--graph-range"),
       tension: 0.2,
+      spanGaps: true,
     },
     {
       label: "low",
@@ -158,11 +144,12 @@ export default function HistoryChart({
       fill: false,
       borderColor: cssVar("--graph-range"),
       tension: 0.2,
+      spanGaps: true,
     },
   ]
 
   const options = {
-    animation: false,
+    animations: false,
     maintainAspectRatio: false,
     scales: {
       x: {
@@ -175,6 +162,8 @@ export default function HistoryChart({
             day: "E dd MMM",
           },
         },
+        min: startISO,
+        max: endISO,
       },
       y: {
         display: true,
@@ -188,13 +177,23 @@ export default function HistoryChart({
       },
       annotation: {
         annotations: {
-          line1: {
+          priceLine: {
             type: "line",
-            yMin: price?.open,
-            yMax: price?.open,
-            borderColor: openColor,
+            yMin: pricePointValue,
+            yMax: pricePointValue,
+            borderColor: pricePointColor,
             borderWidth: 1,
-            display: !(price?.marketClosed ?? false),
+            display: true,
+          },
+          pricePoint: {
+            type: "point",
+            radius: 6,
+            yValue: pricePointValue,
+            xValue: pricePointISO,
+            borderColor: pricePointColor,
+            backgroundColor: pricePointColor,
+            borderWidth: 1,
+            display: true,
           },
         },
       },
@@ -205,7 +204,7 @@ export default function HistoryChart({
   return (
     <div {...rest} data-component={name}>
       <div style={{ height: "99%", width: "99%", position: "relative" }}>
-        <Line datasetIdKey="id" data={{ labels, datasets }} options={options} />
+        <Line datasetIdKey="id" data={{ labels: labels, datasets }} options={options} />
       </div>
     </div>
   )

@@ -33,7 +33,7 @@ export default function StartContract({ market, price, settings, onOrder, name =
   const displayClassesSizeOne = size === 1 ? "btn btn-sm btn-primary" : "btn btn-xs btn-outline btn-primary"
   const displayClassesSizeTwo = size === 2 ? "btn btn-sm btn-primary" : "btn btn-xs btn-outline btn-primary"
 
-  const displayOrderEvent = price?.marketClosed ? "As soon as the market opens" : "As soon as you can before the market closes today"
+  const displayOrderEvent = price?.isMarketClosed ? "As soon as the market opens" : "As soon as you can before the market closes today"
 
   const classNamesBuy = direction === "CALL" ? "btn btn-sm btn-primary btn-buy" : "btn btn-xs btn-outline btn-primary btn-buy"
   const classNamesSell = direction === "PUT" ? "btn btn-sm btn-primary btn-sell" : "btn btn-xs btn-outline btn-primary btn-sell"
