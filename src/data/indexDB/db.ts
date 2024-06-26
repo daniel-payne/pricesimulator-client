@@ -27,8 +27,7 @@ export class PriceSimulatorDexie extends Dexie {
 
   quotes!: Table<Quote>
 
-  activeTrades!: Table<Trade>
-  inactiveTrades!: Table<Trade>
+  trades!: Table<Trade>
 
   dataCache: Record<string, Data | undefined | null> = {}
   pricesCache: Record<string, Price | undefined | null> = {}
@@ -36,7 +35,7 @@ export class PriceSimulatorDexie extends Dexie {
   constructor() {
     super("PriceSimulator")
 
-    this.version(12).stores({
+    this.version(20).stores({
       timer: "id",
 
       scenarios: "code, name",
@@ -47,8 +46,7 @@ export class PriceSimulatorDexie extends Dexie {
 
       quotes: "symbol",
 
-      activeTrades: "symbol, id",
-      inactiveTrades: "id, symbol, closedAt",
+      trades: "id, symbol, status, exitTimestamp",
     })
 
     this.id = generateID()

@@ -1,5 +1,8 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import DefaultElement from "../DefaultElement"
+
+import ActiveTradesSummary from "../ActiveTradesSummary"
+import InactiveTradesSummary from "../InactiveTradesSummary"
+import AccountSummary from "../AccountSummary"
 
 type ComponentProps = {
   name?: string
@@ -9,9 +12,9 @@ export default function MarketsFooter({ name = "MarketsFooter", ...rest }: Props
   return (
     <div {...rest} data-controller={name}>
       <div className="flex flex-row gap-2 justify-between items-center bg-base-200 p-2">
-        <DefaultElement name="TradesNavigation" />
-        <DefaultElement name="ActiveTradeBadges" />
-        <DefaultElement name="AccountNavigation" />
+        <ActiveTradesSummary />
+        <InactiveTradesSummary />
+        <AccountSummary />
       </div>
     </div>
   )

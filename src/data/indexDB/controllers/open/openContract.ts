@@ -10,9 +10,10 @@ import generateID from "@/utilities/generateID"
 
 import { DEFAULT_CONTRACT_COST } from "../../constants/DEFAULT_CONTRACT_COST"
 import lastOfMonth from "@/utilities/lastOfMonth"
+import { TradeStatus } from "../../hooks/useTrades"
 
 export async function controller(db: PriceSimulatorDexie, symbol: string, direction: "CALL" | "PUT", size: 0.25 | 0.5 | 1 | 2) {
-  const activeTrade = await db.activeTrades?.where({ symbol }).first()
+  const activeTrade = await db.trades?.where({ symbol, status: TradeStatus.OPEN }).first()
 
   if (activeTrade != null) {
     await closeContract(activeTrade.id)
@@ -47,17 +48,18 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
   }
 
   if (market != null && entryTimestamp != null && entryPrice != null) {
-    const notional = size * market.contractSize * (market?.dollarModifier ?? 1) * entryPrice
+    const amount = size * market?.contractSize
 
-    const entryValue = notional * entryPrice
+    const entryValue = amount * (market?.dollarModifier ?? 1) * entryPrice
 
     if (price != null) {
       const newContract = {
         id: generateID(),
+        status: TradeStatus.OPEN,
         symbol,
+        amount,
         direction,
         size,
-        notional,
         entryValue,
         entryPrice,
         entryCost,
@@ -70,7 +72,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
         profit: undefined,
       }
 
-      await db.activeTrades?.add(newContract)
+      await db.trades?.add(newContract)
 
       return newContract
     }

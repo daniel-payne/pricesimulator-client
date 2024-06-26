@@ -119,7 +119,7 @@ export default function DisplayContract({ market, trade, price, timer, settings,
           </button> */}
           <div className="flex flex-row gap-2 justify-center items-center">
             <div className="fg--subheading">{displayCurrentProfitPrefix}</div>
-            <div className={classNameOutcome}>${displayCurrentProfit}</div>
+            <div className={classNameOutcome}>{displayCurrentProfit}</div>
           </div>
         </div>
       </div>

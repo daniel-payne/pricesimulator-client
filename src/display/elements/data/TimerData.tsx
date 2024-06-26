@@ -41,7 +41,7 @@ export default function TimerData({ name = "TimerData", ...rest }: PropsWithChil
           Reset 10/01/2020
         </button>
         <div>
-          {formatTimestampDay(timer?.currentDay)} {formatTimestamp(timer?.currentDay)} {timer?.currentTimestamp}
+          {formatTimestampDay(timer?.currentDay)} {formatTimestamp(timer?.currentDay)}
         </div>
         <div>{timer?.isTimerActive ? "ACTIVE" : ""}</div>
       </div>

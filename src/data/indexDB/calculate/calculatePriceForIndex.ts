@@ -145,6 +145,7 @@ export default async function calculatePriceForIndex(
       nextTimestamp,
       nextTimestampISO,
       nextTimestampDay,
+      nextOpen,
       nextOpeningBid,
       nextOpeningAsk,
 

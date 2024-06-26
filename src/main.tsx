@@ -10,7 +10,7 @@ import MarketsContainer from "@/routes/containers/MarketsContainer"
 import HomePage from "@/routes/pages/HomePage"
 import ErrorPage from "@/routes/pages/ErrorPage"
 
-import DataPage from "@/routes/pages/DataPage"
+import ActionsPage from "@/routes/pages/ActionsPage"
 // import PricesPage from "./routes/pages/PricesPage"
 
 import MarketsPage from "@/routes/pages/MarketsPage"
@@ -31,6 +31,7 @@ import "@/data/indexDB/db"
 import "./main.css"
 import IndexDBData from "./routes/pages/data/IndexDBData"
 import PricesData from "./routes/pages/data/PricesData"
+import TradesPage from "./routes/pages/TradesPage"
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,11 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage className="h-full w-full" />,
       },
     ],
+  },
+  {
+    path: "trades",
+    element: <TradesPage className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
   },
   // {
   //   path: "scenario/:id",
@@ -104,26 +110,31 @@ const router = createBrowserRouter([
   //   element: <PricesPage className="h-full w-full" />,
   //   errorElement: <ErrorPage className="h-full w-full" />,
   // },
-  {
-    path: "test",
-    errorElement: <ErrorPage className="h-full w-full" />,
-    children: [
-      // {
-      //   path: "actions",
-      //   element: <ActionsPage className="h-full w-full" />,
-      //   errorElement: <ErrorPage className="h-full w-full" />,
-      // },
-      {
-        path: "data",
-        element: <DataPage className="h-full w-full" />,
-        errorElement: <ErrorPage className="h-full w-full" />,
-      },
-    ],
-  },
+  // {
+  //   path: "test",
+  //   errorElement: <ErrorPage className="h-full w-full" />,
+  //   children: [
+  //     // {
+  //     //   path: "actions",
+  //     //   element: <ActionsPage className="h-full w-full" />,
+  //     //   errorElement: <ErrorPage className="h-full w-full" />,
+  //     // },
+  //     {
+  //       path: "data",
+  //       element: <DataPage className="h-full w-full" />,
+  //       errorElement: <ErrorPage className="h-full w-full" />,
+  //     },
+  //   ],
+  // },
   {
     path: "data",
     errorElement: <ErrorPage className="h-full w-full" />,
     children: [
+      {
+        path: "actions",
+        element: <ActionsPage className="h-full w-full" />,
+        errorElement: <ErrorPage className="h-full w-full" />,
+      },
       {
         path: ":source",
         element: <IndexDBData className="h-full w-full" />,

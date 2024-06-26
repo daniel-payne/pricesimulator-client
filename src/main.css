@@ -152,6 +152,25 @@
     color: var(--outcome-profit) !important;
   }
 
+  .outline-profit {
+    border-color: var(--outcome-profit-25) !important;
+    border-width: 1px !important;
+  }
+
+  .outline-loss {
+    border-color: var(--outcome-loss-25) !important;
+    border-width: 1px !important;
+  }
+
+  .outline-neutral {
+    border-color: var(--outcome-neutral-25) !important;
+    border-width: 1px !important;
+  }
+
+  .text-neutral {
+    color: var(--outcome-neutral) !important;
+  }
+
   .text-loss {
     color: var(--outcome-loss) !important;
   }

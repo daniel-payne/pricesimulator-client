@@ -18,7 +18,7 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
   const timer = await getTimer()
   const markets = await getMarkets()
 
-  db.transaction("rw", ["timer", "data", "markets", "prices", "activeTrades"], async () => {
+  db.transaction("rw", ["timer", "data", "markets", "prices", "trades"], async () => {
     const currentDay = timer?.currentDay
 
     const isOwner = takeControl === true ? true : timer?.id === db.id

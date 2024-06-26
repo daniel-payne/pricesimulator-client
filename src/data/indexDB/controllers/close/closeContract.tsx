@@ -6,9 +6,10 @@ import getTimer from "../get/getTimer"
 import getMarketForSymbol from "../get/getMarketForSymbol"
 
 import { DEFAULT_CONTRACT_COST } from "../../constants/DEFAULT_CONTRACT_COST"
+import { TradeStatus } from "../../hooks/useTrades"
 
 export async function controller(db: PriceSimulatorDexie, id: string) {
-  const activeTrade = await db.activeTrades?.where({ id }).first()
+  const activeTrade = await db.trades?.where({ id }).first()
 
   const symbol = activeTrade?.symbol
 
@@ -34,7 +35,7 @@ export async function controller(db: PriceSimulatorDexie, id: string) {
       exitCost = DEFAULT_CONTRACT_COST
     } else {
       if (price?.isMarketClosed) {
-        exitPrice = activeTrade.direction === "CALL" ? price?.nextBid : price?.nextAsk
+        exitPrice = activeTrade.direction === "CALL" ? price?.nextOpeningBid : price?.nextOpeningAsk
       } else {
         exitPrice = activeTrade.direction === "CALL" ? price?.currentBid : price?.currentAsk
       }
@@ -44,14 +45,17 @@ export async function controller(db: PriceSimulatorDexie, id: string) {
       if (price != null) {
         const newContract = structuredClone(activeTrade)
 
+        newContract.status = TradeStatus.CLOSED
+
+        newContract.margin = undefined
+
         newContract.exitPrice = exitPrice
         newContract.exitCost = exitCost
         newContract.exitTimestamp = currentTimestamp
 
-        newContract.profit = (newContract.exitPrice - newContract.entryPrice) * (market.dollarModifier ?? 1) * newContract.notional
+        newContract.profit = (newContract.exitPrice - newContract.entryPrice) * (market.dollarModifier ?? 1) * newContract.entryValue
 
-        await db.inactiveTrades?.put(newContract)
-        await db.activeTrades?.delete(newContract.symbol)
+        await db.trades?.put(newContract)
 
         return newContract
       }

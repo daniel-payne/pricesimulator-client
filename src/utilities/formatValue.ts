@@ -1,6 +1,6 @@
 import toNumeric from "./toNumeric"
 
-export default function formatValue(input: number | undefined | null, showCents = false) {
+export default function formatValue(input: number | undefined | null, showCents = false, currency = "USD") {
   if (input == null) return ""
 
   const number = toNumeric(input) ?? 0
@@ -11,5 +11,11 @@ export default function formatValue(input: number | undefined | null, showCents 
 
   const digits = showCents ? 2 : 0
 
-  return number.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })
+  return number.toLocaleString("en-US", {
+    currency,
+    style: "currency",
+    currencyDisplay: "symbol",
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
 }
