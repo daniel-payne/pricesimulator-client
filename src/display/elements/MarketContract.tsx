@@ -8,12 +8,15 @@ import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
 import YesterdayMovementDisplay from "../components/YesterdayMovementDisplay"
 import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
 
-import type { HTMLAttributes, PropsWithChildren } from "react"
+import { type HTMLAttributes, type PropsWithChildren } from "react"
 import { useDataState } from "@keldan-systems/state-mutex"
 import type { Range } from "../components/HistoryRangeChooser"
 import ContractManager from "./ContractManager"
 import ContractStrip from "./ContractStrip"
 import useTimer from "@/data/indexDB/hooks/useTimer"
+import useActiveTradeForSymbol from "@/data/indexDB/hooks/useActiveTradeForSymbol"
+
+import inactiveTrades from "@/data/indexDB/controllers/clear/inactiveTrades"
 
 type ComponentProps = {
   symbol?: string
@@ -25,6 +28,7 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
   const market = useMarketForSymbol(symbol)
   const price = useCurrentPriceForSymbol(symbol)
   const data = useDataForSymbol(symbol)
+  const trade = useActiveTradeForSymbol(symbol)
 
   const range = useDataState<Range>("range")
   const compact = useDataState<string>("compact")
@@ -53,11 +57,11 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
           </div>
 
           <div className="flex-auto  my-2 overflow-hidden flex flex-row gap-2">
-            <HistoryChart className="flex-auto h-full w-full" data={data} price={price} timestamp={timestamp} range={range} />
+            <HistoryChart className="flex-auto h-full w-full" data={data} price={price} timestamp={timestamp} trade={trade} range={range} />
             {!showCompact && (
               <div className="h-full w-1/3 border border-primary rounded-lg p-2">
                 {/* <pre>{JSON.stringify(price, null, 2)}</pre> */}
-                <ContractManager className="h-full w-full overflow-y-auto" symbol={symbol} settings={{ showMultiples }} />
+                <ContractManager className="h-full w-full overflow-y-auto" market={market} price={price} trade={trade} settings={{ showMultiples }} />
               </div>
             )}
           </div>

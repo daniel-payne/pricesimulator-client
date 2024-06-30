@@ -1,17 +1,26 @@
-import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
-import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
-import useTimer from "@/data/indexDB/hooks/useTimer"
+// import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
+// import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
+// import useTimer from "@/data/indexDB/hooks/useTimer"
 
 import { type HTMLAttributes, type PropsWithChildren } from "react"
 import StartContract from "./StartContract"
 import ContractDescription from "./ContractDescription"
 import openContract from "@/data/indexDB/controllers/open/openContract"
-import useActiveTradeForSymbol from "@/data/indexDB/hooks/useActiveTradeForSymbol"
+// import useActiveTradeForSymbol from "@/data/indexDB/hooks/useActiveTradeForSymbol"
 import StopContract from "./StopContract"
-import DisplayContract from "./DisplayContract"
+import DisplayMargin from "./DisplayMargin"
 import closeContract from "@/data/indexDB/controllers/close/closeContract"
 import timerStart from "@/data/indexDB/controllers/timer/timerStart"
-import timerStop from "@/data/indexDB/controllers/timer/timerStop"
+// import timerStop from "@/data/indexDB/controllers/timer/timerStop"
+import { Market } from "@/data/indexDB/types/Market"
+import { Price } from "@/data/indexDB/types/Price"
+import { Trade } from "@/data/indexDB/types/Trade"
+import { Timer } from "@/data/indexDB/types/Timer"
+import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
+// import TradeDetails from "./TradeDetails"
+// import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
+import DisplayOutcome from "../components/DisplayOutcome"
+import inactiveTrades from "@/data/indexDB/controllers/clear/inactiveTrades"
 // import formatTimestampISO from "@/utilities/formatTimestampISO"
 // import formatTimestampDay from "@/utilities/formatTimestampDay"
 // import formatTimestamp from "@/utilities/formatTimestamp"
@@ -21,21 +30,27 @@ type Settings = {
 }
 
 type ComponentProps = {
-  symbol?: string | null | undefined
+  market: Market | null | undefined
+  price?: Price | null | undefined
+  trade?: Trade | null | undefined
+  timer?: Timer | null | undefined
 
   settings?: Settings
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ContractManager({ symbol, settings, name = "ContractManager", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ContractManager({ market, price, trade, timer, settings, name = "ContractManager", ...rest }: PropsWithChildren<ComponentProps>) {
   const { showMultiples = false } = settings || {}
 
-  const market = useMarketForSymbol(symbol)
-  const price = useCurrentPriceForSymbol(symbol)
-  const trade = useActiveTradeForSymbol(symbol)
+  const symbol = market?.symbol
+  // const market = useMarketForSymbol(symbol)
+  // const price = useCurrentPriceForSymbol(symbol)
+  // const trade = useActiveTradeForSymbol(symbol)
 
-  const timer = useTimer()
+  // const timer = useTimer()
+
+  const isOpen = trade?.status === TradeStatus.OPEN
 
   const handleOpen = async (settings: any) => {
     if (symbol) {
@@ -46,11 +61,15 @@ export default function ContractManager({ symbol, settings, name = "ContractMana
     }
   }
 
-  const handleClose = () => {
-    timerStop()
-
+  const handleClose = async () => {
     if (trade) {
-      closeContract(trade.id)
+      await closeContract(trade.id, false)
+    }
+  }
+
+  const handleInactiveTrades = async () => {
+    if (trade) {
+      await inactiveTrades(trade.symbol)
     }
   }
 
@@ -60,8 +79,9 @@ export default function ContractManager({ symbol, settings, name = "ContractMana
 
       <ContractDescription market={market} price={price} timer={timer} settings={{ showMultiples }} />
       {trade == null && <StartContract market={market} price={price} settings={{ showMultiples }} onOrder={handleOpen} />}
-      {trade != null && <StopContract market={market} price={price} trade={trade} settings={{ showMultiples }} onOrder={handleClose} />}
-      {trade != null && <DisplayContract market={market} price={price} trade={trade} timer={timer} settings={{ showMultiples }} />}
+      {trade != null && isOpen == true && <StopContract market={market} price={price} trade={trade} settings={{ showMultiples }} onOrder={handleClose} />}
+      {trade != null && isOpen == true && <DisplayMargin market={market} price={price} trade={trade} timer={timer} settings={{ showMultiples }} />}
+      {trade != null && isOpen == false && <DisplayOutcome market={market} trade={trade} onStartAgain={handleInactiveTrades} />}
 
       {/* <TradeDescription trade={trade} /> */}
       {/* <pre>{JSON.stringify(trade, null, 2)}</pre> */}

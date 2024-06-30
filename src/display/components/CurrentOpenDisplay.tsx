@@ -9,7 +9,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function CurrentOpenDisplay({ price, name = "CurrentOpenDisplay", ...rest }: PropsWithChildren<ComponentProps>) {
-  const displayValue = price?.isMarketClosed ? price?.lastClose : price?.open
+  const displayValue = price?.isMarketClosed ? price?.priorClose : price?.currentOpen
 
   if (displayValue == null) {
     return null

@@ -24,9 +24,19 @@ type ComponentProps = {
 export default function ContractDescription({ market, price, timer, settings, name = "ContractDescription", ...rest }: PropsWithChildren<ComponentProps>) {
   const { showMultiples = false } = settings || {}
 
-  const midValue = price?.midRangePrice ? formatValue(price?.midRangePrice * market?.contractSize * market?.dollarModifier, false) : "missing"
-  const bidValue = price?.bid ? formatValue(price?.bid * market?.contractSize * market?.dollarModifier, false) : "missing"
-  const askValue = price?.ask ? formatValue(price?.ask * market?.contractSize * market?.dollarModifier, false) : "missing"
+  const lastClosingPrice = price?.lastClosingPrice
+  const bidPrice = price?.bid
+  const askPrice = price?.ask
+
+  //TODO MAKE contract price here <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+  const displayClosingPrice = formatValue(lastClosingPrice, false)
+  const displayBidPrice = formatValue(bidPrice, false)
+  const displayAskPrice = formatValue(askPrice, false)
+
+  // const closingValue = price?.midRangePrice ? formatValue(price?.lastClosingPrice * market?.contractSize * market?.dollarModifier, false) : "missing"
+  // const bidValue = price?.bid ? formatValue(price?.bid * market?.contractSize * market?.dollarModifier, false) : "missing"
+  // const askValue = price?.ask ? formatValue(price?.ask * market?.contractSize * market?.dollarModifier, false) : "missing"
 
   const endOfContract = lastOfMonth(timer?.currentTimestamp, "WED", 3)
 
@@ -46,7 +56,7 @@ export default function ContractDescription({ market, price, timer, settings, na
         {showMultiples && (
           <>
             <div className="text-sm fg--subheading">
-              That was trading yesterday, bid at ${bidValue}, ask at ${askValue}
+              That was trading yesterday, bid at ${displayBidPrice}, ask at ${displayAskPrice}
             </div>
             <div className="text-sm fg--subheading">
               The broker will charge using a <strong>spread</strong> for this transaction
@@ -55,7 +65,7 @@ export default function ContractDescription({ market, price, timer, settings, na
         )}
         {!showMultiples && (
           <>
-            <div className="text-sm fg--subheading">That was trading yesterday for ${midValue}</div>
+            <div className="text-sm fg--subheading">That was trading yesterday for ${displayClosingPrice}</div>
             <div className="text-sm fg--subheading">
               The broker will charge <strong>${brokerCharge}</strong> for this transaction
             </div>

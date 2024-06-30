@@ -4,14 +4,9 @@ import db from "@/data/indexDB/db"
 
 import type { Trade } from "@/data/indexDB/types/Trade"
 
-export enum TradeStatus {
-  OPEN = "OPEN",
-  CLOSED = "CLOSED",
-}
-
-export default function useTrades(status: TradeStatus = TradeStatus.OPEN, newestFirst = true, limit: number | undefined = undefined): Array<Trade> | undefined {
+export default function useActiveTrades(newestFirst = true, limit: number | undefined = undefined): Array<Trade> | undefined {
   const market = useLiveQuery(async () => {
-    const data = await db.trades?.where({ status })
+    const data = await db.activeTrades?.toCollection()
 
     let array = await data.sortBy("exitTimestamp")
 

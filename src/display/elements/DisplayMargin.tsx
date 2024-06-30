@@ -22,7 +22,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function DisplayContract({ market, trade, price, timer, settings, name = "DisplayContract", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function DisplayMargin({ market, trade, price, timer, settings, name = "DisplayMargin", ...rest }: PropsWithChildren<ComponentProps>) {
   if (trade == null || market == null) {
     return null
   }

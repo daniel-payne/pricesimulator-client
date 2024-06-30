@@ -6,10 +6,10 @@ import getTimer from "../get/getTimer"
 import getMarketForSymbol from "../get/getMarketForSymbol"
 
 import { DEFAULT_CONTRACT_COST } from "../../constants/DEFAULT_CONTRACT_COST"
-import { TradeStatus } from "../../hooks/useTrades"
+import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 
-export async function controller(db: PriceSimulatorDexie, id: string) {
-  const activeTrade = await db.trades?.where({ id }).first()
+export async function controller(db: PriceSimulatorDexie, id: string, removeFromActive: boolean) {
+  const activeTrade = await db.activeTrades?.where({ id }).first()
 
   const symbol = activeTrade?.symbol
 
@@ -53,9 +53,19 @@ export async function controller(db: PriceSimulatorDexie, id: string) {
         newContract.exitCost = exitCost
         newContract.exitTimestamp = currentTimestamp
 
-        newContract.profit = (newContract.exitPrice - newContract.entryPrice) * (market.dollarModifier ?? 1) * newContract.entryValue
+        newContract.exitDifference = newContract.exitPrice - newContract.entryPrice
+        newContract.exitPercent = newContract.exitDifference / newContract.entryPrice
 
-        await db.trades?.put(newContract)
+        const dollarDifference = newContract.exitPercent * newContract.entryValue
+
+        newContract.profit = newContract.direction === "CALL" ? dollarDifference : dollarDifference * -1
+
+        await db.activeTrades?.put(newContract)
+
+        if (removeFromActive) {
+          await db.activeTrades?.delete(id)
+          await db.inactiveTrades?.put(newContract)
+        }
 
         return newContract
       }
@@ -65,6 +75,6 @@ export async function controller(db: PriceSimulatorDexie, id: string) {
   return undefined
 }
 
-export default function closeContract(id: string) {
-  return controller(db, id)
+export default function closeContract(id: string, removeFromActive = true) {
+  return controller(db, id, removeFromActive)
 }

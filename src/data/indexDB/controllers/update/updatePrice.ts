@@ -9,7 +9,7 @@ import calculateIndexForTimestamp from "../../calculate/calculateIndexForTimesta
 import calculatePriceForIndex from "../../calculate/calculatePriceForIndex"
 
 import Dexie from "dexie"
-import { TradeStatus } from "../../hooks/useTrades"
+import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 
 export async function controller(db: PriceSimulatorDexie, symbol: string | undefined, timestamp: number | undefined) {
   if (symbol == null || timestamp == null) {
@@ -46,7 +46,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
         console.error("getPriceForSymbolAndTimestamp Loading Error: " + e.failures.length)
       })
 
-      const activeTrade = await db.trades?.where({ symbol, status: TradeStatus.OPEN }).first()
+      const activeTrade = await db.activeTrades?.where({ symbol, status: TradeStatus.OPEN }).first()
 
       if (activeTrade != null) {
         const newTrade = structuredClone(activeTrade)
@@ -55,18 +55,22 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
 
         const currentDifference = newTrade.direction === "CALL" ? currentPrice - newTrade.entryPrice : newTrade.entryPrice - currentPrice
 
+        const currentPercent = currentDifference / newTrade.entryPrice
+
         const currentValue = currentPrice * (market?.dollarModifier ?? 1) * newTrade.amount
 
         const currentProfit = newTrade.direction === "CALL" ? currentValue - newTrade.entryValue : newTrade.entryValue - currentValue
 
         newTrade.margin = {
+          currentTimestamp: timestamp,
           currentPrice,
           currentDifference,
+          currentPercent,
           currentValue,
           currentProfit,
         }
 
-        await db.trades.put(newTrade).catch(Dexie.BulkError, function (e) {
+        await db.activeTrades.put(newTrade).catch(Dexie.BulkError, function (e) {
           console.error("getPriceForSymbolAndTimestamp Pricing Error: " + e.failures.length)
         })
       }

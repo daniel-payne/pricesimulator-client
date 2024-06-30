@@ -1,5 +1,6 @@
 import closeContract from "@/data/indexDB/controllers/close/closeContract"
-import useTrades, { TradeStatus } from "@/data/indexDB/hooks/useTrades"
+import useActiveTrades from "@/data/indexDB/hooks/useActiveTrades"
+import useInactiveTrades from "@/data/indexDB/hooks/useInactiveTrades"
 import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import { Trade } from "@/data/indexDB/types/Trade"
 // import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
@@ -87,8 +88,8 @@ const ActiveTradeData = ({ trade }: { trade: Trade }) => {
 export default function TradesData({ name = "TradesData", ...rest }: PropsWithChildren<ComponentProps>) {
   const [show, setShow] = useState(false)
 
-  const activeTrades = useTrades(TradeStatus.OPEN)
-  const inactiveTrades = useTrades(TradeStatus.CLOSED)
+  const activeTrades = useActiveTrades()
+  const inactiveTrades = useInactiveTrades()
 
   const trades = show ? inactiveTrades : activeTrades
 

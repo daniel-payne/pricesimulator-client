@@ -1,4 +1,4 @@
-import useTrades, { TradeStatus } from "@/data/indexDB/hooks/useTrades"
+import useInactiveTrades from "@/data/indexDB/hooks/useInactiveTrades"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import TradeBadge from "../components/TradeBadge"
 
@@ -7,7 +7,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function InactiveTradesSummary({ name = "InactiveTradesSummary", ...rest }: PropsWithChildren<ComponentProps>) {
-  const trades = useTrades(TradeStatus.CLOSED, true, 5)
+  const trades = useInactiveTrades(true, 5)
 
   return (
     <div {...rest} data-controller={name}>

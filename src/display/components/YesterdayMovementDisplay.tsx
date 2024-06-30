@@ -10,7 +10,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function YesterdayMovementDisplay({ price, name = "YesterdayMovementDisplay", ...rest }: PropsWithChildren<ComponentProps>) {
-  const displayValue = (price?.lastOpen ?? 0) - (price?.lastClose ?? 0)
+  const displayValue = (price?.priorClose ?? 0) - (price?.priorOpen ?? 0)
 
   let displayIcon = null
   let className = ""
