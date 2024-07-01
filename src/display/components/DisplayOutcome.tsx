@@ -1,4 +1,5 @@
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
+import { Margin } from "@/data/indexDB/types/Margin"
 import { Market } from "@/data/indexDB/types/Market"
 import { Trade } from "@/data/indexDB/types/Trade"
 import formatNumber from "@/utilities/formatNumber"
@@ -10,22 +11,23 @@ import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6"
 type ComponentProps = {
   market?: Market | null | undefined
   trade?: Trade | null | undefined
+  margin?: Margin | null | undefined
 
   onStartAgain?: () => void
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function DisplayOutcome({ market, trade, onStartAgain, name = "DisplayOutcome", ...rest }: PropsWithChildren<ComponentProps>) {
-  if (trade == null) {
+export default function DisplayOutcome({ market, trade, margin, onStartAgain, name = "DisplayOutcome", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (trade == null || margin == null) {
     return <div>Trade not found </div>
   }
 
   // const isOpen = trade.status === TradeStatus.OPEN
   const isClosed = trade.status === TradeStatus.CLOSED
 
-  const profit = isClosed ? trade.profit : trade.margin?.currentProfit ?? 0
-  const movement = isClosed ? trade.exitPrice - trade.entryPrice : trade.margin?.currentPrice - trade.entryPrice
+  const profit = isClosed ? trade.profit : margin?.currentProfit ?? 0
+  const movement = isClosed ? trade.exitPrice - trade.entryPrice : margin?.currentPrice - trade.entryPrice
   const percent = (movement / trade.entryPrice) * 100
 
   const displayMovement = formatNumber(movement)

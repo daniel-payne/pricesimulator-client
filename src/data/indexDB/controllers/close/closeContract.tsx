@@ -8,8 +8,8 @@ import getMarketForSymbol from "../get/getMarketForSymbol"
 import { DEFAULT_CONTRACT_COST } from "../../constants/DEFAULT_CONTRACT_COST"
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 
-export async function controller(db: PriceSimulatorDexie, id: string, removeFromActive: boolean) {
-  const activeTrade = await db.activeTrades?.where({ id }).first()
+export async function controller(db: PriceSimulatorDexie, id: string, removeMargin: boolean) {
+  const activeTrade = await db.trades?.where({ id }).first()
 
   const symbol = activeTrade?.symbol
 
@@ -47,8 +47,6 @@ export async function controller(db: PriceSimulatorDexie, id: string, removeFrom
 
         newContract.status = TradeStatus.CLOSED
 
-        newContract.margin = undefined
-
         newContract.exitPrice = exitPrice
         newContract.exitCost = exitCost
         newContract.exitTimestamp = currentTimestamp
@@ -60,11 +58,10 @@ export async function controller(db: PriceSimulatorDexie, id: string, removeFrom
 
         newContract.profit = newContract.direction === "CALL" ? dollarDifference : dollarDifference * -1
 
-        await db.activeTrades?.put(newContract)
+        await db.trades?.put(newContract)
 
-        if (removeFromActive) {
-          await db.activeTrades?.delete(id)
-          await db.inactiveTrades?.put(newContract)
+        if (removeMargin) {
+          await db.margins?.delete(id)
         }
 
         return newContract

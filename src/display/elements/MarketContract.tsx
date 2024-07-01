@@ -15,6 +15,7 @@ import ContractManager from "./ContractManager"
 import ContractStrip from "./ContractStrip"
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import useActiveTradeForSymbol from "@/data/indexDB/hooks/useActiveTradeForSymbol"
+import useMargin from "@/data/indexDB/hooks/useMargin"
 
 type ComponentProps = {
   symbol?: string
@@ -27,6 +28,8 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
   const price = useCurrentPriceForSymbol(symbol)
   const data = useDataForSymbol(symbol)
   const trade = useActiveTradeForSymbol(symbol)
+
+  const margin = useMargin(trade?.id)
 
   const range = useDataState<Range>("range")
   const compact = useDataState<string>("compact")
@@ -64,6 +67,7 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
                   market={market}
                   price={price}
                   trade={trade}
+                  margin={margin}
                   timer={timer}
                   settings={{ showMultiples }}
                 />

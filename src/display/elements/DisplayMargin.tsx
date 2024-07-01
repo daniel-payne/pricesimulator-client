@@ -1,4 +1,5 @@
 import { ONE_DAY } from "@/data/indexDB/constants/ONE_DAY"
+import { Margin } from "@/data/indexDB/types/Margin"
 import { Market } from "@/data/indexDB/types/Market"
 import { Price } from "@/data/indexDB/types/Price"
 import { Timer } from "@/data/indexDB/types/Timer"
@@ -15,6 +16,7 @@ type ComponentProps = {
   market?: Market | null | undefined
   price?: Price | null | undefined
   trade?: Trade | null | undefined
+  margin?: Margin | null | undefined
   timer?: Timer | null | undefined
 
   settings?: ComponentSettings
@@ -22,7 +24,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function DisplayMargin({ market, trade, price, timer, settings, name = "DisplayMargin", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function DisplayMargin({ market, trade, margin, price, timer, settings, name = "DisplayMargin", ...rest }: PropsWithChildren<ComponentProps>) {
   if (trade == null || market == null) {
     return null
   }
@@ -65,9 +67,9 @@ export default function DisplayMargin({ market, trade, price, timer, settings, n
   let displayCurrentProfit = "0"
   let displayCurrentProfitPrefix = "No Profit/Loss yet"
 
-  if (trade.margin?.currentProfit != null && trade.margin?.currentProfit != 0) {
-    classNamePrice = trade.margin.currentProfit > 0 ? "text-profit" : "text-loss"
-    classNameOutcome = trade.margin.currentProfit > 0 ? "rounded-lg p-2 bg-profit" : "rounded-lg p-2 bg-loss"
+  if (margin?.currentProfit != null && margin?.currentProfit != 0) {
+    classNamePrice = margin.currentProfit > 0 ? "text-profit" : "text-loss"
+    classNameOutcome = margin.currentProfit > 0 ? "rounded-lg p-2 bg-profit" : "rounded-lg p-2 bg-loss"
   }
 
   if (price?.isMarketClosed) {
@@ -80,9 +82,9 @@ export default function DisplayMargin({ market, trade, price, timer, settings, n
     displayCurrentPrice = "(" + formatNumber(displayCurrentPrice, 6) + ")"
   }
 
-  if (trade.margin?.currentProfit != null) {
-    displayCurrentProfit = formatValue(Math.abs(trade.margin?.currentProfit ?? 0), false)
-    displayCurrentProfitPrefix = trade.margin.currentProfit > 0 ? "Profit at last close" : "Loss at last close"
+  if (margin?.currentProfit != null) {
+    displayCurrentProfit = formatValue(Math.abs(margin?.currentProfit ?? 0), false)
+    displayCurrentProfitPrefix = margin.currentProfit > 0 ? "Profit at last close" : "Loss at last close"
   }
 
   return (

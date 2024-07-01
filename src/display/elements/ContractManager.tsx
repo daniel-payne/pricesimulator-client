@@ -20,7 +20,8 @@ import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 // import TradeDetails from "./TradeDetails"
 // import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
 import DisplayOutcome from "../components/DisplayOutcome"
-import inactiveTrades from "@/data/indexDB/controllers/clear/inactiveTrades"
+import clearClosedMargins from "@/data/indexDB/controllers/clear/clearClosedMargins"
+import { Margin } from "@/data/indexDB/types/Margin"
 // import formatTimestampISO from "@/utilities/formatTimestampISO"
 // import formatTimestampDay from "@/utilities/formatTimestampDay"
 // import formatTimestamp from "@/utilities/formatTimestamp"
@@ -33,6 +34,7 @@ type ComponentProps = {
   market: Market | null | undefined
   price?: Price | null | undefined
   trade?: Trade | null | undefined
+  margin?: Margin | null | undefined
   timer?: Timer | null | undefined
 
   settings?: Settings
@@ -40,7 +42,16 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ContractManager({ market, price, trade, timer, settings, name = "ContractManager", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ContractManager({
+  market,
+  price,
+  trade,
+  margin,
+  timer,
+  settings,
+  name = "ContractManager",
+  ...rest
+}: PropsWithChildren<ComponentProps>) {
   const { showMultiples = false } = settings || {}
 
   const symbol = market?.symbol
@@ -52,7 +63,7 @@ export default function ContractManager({ market, price, trade, timer, settings,
 
   const isOpen = trade?.status === TradeStatus.OPEN
 
-  const handleOpen = async (settings: any) => {
+  const handleOpenContract = async (settings: any) => {
     if (symbol) {
       const { direction, size } = settings
       await openContract(symbol, direction, size)
@@ -61,15 +72,15 @@ export default function ContractManager({ market, price, trade, timer, settings,
     }
   }
 
-  const handleClose = async () => {
+  const handleCloseContract = async () => {
     if (trade) {
       await closeContract(trade.id, false)
     }
   }
 
-  const handleInactiveTrades = async () => {
+  const handleClearClosedMargins = async () => {
     if (trade) {
-      await inactiveTrades(trade.symbol)
+      await clearClosedMargins(trade.symbol)
     }
   }
 
@@ -78,10 +89,14 @@ export default function ContractManager({ market, price, trade, timer, settings,
       <div className="text-info p-2 text-lg font-bold">Instruction to Broker </div>
 
       <ContractDescription market={market} price={price} timer={timer} settings={{ showMultiples }} />
-      {trade == null && <StartContract market={market} price={price} settings={{ showMultiples }} onOrder={handleOpen} />}
-      {trade != null && isOpen == true && <StopContract market={market} price={price} trade={trade} settings={{ showMultiples }} onOrder={handleClose} />}
-      {trade != null && isOpen == true && <DisplayMargin market={market} price={price} trade={trade} timer={timer} settings={{ showMultiples }} />}
-      {trade != null && isOpen == false && <DisplayOutcome market={market} trade={trade} onStartAgain={handleInactiveTrades} />}
+      {trade == null && <StartContract market={market} price={price} settings={{ showMultiples }} onOrder={handleOpenContract} />}
+      {trade != null && isOpen == true && (
+        <StopContract market={market} price={price} trade={trade} settings={{ showMultiples }} onOrder={handleCloseContract} />
+      )}
+      {trade != null && isOpen == true && (
+        <DisplayMargin market={market} price={price} trade={trade} margin={margin} timer={timer} settings={{ showMultiples }} />
+      )}
+      {trade != null && isOpen == false && <DisplayOutcome market={market} trade={trade} margin={margin} onStartAgain={handleClearClosedMargins} />}
 
       {/* <TradeDescription trade={trade} /> */}
       {/* <pre>{JSON.stringify(trade, null, 2)}</pre> */}

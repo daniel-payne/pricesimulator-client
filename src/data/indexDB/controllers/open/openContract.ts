@@ -13,8 +13,8 @@ import lastOfMonth from "@/utilities/lastOfMonth"
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 
 export async function controller(db: PriceSimulatorDexie, symbol: string, direction: "CALL" | "PUT", size: 0.25 | 0.5 | 1 | 2) {
-  const count = await db.activeTrades?.count()
-  const activeTrades = await db.activeTrades?.where({ symbol }).toArray()
+  const count = await db.trades?.where({ status: TradeStatus.OPEN }).count()
+  const activeTrades = await db.trades?.where({ symbol, status: TradeStatus.OPEN }).toArray()
 
   for (const trade of activeTrades) {
     await closeContract(trade.id)
@@ -74,7 +74,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string, direct
         profit: undefined,
       }
 
-      await db.activeTrades?.add(newContract)
+      await db.trades?.put(newContract)
 
       return newContract
     }

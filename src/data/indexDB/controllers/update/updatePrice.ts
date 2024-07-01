@@ -46,22 +46,22 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
         console.error("getPriceForSymbolAndTimestamp Loading Error: " + e.failures.length)
       })
 
-      const activeTrade = await db.activeTrades?.where({ symbol, status: TradeStatus.OPEN }).first()
+      const activeTrade = await db.trades?.where({ symbol, status: TradeStatus.OPEN }).first()
 
       if (activeTrade != null) {
-        const newTrade = structuredClone(activeTrade)
+        const currentPrice = activeTrade.direction === "CALL" ? price.priorClosingBid : price.priorClosingAsk
 
-        const currentPrice = newTrade.direction === "CALL" ? price.priorClosingBid : price.priorClosingAsk
+        const currentDifference = activeTrade.direction === "CALL" ? currentPrice - activeTrade.entryPrice : activeTrade.entryPrice - currentPrice
 
-        const currentDifference = newTrade.direction === "CALL" ? currentPrice - newTrade.entryPrice : newTrade.entryPrice - currentPrice
+        const currentPercent = currentDifference / activeTrade.entryPrice
 
-        const currentPercent = currentDifference / newTrade.entryPrice
+        const currentValue = currentPrice * (market?.dollarModifier ?? 1) * activeTrade.amount
 
-        const currentValue = currentPrice * (market?.dollarModifier ?? 1) * newTrade.amount
+        const currentProfit = activeTrade.direction === "CALL" ? currentValue - activeTrade.entryValue : activeTrade.entryValue - currentValue
 
-        const currentProfit = newTrade.direction === "CALL" ? currentValue - newTrade.entryValue : newTrade.entryValue - currentValue
-
-        newTrade.margin = {
+        const newMargin = {
+          id: activeTrade.id,
+          symbol: activeTrade.symbol,
           currentTimestamp: timestamp,
           currentPrice,
           currentDifference,
@@ -70,7 +70,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
           currentProfit,
         }
 
-        await db.activeTrades.put(newTrade).catch(Dexie.BulkError, function (e) {
+        await db.margins.put(newMargin).catch(Dexie.BulkError, function (e) {
           console.error("getPriceForSymbolAndTimestamp Pricing Error: " + e.failures.length)
         })
       }

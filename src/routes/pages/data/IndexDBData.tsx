@@ -1,4 +1,5 @@
 import db from "@/data/indexDB/db"
+import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 
 import DataGrid from "@/display/components/DataGrid"
 
@@ -23,9 +24,9 @@ export default function IndexDBData({ name = "IndexDBData", ...rest }: PropsWith
       } else if (source === "markets") {
         list = await db.markets.toArray()
       } else if (source === "activeTrades") {
-        list = await db.activeTrades.toArray()
+        list = await db.trades.where({ status: TradeStatus.OPEN }).toArray()
       } else if (source === "inactiveTrades") {
-        list = await db.inactiveTrades.toArray()
+        list = await db.trades.where({ status: TradeStatus.OPEN }).toArray()
       }
 
       setList(list)

@@ -11,6 +11,8 @@ import type { Scenario } from "@/data/indexDB/types/Scenario"
 import type { Market } from "@/data/indexDB/types/Market"
 import type { Data } from "@/data/indexDB/types/Data"
 import type { Price } from "@/data/indexDB/types/Price"
+import { Margin } from "./types/Margin"
+import { Transaction } from "./types/Transaction"
 
 export class PriceSimulatorDexie extends Dexie {
   id: string
@@ -27,8 +29,9 @@ export class PriceSimulatorDexie extends Dexie {
 
   quotes!: Table<Quote>
 
-  activeTrades!: Table<Trade>
-  inactiveTrades!: Table<Trade>
+  trades!: Table<Trade>
+  margins!: Table<Margin>
+  transactions!: Table<Transaction>
 
   dataCache: Record<string, Data | undefined | null> = {}
   pricesCache: Record<string, Price | undefined | null> = {}
@@ -36,7 +39,7 @@ export class PriceSimulatorDexie extends Dexie {
   constructor() {
     super("PriceSimulator")
 
-    this.version(27).stores({
+    this.version(31).stores({
       timer: "id",
 
       scenarios: "code, name",
@@ -47,8 +50,9 @@ export class PriceSimulatorDexie extends Dexie {
 
       quotes: "symbol",
 
-      activeTrades: "id, symbol, status, [symbol+status] ",
-      inactiveTrades: "id, symbol, status, exitTimestamp",
+      trades: "id, symbol, status, [symbol+status]",
+      margins: "id, symbol ",
+      transactions: "id, timestamp",
     })
 
     this.id = generateID()

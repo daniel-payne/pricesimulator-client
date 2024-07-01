@@ -2,6 +2,7 @@
 // import { Trade } from "@/data/indexDB/types/Trade"
 
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
+import useMargin from "@/data/indexDB/hooks/useMargin"
 import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import useTrade from "@/data/indexDB/hooks/useTrade"
 
@@ -22,6 +23,7 @@ type ComponentProps = {
 
 export default function TradeDetails({ id, onOrder, name = "TradeDetails", ...rest }: PropsWithChildren<ComponentProps>) {
   const trade = useTrade(id)
+  const margin = useMargin(id)
   const market = useMarketForSymbol(trade?.symbol)
 
   if (trade == null) {
@@ -31,7 +33,7 @@ export default function TradeDetails({ id, onOrder, name = "TradeDetails", ...re
   const isOpen = trade.status === TradeStatus.OPEN
   const isClosed = trade.status === TradeStatus.CLOSED
 
-  const profit = isClosed ? trade.profit : trade.margin?.currentProfit ?? 0
+  const profit = isClosed ? trade.profit : margin?.currentProfit ?? 0
 
   const displayProfit = formatValue(profit)
   const classNameProfit = profit > 0 ? "w-24 text-center rounded-lg p-2 bg-profit" : "w-24 text-center rounded-lg p-2 bg-loss"

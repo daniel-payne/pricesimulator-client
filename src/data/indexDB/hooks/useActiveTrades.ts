@@ -3,12 +3,13 @@ import { useLiveQuery } from "dexie-react-hooks"
 import db from "@/data/indexDB/db"
 
 import type { Trade } from "@/data/indexDB/types/Trade"
+import { TradeStatus } from "../enums/TradeStatus"
 
 export default function useActiveTrades(newestFirst = true, limit: number | undefined = undefined): Array<Trade> | undefined {
   const market = useLiveQuery(async () => {
-    const data = await db.activeTrades?.toCollection()
+    const collection = await db.trades?.where({ status: TradeStatus.OPEN })
 
-    let array = await data.sortBy("exitTimestamp")
+    let array = await collection.sortBy("exitTimestamp")
 
     if (newestFirst) {
       array = await array.reverse()

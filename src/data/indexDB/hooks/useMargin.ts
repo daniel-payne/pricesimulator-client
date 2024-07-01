@@ -4,11 +4,11 @@ import db from "@/data/indexDB/db"
 
 import type { Trade } from "@/data/indexDB/types/Trade"
 
-export default function useTrade(id: string | null | undefined): Trade | undefined {
+export default function useMargin(id: string | null | undefined): Trade | undefined {
   const trade = useLiveQuery(async () => {
-    const trade = await db.trades?.where({ id }).first()
+    const margin = await db.margins?.where({ id: id ?? "MISSING" }).first()
 
-    return trade
+    return margin
   }, [id])
 
   return trade
