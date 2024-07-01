@@ -34,6 +34,8 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
 
   const range = useDataState<Range>("range")
 
+  const timestamp = timer?.currentTimestamp
+
   if (market == null) {
     return (
       <div {...rest} data-component={name}>
@@ -65,7 +67,7 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
             </div>
             <div className="flex flex-row justify-between gap-2">
               <FaHeart className="fg--subheading my-1" />
-              <Link to={`/markets/${market.symbol}/detail`} target="_blank">
+              <Link to={`/markets/${market.symbol}/contract`} target="_blank">
                 <FaArrowUpRightFromSquare className="fg--subheading my-1" />
               </Link>
             </div>
@@ -76,7 +78,7 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
                 {status?.state ?? "No State"} {status?.message}
               </div> */}
               {/* <pre>{JSON.stringify(status, null, 2)}</pre> */}
-              <HistoryChart data={data} price={price} range={range} status={status} timer={timer} />
+              <HistoryChart data={data} price={price} range={range} />
 
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(price, null, 2)}</pre> */}
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(market, null, 2)}</pre>*/}

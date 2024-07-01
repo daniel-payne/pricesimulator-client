@@ -15,7 +15,7 @@ export default function CurrentOpenDisplay({ price, name = "CurrentOpenDisplay",
     return null
   }
 
-  const overnightMovement = (price?.open ?? 0) - (price?.lastClose ?? 0)
+  const overnightMovement = (price?.currentOpen ?? 0) - (price?.priorClose ?? 0)
 
   let displayClasses
 

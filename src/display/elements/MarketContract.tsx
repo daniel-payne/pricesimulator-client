@@ -1,7 +1,7 @@
 import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 
-import HistoryChart from "../components/HistoryChart"
+import TradeChart from "../components/TradeChart"
 
 import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
 
@@ -15,8 +15,6 @@ import ContractManager from "./ContractManager"
 import ContractStrip from "./ContractStrip"
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import useActiveTradeForSymbol from "@/data/indexDB/hooks/useActiveTradeForSymbol"
-
-import inactiveTrades from "@/data/indexDB/controllers/clear/inactiveTrades"
 
 type ComponentProps = {
   symbol?: string
@@ -41,7 +39,7 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
 
   const timestamp = timer?.currentTimestamp
 
-  if (market == null || timestamp == null) {
+  if (market == null || timestamp == null || timer == null) {
     return
   }
 
@@ -57,11 +55,18 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
           </div>
 
           <div className="flex-auto  my-2 overflow-hidden flex flex-row gap-2">
-            <HistoryChart className="flex-auto h-full w-full" data={data} price={price} timestamp={timestamp} trade={trade} range={range} />
+            <TradeChart className="flex-auto h-full w-full" data={data} price={price} timestamp={timestamp} trade={trade} range={range} />
             {!showCompact && (
               <div className="h-full w-1/3 border border-primary rounded-lg p-2">
                 {/* <pre>{JSON.stringify(price, null, 2)}</pre> */}
-                <ContractManager className="h-full w-full overflow-y-auto" market={market} price={price} trade={trade} settings={{ showMultiples }} />
+                <ContractManager
+                  className="h-full w-full overflow-y-auto"
+                  market={market}
+                  price={price}
+                  trade={trade}
+                  timer={timer}
+                  settings={{ showMultiples }}
+                />
               </div>
             )}
           </div>

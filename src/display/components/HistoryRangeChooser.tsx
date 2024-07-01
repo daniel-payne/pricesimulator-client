@@ -51,7 +51,7 @@ export default function HistoryRangeChooser({ name = "HistoryRangeChooser", ...r
     <div {...rest} data-component={name}>
       <div className="flex flex-row gap-2 justify-center items-center">
         <div className={classNameAT} onClick={handleClickAT}>
-          AT
+          1970
         </div>
         <div className={className5Y} onClick={handleClick5Y}>
           5Y

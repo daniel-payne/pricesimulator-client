@@ -24,19 +24,29 @@ type ComponentProps = {
 export default function ContractDescription({ market, price, timer, settings, name = "ContractDescription", ...rest }: PropsWithChildren<ComponentProps>) {
   const { showMultiples = false } = settings || {}
 
-  const lastClosingPrice = price?.lastClosingPrice
-  const bidPrice = price?.bid
-  const askPrice = price?.ask
+  const midPrice = price?.isMarketClosed ? price?.priorClose : price?.currentOpen
+  const bidPrice = price?.currentBid
+  const askPrice = price?.currentAsk
 
-  //TODO MAKE contract price here <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  const midValue = (midPrice ?? 0) * (market?.dollarModifier ?? 1)
+  const bidValue = (bidPrice ?? 0) * (market?.dollarModifier ?? 1)
+  const askValue = (askPrice ?? 0) * (market?.dollarModifier ?? 1)
 
-  const displayClosingPrice = formatValue(lastClosingPrice, false)
-  const displayBidPrice = formatValue(bidPrice, false)
-  const displayAskPrice = formatValue(askPrice, false)
+  const midContract = midValue * (market?.contractSize ?? 1)
+  const bidContract = bidValue * (market?.contractSize ?? 1)
+  const askContract = askValue * (market?.contractSize ?? 1)
 
-  // const closingValue = price?.midRangePrice ? formatValue(price?.lastClosingPrice * market?.contractSize * market?.dollarModifier, false) : "missing"
-  // const bidValue = price?.bid ? formatValue(price?.bid * market?.contractSize * market?.dollarModifier, false) : "missing"
-  // const askValue = price?.ask ? formatValue(price?.ask * market?.contractSize * market?.dollarModifier, false) : "missing"
+  const decimalPlaces = midValue < 1 ? 4 : 2
+
+  const displayMidValue = formatValue(midValue, true, "USD", decimalPlaces)
+  const displayBidValue = formatValue(bidValue, true, "USD", decimalPlaces)
+  const displayAskValue = formatValue(askValue, true, "USD", decimalPlaces)
+
+  const displayMidContract = formatValue(midContract, false)
+  const displayBidContract = formatValue(bidContract, false)
+  const displayAskContract = formatValue(askContract, false)
+
+  const displayPricePoint = price?.isMarketClosed ? "fridays close" : "todays opening"
 
   const endOfContract = lastOfMonth(timer?.currentTimestamp, "WED", 3)
 
@@ -50,13 +60,17 @@ export default function ContractDescription({ market, price, timer, settings, na
       <div className="p-2">
         <div className="text-sm fg--heading">For a contract of {market?.name}, i.e.</div>
         <div className="text-sm fg--subheading">
-          {market?.contractName} to be delivered on {displayEndDay}, {displayEndDate}
+          {market?.contractName} to be delivered on {displayEndDay}, <strong>{displayEndDate}</strong>
         </div>
 
         {showMultiples && (
           <>
             <div className="text-sm fg--subheading">
-              That was trading yesterday, bid at ${displayBidPrice}, ask at ${displayAskPrice}
+              At {displayPricePoint} {market?.contractSize} {market?.contractUnit} was trading for you to sell at <strong>{displayAskValue}</strong> and buy at{" "}
+              <strong>{displayBidValue}</strong>
+            </div>
+            <div className="text-sm fg--subheading">
+              A contract was trading for you to sell at <strong>{displayAskContract}</strong> and to buy at <strong>{displayBidContract}</strong>
             </div>
             <div className="text-sm fg--subheading">
               The broker will charge using a <strong>spread</strong> for this transaction
@@ -65,9 +79,14 @@ export default function ContractDescription({ market, price, timer, settings, na
         )}
         {!showMultiples && (
           <>
-            <div className="text-sm fg--subheading">That was trading yesterday for ${displayClosingPrice}</div>
             <div className="text-sm fg--subheading">
-              The broker will charge <strong>${brokerCharge}</strong> for this transaction
+              At {displayPricePoint} {market?.contractSize} {market?.contractUnit} was <strong>{displayMidValue}</strong> per {market?.contractUnit}
+            </div>
+            <div className="text-sm fg--subheading">
+              A contract was trading at {displayPricePoint} for <strong>{displayMidContract}</strong>
+            </div>
+            <div className="text-sm fg--subheading">
+              The broker will charge <strong>{brokerCharge}</strong> for this transaction
             </div>
           </>
         )}

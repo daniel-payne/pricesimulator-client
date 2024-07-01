@@ -1,17 +1,11 @@
-"use client"
-
 import Chart from "chart.js/auto"
 import annotationPlugin from "chartjs-plugin-annotation"
 
 import { Chart as Multi } from "react-chartjs-2"
 
-// import { useWindowSize } from "react-use"
-//
 import "chartjs-adapter-date-fns"
 
 Chart.register([annotationPlugin])
-
-// const MILLISECONDS = 24 * 60 * 60 * 1000
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -19,63 +13,42 @@ import type { Range } from "@/display/components/HistoryRangeChooser"
 
 import cssVar from "@/utilities/cssVar"
 import { Data } from "@/data/indexDB/types/Data"
-import { Status } from "@/data/indexDB/types/Status"
-import { Timer } from "@/data/indexDB/types/Timer"
+
 import { Price } from "@/data/indexDB/types/Price"
 import addTimestamp from "@/utilities/addTimestamp"
 import formatTimestampISO from "@/utilities/formatTimestampISO"
-import { Trade } from "@/data/indexDB/types/Trade"
-import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
-
-// import { startOfMonth } from "date-fns"
-
-// const LOOKBACK = {
-//   at: 999999,
-//   "5y": 5 * 52 * 5,
-//   "1y": 52 * 5,
-//   "3m": 12 * 5,
-//   "1m": 4 * 5,
-// }
 
 type ComponentProps = {
-  timestamp: number | null | undefined
   data?: Data | null | undefined
   price?: Price | null | undefined
+
   range?: Range | null | undefined
-  status?: Status | null | undefined
-  timer?: Timer | null | undefined
-  trade?: Trade | null | undefined
+  showYScale: boolean | null | undefined
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 export default function HighLowChart({
-  timestamp,
   data,
   price,
-  status,
-  trade,
 
   range = "1m",
+  showYScale = false,
 
   name = "HighLowChart",
   ...rest
 }: PropsWithChildren<ComponentProps>) {
-  if (data == null || data?.timestamps == null || timestamp == null) {
-    const message = status?.message ?? ""
-
-    return <div>{message.length === 0 ? "Awaiting Data" : message}</div>
+  if (data == null) {
+    return <div>Awaiting Data</div>
   }
 
   if (price == null) {
-    const message = status?.message ?? ""
-
-    return <div>{message.length === 0 ? "Awaiting Prices" : message}</div>
+    return <div>Awaiting Prices</div>
   }
 
   const isMarketClosed = price?.isMarketClosed
 
-  const currentTimestamp = price?.currentTimestamp
+  const currentTimestamp = price?.currentTimestamp ?? price?.priorTimestamp
   const currentIndex = price?.currentIndex
   const currentOpen = price?.currentOpen
 
@@ -96,34 +69,14 @@ export default function HighLowChart({
   const highs = data?.highs?.slice(0, end) ?? []
   const lows = data?.lows?.slice(0, end) ?? []
 
-  const opens = data?.opens?.slice(0, end) ?? []
-  const closes = data?.closes?.slice(0, end) ?? []
-
   const labels = data?.timestamps?.slice(0, end) ?? []
-
-  const movements: (number | boolean)[][] = []
-
-  for (let i = 0; i < labels.length; i++) {
-    const open = opens?.[i] ?? 0
-    const close = closes?.[i] ?? 0
-
-    const top = Math.max(open, close)
-    const bottom = Math.min(open, close)
-
-    const rise = close > open
-
-    movements.push([bottom, top, rise])
-  }
 
   let priorAmount = -1
   let priorPeriod = "days" as "days" | "weeks" | "months" | "years"
 
-  let displayOpenClose = false
-
   if (range === "1m") {
     priorAmount = -1
     priorPeriod = "months"
-    displayOpenClose = true
   } else if (range === "3m") {
     priorAmount = -3
     priorPeriod = "months"
@@ -135,50 +88,8 @@ export default function HighLowChart({
     priorPeriod = "years"
   }
 
-  // const endTimestamp = trade == null ? timestamp : trade?.expiryTimestamp
-
-  // const startISO = range === "at" ? "1970-01-01" : formatTimestampISO(addTimestamp(timestamp, priorAmount, priorPeriod, false))
-  // const endISO = formatTimestampISO(addTimestamp(endTimestamp, +1, "days", false))
-
-  let startISO
-  let endISO
-
-  let tradeTargetHighColor
-  let tradeTargetLowColor
-
-  let showTradeTargets = false
-
-  let tradeStartISO
-  let tradeEndISO
-  let showTradePerformance = false
-  let tradeTargetStart
-  let tradeTargetEnd
-  let tradeOutcomeColor
-  let tradeOutcomeColorWash
-
-  if (trade == null) {
-    startISO = range === "at" ? "1970-01-01" : formatTimestampISO(addTimestamp(timestamp, priorAmount, priorPeriod, false))
-    endISO = formatTimestampISO(addTimestamp(timestamp, +1, "days", false))
-  } else {
-    showTradeTargets = true
-
-    startISO = range === "at" ? "1970-01-01" : formatTimestampISO(addTimestamp(trade.entryTimestamp, priorAmount, priorPeriod, false))
-    endISO = formatTimestampISO(addTimestamp(trade.expiryTimestamp, +1, "days", false))
-
-    tradeStartISO = formatTimestampISO(trade.entryTimestamp)
-    tradeEndISO = formatTimestampISO(trade.exitTimestamp)
-
-    tradeTargetHighColor = trade.direction === "CALL" ? cssVar("--outcome-profit-25") : cssVar("--outcome-loss-25")
-    tradeTargetLowColor = trade.direction === "CALL" ? cssVar("--outcome-loss-25") : cssVar("--outcome-profit-25")
-
-    showTradePerformance = trade.status === TradeStatus.CLOSED
-
-    tradeTargetStart = trade.entryPrice
-    tradeTargetEnd = trade.exitPrice
-
-    tradeOutcomeColor = trade.profit > 0 ? cssVar("--outcome-profit") : cssVar("--outcome-loss")
-    tradeOutcomeColorWash = trade.profit > 0 ? cssVar("--outcome-profit-25") : cssVar("--outcome-loss-25")
-  }
+  const startISO = range === "at" ? "1970-01-01" : formatTimestampISO(addTimestamp(currentTimestamp, priorAmount, priorPeriod, false))
+  const endISO = formatTimestampISO(addTimestamp(currentTimestamp, +1, "days", false))
 
   const pricePointValue = isMarketClosed ? priorClose : currentOpen
   const pricePointISO = isMarketClosed ? formatTimestampISO(priorTimestamp) : formatTimestampISO(currentTimestamp)
@@ -190,29 +101,14 @@ export default function HighLowChart({
     ? cssVar("--outcome-profit")
     : cssVar("--outcome-loss")
 
-  const datasets = [
-    {
-      type: "bar" as const,
-      label: "Dataset 2",
-      backgroundColor: ({ dataIndex }: any) => {
-        const movement = movements[dataIndex] as any
-
-        return movement[2] ? cssVar("--outcome-profit") : cssVar("--outcome-loss")
-      },
-      data: movements,
-      borderWidth: 0,
-      barPercentage: 0.33,
-      // borderRadius: { topLeft: 48, topRight: 48, bottomLeft: 48, bottomRight: 48 },
-      // bordersSkipped: false,
-      display: displayOpenClose,
-    },
+  const datasets: any = [
     {
       type: "line",
       label: "high",
       data: highs,
       pointRadius: 0,
       borderWidth: 1,
-      fill: 2,
+      fill: 1,
       borderColor: cssVar("--graph-range"),
       backgroundColor: cssVar("--graph-range"),
       tension: 0.2,
@@ -249,7 +145,7 @@ export default function HighLowChart({
         max: endISO,
       },
       y: {
-        display: true,
+        display: showYScale,
         type: "linear",
         position: "right",
         beginAtZero: false,
@@ -278,71 +174,6 @@ export default function HighLowChart({
             backgroundColor: pricePointColor,
             borderWidth: 1,
             display: true,
-          },
-          tradeTargetHigh: {
-            type: "line",
-            yMin: trade?.entryPrice,
-            yMax: trade?.entryPrice + 1000,
-            xMin: endISO,
-            xMax: endISO,
-            borderColor: tradeTargetHighColor,
-            borderWidth: 24,
-            adjustScaleRange: false,
-            display: showTradeTargets,
-          },
-          tradeTargetLow: {
-            type: "line",
-            yMin: trade?.entryPrice,
-            yMax: 0,
-            xMin: endISO,
-            xMax: endISO,
-            borderColor: tradeTargetLowColor,
-            borderWidth: 24,
-            adjustScaleRange: false,
-            display: showTradeTargets,
-          },
-          tradePerformance: {
-            type: "line",
-            yMin: tradeTargetStart,
-            yMax: tradeTargetEnd,
-            xMin: tradeStartISO,
-            xMax: tradeEndISO,
-            borderColor: tradeOutcomeColorWash,
-            borderWidth: 14,
-            adjustScaleRange: false,
-            display: showTradePerformance,
-            // arrowHeads: {
-            //   start: {
-            //     display: true,
-            //     width: 4,
-            //     fill: true,
-            //   },
-            //   end: {
-            //     display: true,
-            //     width: 4,
-            //     fill: true,
-            //   },
-            // },
-          },
-          tradeEntryPoint: {
-            type: "point",
-            radius: 6,
-            yValue: tradeTargetStart,
-            xValue: tradeStartISO,
-            borderColor: tradeOutcomeColor,
-            // backgroundColor: pricePointColor,
-            borderWidth: 1,
-            display: showTradePerformance,
-          },
-          tradeExitPoint: {
-            type: "point",
-            radius: 6,
-            yValue: tradeTargetEnd,
-            xValue: tradeEndISO,
-            borderColor: tradeOutcomeColor,
-            // backgroundColor: pricePointColor,
-            borderWidth: 1,
-            display: showTradePerformance,
           },
         },
       },
