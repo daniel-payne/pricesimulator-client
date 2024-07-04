@@ -6,7 +6,7 @@ import type { Trade } from "@/data/indexDB/types/Trade"
 
 export default function useTrade(id: string | null | undefined): Trade | undefined {
   const trade = useLiveQuery(async () => {
-    const trade = await db.trades?.where({ id }).first()
+    const trade = await db.trades?.where({ id: id ?? "MISSING" }).first()
 
     return trade
   }, [id])

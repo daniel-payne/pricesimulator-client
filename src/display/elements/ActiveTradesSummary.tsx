@@ -1,6 +1,6 @@
 import useActiveTrades from "@/data/indexDB/hooks/useActiveTrades"
 import type { HTMLAttributes, PropsWithChildren } from "react"
-import TradeBadge from "../components/TradeBadge"
+import TradeBadge from "./TradeBadge"
 
 type ComponentProps = {
   name?: string
@@ -13,7 +13,7 @@ export default function ActiveTradesSummary({ name = "ActiveTradesSummary", ...r
     <div {...rest} data-controller={name}>
       <div className="ps-2 flex flex-row gap-2 items-baseline">
         {trades?.map((trade) => (
-          <TradeBadge trade={trade} key={trade.id} />
+          <TradeBadge id={trade.id} key={trade.id} />
         ))}
       </div>
     </div>

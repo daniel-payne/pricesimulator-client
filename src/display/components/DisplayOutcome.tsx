@@ -19,8 +19,8 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function DisplayOutcome({ market, trade, margin, onStartAgain, name = "DisplayOutcome", ...rest }: PropsWithChildren<ComponentProps>) {
-  if (trade == null || margin == null) {
-    return <div>Trade not found </div>
+  if (trade == null) {
+    return <div>Outcome not found </div>
   }
 
   // const isOpen = trade.status === TradeStatus.OPEN

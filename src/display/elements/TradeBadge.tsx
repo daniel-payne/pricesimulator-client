@@ -1,17 +1,23 @@
-import { Margin } from "@/data/indexDB/types/Margin"
-import { Trade } from "@/data/indexDB/types/Trade"
+import useMargin from "@/data/indexDB/hooks/useMargin"
+import useTrade from "@/data/indexDB/hooks/useTrade"
+// import { Margin } from "@/data/indexDB/types/Margin"
+// import { Trade } from "@/data/indexDB/types/Trade"
 
 import formatValue from "@/utilities/formatValue"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 type ComponentProps = {
-  trade?: Trade | undefined | null
-  margin?: Margin | undefined | null
+  // trade?: Trade | undefined | null
+  // margin?: Margin | undefined | null
+  id: string | undefined | null
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function TradeBadge({ trade, margin, name = "TradeBadge", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function TradeBadge({ id, name = "TradeBadge", ...rest }: PropsWithChildren<ComponentProps>) {
+  const trade = useTrade(id)
+  const margin = useMargin(id)
+
   const isActive = trade?.profit == null
 
   const value = isActive ? margin?.currentProfit : trade?.profit

@@ -7,6 +7,8 @@ import getMarketForSymbol from "../get/getMarketForSymbol"
 
 import { DEFAULT_CONTRACT_COST } from "../../constants/DEFAULT_CONTRACT_COST"
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
+import generateID from "@/utilities/generateID"
+import { setState } from "@keldan-systems/state-mutex"
 
 export async function controller(db: PriceSimulatorDexie, id: string, removeMargin: boolean) {
   const activeTrade = await db.trades?.where({ id }).first()
@@ -62,7 +64,18 @@ export async function controller(db: PriceSimulatorDexie, id: string, removeMarg
 
         if (removeMargin) {
           await db.margins?.delete(id)
+        } else {
+          await db.margins?.update(id, { status: TradeStatus.CLOSED })
         }
+
+        await db.transactions?.add({
+          id: generateID(),
+          timestamp: currentTimestamp,
+          type: "TRADE",
+          value: newContract.profit,
+        })
+
+        setState("LAST-TRADE-FOR-" + newContract.symbol, newContract)
 
         return newContract
       }

@@ -62,6 +62,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
         const newMargin = {
           id: activeTrade.id,
           symbol: activeTrade.symbol,
+          status: TradeStatus.OPEN,
           currentTimestamp: timestamp,
           currentPrice,
           currentDifference,

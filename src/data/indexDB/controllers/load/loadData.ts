@@ -9,6 +9,7 @@ import { controller as getMarkets } from "@/data/indexDB/controllers/get/getMark
 import { controller as getTimer } from "@/data/indexDB/controllers/get/getTimer"
 import { controller as getDataForSymbol } from "@/data/indexDB/controllers/get/getDataForSymbol"
 import { controller as updatePrice } from "@/data/indexDB/controllers/update/updatePrice"
+import { controller as addTransaction } from "@/data/indexDB/controllers/add/addTransaction"
 
 export async function controller(db: PriceSimulatorDexie) {
   setState("APPLICATION-STATUS", { message: "Loading Timer", dataLoaded: false })
@@ -46,6 +47,16 @@ export async function controller(db: PriceSimulatorDexie) {
   }
 
   setState("APPLICATION-STATUS", { message: "All Markets Loaded", dataLoaded: true })
+
+  if (timer.currentTimestamp != null) {
+    const transactionCount = await db.transactions?.count()
+
+    if (transactionCount === 0) {
+      await addTransaction(db, timer.currentTimestamp, "CLIENT", 5_000.0)
+
+      setState("APPLICATION-STATUS", { message: "Initial Deposit made" })
+    }
+  }
 }
 
 export default async function loadData() {

@@ -13,12 +13,16 @@ import type { Data } from "@/data/indexDB/types/Data"
 import type { Price } from "@/data/indexDB/types/Price"
 import { Margin } from "./types/Margin"
 import { Transaction } from "./types/Transaction"
+import { Balance } from "./types/Balance"
+
+export const DIXIE_BALANCE_KEY = "DIXIE_BALANCE_KEY"
 
 export class PriceSimulatorDexie extends Dexie {
   id: string
   timeout: number | null = null
 
   timer!: Table<Timer>
+  balance!: Table<Balance>
 
   scenarios!: Table<Scenario>
   markets!: Table<Market>
@@ -39,8 +43,9 @@ export class PriceSimulatorDexie extends Dexie {
   constructor() {
     super("PriceSimulator")
 
-    this.version(31).stores({
+    this.version(36).stores({
       timer: "id",
+      balance: "id",
 
       scenarios: "code, name",
       markets: "symbol, name",
@@ -51,8 +56,8 @@ export class PriceSimulatorDexie extends Dexie {
       quotes: "symbol",
 
       trades: "id, symbol, status, [symbol+status]",
-      margins: "id, symbol ",
-      transactions: "id, timestamp",
+      margins: "id, symbol, status, [symbol+status] ",
+      transactions: "id,  timestamp",
     })
 
     this.id = generateID()

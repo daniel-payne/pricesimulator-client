@@ -37,6 +37,8 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
 
   const timer = useTimer()
 
+  const lastTrade = useDataState("LAST-TRADE-FOR-" + symbol)
+
   const showCompact = compact?.toUpperCase() === "TRUE" || compact?.toUpperCase() === "YES"
   const showMultiples = multiples?.toUpperCase() === "TRUE" || multiples?.toUpperCase() === "YES"
 
@@ -67,6 +69,7 @@ export default function MarketContract({ symbol, name = "MarketContract", ...res
                   market={market}
                   price={price}
                   trade={trade}
+                  lastTrade={lastTrade}
                   margin={margin}
                   timer={timer}
                   settings={{ showMultiples }}

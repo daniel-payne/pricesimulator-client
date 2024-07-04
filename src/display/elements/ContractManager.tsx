@@ -2,7 +2,7 @@
 // import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 // import useTimer from "@/data/indexDB/hooks/useTimer"
 
-import { type HTMLAttributes, type PropsWithChildren } from "react"
+import { useEffect, useState, type HTMLAttributes, type PropsWithChildren } from "react"
 import StartContract from "./StartContract"
 import ContractDescription from "./ContractDescription"
 import openContract from "@/data/indexDB/controllers/open/openContract"
@@ -20,8 +20,9 @@ import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 // import TradeDetails from "./TradeDetails"
 // import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
 import DisplayOutcome from "../components/DisplayOutcome"
-import clearClosedMargins from "@/data/indexDB/controllers/clear/clearClosedMargins"
+
 import { Margin } from "@/data/indexDB/types/Margin"
+import { setState } from "@keldan-systems/state-mutex"
 // import formatTimestampISO from "@/utilities/formatTimestampISO"
 // import formatTimestampDay from "@/utilities/formatTimestampDay"
 // import formatTimestamp from "@/utilities/formatTimestamp"
@@ -37,6 +38,8 @@ type ComponentProps = {
   margin?: Margin | null | undefined
   timer?: Timer | null | undefined
 
+  lastTrade?: Trade | null | undefined
+
   settings?: Settings
 
   name?: string
@@ -46,6 +49,7 @@ export default function ContractManager({
   market,
   price,
   trade,
+  lastTrade,
   margin,
   timer,
   settings,
@@ -62,6 +66,7 @@ export default function ContractManager({
   // const timer = useTimer()
 
   const isOpen = trade?.status === TradeStatus.OPEN
+  const isLastTradeClosed = lastTrade?.status === TradeStatus.CLOSED
 
   const handleOpenContract = async (settings: any) => {
     if (symbol) {
@@ -79,8 +84,8 @@ export default function ContractManager({
   }
 
   const handleClearClosedMargins = async () => {
-    if (trade) {
-      await clearClosedMargins(trade.symbol)
+    if (lastTrade) {
+      setState("LAST-TRADE-FOR-" + lastTrade.symbol, undefined)
     }
   }
 
@@ -89,17 +94,19 @@ export default function ContractManager({
       <div className="text-info p-2 text-lg font-bold">Instruction to Broker </div>
 
       <ContractDescription market={market} price={price} timer={timer} settings={{ showMultiples }} />
-      {trade == null && <StartContract market={market} price={price} settings={{ showMultiples }} onOrder={handleOpenContract} />}
+      {trade == null && lastTrade == null && <StartContract market={market} price={price} settings={{ showMultiples }} onOrder={handleOpenContract} />}
       {trade != null && isOpen == true && (
         <StopContract market={market} price={price} trade={trade} settings={{ showMultiples }} onOrder={handleCloseContract} />
       )}
       {trade != null && isOpen == true && (
         <DisplayMargin market={market} price={price} trade={trade} margin={margin} timer={timer} settings={{ showMultiples }} />
       )}
-      {trade != null && isOpen == false && <DisplayOutcome market={market} trade={trade} margin={margin} onStartAgain={handleClearClosedMargins} />}
+      {lastTrade != null && isLastTradeClosed == true && (
+        <DisplayOutcome market={market} trade={lastTrade} margin={margin} onStartAgain={handleClearClosedMargins} />
+      )}
 
       {/* <TradeDescription trade={trade} /> */}
-      {/* <pre>{JSON.stringify(trade, null, 2)}</pre> */}
+      {/* <pre>{JSON.stringify(lastTrade, null, 2)}</pre> */}
 
       {/* <pre>{JSON.stringify(market, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(trade, null, 2)}</pre> */}
