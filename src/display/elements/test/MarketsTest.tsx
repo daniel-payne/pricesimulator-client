@@ -30,7 +30,7 @@ export default function MarketsTest({ addBorder = false, name = "MarketsTest", c
 
   return (
     <div {...rest} data-controller={name}>
-      <div className="h-auto flex flex-col">
+      <div className="h-full flex flex-col">
         <h1 className="text-lg m-2 font-bold">
           {name} &nbsp;
           <button className="btn btn-xs btn-primary" onClick={() => setShowAsJSON(!showAsJSON)}>

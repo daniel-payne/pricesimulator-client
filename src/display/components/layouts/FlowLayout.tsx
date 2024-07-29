@@ -17,7 +17,7 @@ export default function FlowLayout({ addBorder = false, name = "FlowLayout", chi
 
   return (
     <div {...rest} data-component={name}>
-      <div className="h-full w-full flex-auto flex flex-row flex-wrap justify-start items-start ">
+      <div className="h-full w-full flex-auto flex flex-row flex-wrap justify-start items-stretch ">
         {array.map((child) => {
           if (addBorder) {
             return (
