@@ -1,8 +1,8 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-import ActiveTradesSummary from "../ActiveTradesSummary"
-import InactiveTradesSummary from "../InactiveTradesSummary"
-import AccountSummary from "../AccountSummary"
+import ActiveTradesSummary from "@/display/OLDelements/ActiveTradesSummary"
+import InactiveTradesSummary from "@/display/OLDelements/InactiveTradesSummary"
+import AccountSummary from "@/display/OLDelements/AccountSummary"
 
 type ComponentProps = {
   name?: string

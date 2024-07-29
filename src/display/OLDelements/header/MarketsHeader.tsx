@@ -6,10 +6,10 @@ import formatTimestamp from "@/utilities/formatTimestamp"
 
 import { FaGear } from "react-icons/fa6"
 
-import ApplicationNavigation from "@/display/components/ApplicationNavigation"
+import ApplicationNavigation from "@/display/OLDcomponents/ApplicationNavigation"
 
-import HistoryRangeChooser from "@/display/components/HistoryRangeChooser"
-import DetailViewChooser from "@/display/components/DetailViewChooser"
+import HistoryRangeChooser from "@/display/components/choosers/RangeChooser"
+import DetailViewChooser from "@/display/components/choosers/ViewChooser"
 // import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
 // import timerStop from "@/data/indexDB/controllers/timer/timerStop"
 // import timerStart from "@/data/indexDB/controllers/timer/timerStart"

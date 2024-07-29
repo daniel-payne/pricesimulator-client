@@ -32,6 +32,7 @@ import "./main.css"
 import IndexDBData from "./routes/pages/data/IndexDBData"
 import PricesData from "./routes/pages/data/PricesData"
 import TradesPage from "./routes/pages/TradesPage"
+import TestPage from "./routes/pages/TestPage"
 
 const router = createBrowserRouter([
   {
@@ -105,11 +106,11 @@ const router = createBrowserRouter([
   //     },
   //   ],
   // },
-  // {
-  //   path: "prices/:symbol",
-  //   element: <PricesPage className="h-full w-full" />,
-  //   errorElement: <ErrorPage className="h-full w-full" />,
-  // },
+  {
+    path: "test",
+    element: <TestPage className="h-full w-full" />,
+    errorElement: <ErrorPage className="h-full w-full" />,
+  },
   // {
   //   path: "test",
   //   errorElement: <ErrorPage className="h-full w-full" />,

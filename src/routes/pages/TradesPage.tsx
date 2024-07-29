@@ -3,7 +3,7 @@ import timerStop from "@/data/indexDB/controllers/timer/timerStop"
 import useActiveTrades from "@/data/indexDB/hooks/useActiveTrades"
 import useInactiveTrades from "@/data/indexDB/hooks/useInactiveTrades"
 
-import TradeDetails from "@/display/elements/TradeDetails"
+import TradeDetails from "@/display/OLDelements/TradeDetails"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 

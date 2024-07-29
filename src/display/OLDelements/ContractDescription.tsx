@@ -32,9 +32,15 @@ export default function ContractDescription({ market, price, timer, settings, na
   const bidValue = (bidPrice ?? 0) * (market?.dollarModifier ?? 1)
   const askValue = (askPrice ?? 0) * (market?.dollarModifier ?? 1)
 
+  const contractPoints = market?.contractPoints
+
   const midContract = midValue * (market?.contractSize ?? 1)
   const bidContract = bidValue * (market?.contractSize ?? 1)
   const askContract = askValue * (market?.contractSize ?? 1)
+
+  // const midPoints = (midPrice ?? 0) * (contractPoints ?? 1)
+  const bidPoints = (bidPrice ?? 0) * (contractPoints ?? 1)
+  const askPoints = (askPrice ?? 0) * (contractPoints ?? 1)
 
   const decimalPlaces = midValue < 1 ? 4 : 2
 
@@ -42,9 +48,15 @@ export default function ContractDescription({ market, price, timer, settings, na
   const displayBidValue = formatValue(bidValue, true, "USD", decimalPlaces)
   const displayAskValue = formatValue(askValue, true, "USD", decimalPlaces)
 
+  // const displayMidPoints = formatValue(midPoints, false, "USD", 2)
+  const displayBidPoints = formatValue(bidPoints, false, "USD", 2)
+  const displayAskPoints = formatValue(askPoints, false, "USD", 2)
+
   const displayMidContract = formatValue(midContract, false)
   const displayBidContract = formatValue(bidContract, false)
   const displayAskContract = formatValue(askContract, false)
+
+  const displayContractPoints = formatValue(contractPoints, true)
 
   const displayPricePoint = price?.isMarketClosed ? "fridays close" : "todays opening"
 
@@ -66,8 +78,16 @@ export default function ContractDescription({ market, price, timer, settings, na
         {showMultiples && (
           <>
             <div className="text-sm fg--subheading">
-              At {displayPricePoint} {market?.contractSize} {market?.contractUnit} was trading for you to sell at <strong>{displayAskValue}</strong> and buy at{" "}
-              <strong>{displayBidValue}</strong>
+              <span>
+                At {displayPricePoint} {market?.contractSize} {market?.contractUnit}
+              </span>
+              <span>
+                was trading for you to sell at <strong>{displayAskValue}</strong>
+              </span>
+              <span>
+                and buy at
+                <strong>{displayBidValue}</strong>
+              </span>
             </div>
             <div className="text-sm fg--subheading">
               A contract was trading for you to sell at <strong>{displayAskContract}</strong> and to buy at <strong>{displayBidContract}</strong>
@@ -77,13 +97,29 @@ export default function ContractDescription({ market, price, timer, settings, na
             </div>
           </>
         )}
-        {!showMultiples && (
+
+        {!showMultiples && displayContractPoints == null && (
           <>
             <div className="text-sm fg--subheading">
-              At {displayPricePoint} {market?.contractSize} {market?.contractUnit} was <strong>{displayMidValue}</strong> per {market?.contractUnit}
+              At {displayPricePoint} {market?.name} was <strong>{displayMidValue}</strong> per point
             </div>
             <div className="text-sm fg--subheading">
               A contract was trading at {displayPricePoint} for <strong>{displayMidContract}</strong>
+            </div>
+            <div className="text-sm fg--subheading">
+              The broker will charge <strong>{brokerCharge}</strong> for this transaction
+            </div>
+          </>
+        )}
+
+        {!showMultiples && displayContractPoints != null && (
+          <>
+            <div className="text-sm fg--subheading">
+              The contract size is {displayContractPoints} per index point
+              {/* At {displayPricePoint} {market?.contractSize} {market?.contractUnit} was <strong>{displayMidValue}</strong> per {market?.contractUnit} */}
+            </div>
+            <div className="text-sm fg--subheading">
+              A contract was trading for you to sell at <strong>{displayAskPoints}</strong> and to buy at <strong>{displayBidPoints}</strong>
             </div>
             <div className="text-sm fg--subheading">
               The broker will charge <strong>{brokerCharge}</strong> for this transaction

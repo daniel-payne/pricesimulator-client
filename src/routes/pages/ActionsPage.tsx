@@ -1,9 +1,9 @@
-import TradesData from "@/display/elements/data/TradesData"
-import MarketsData from "@/display/elements/data/MarketsData"
+import TradesData from "@/display/elements/test/TradesData"
+import MarketsData from "@/display/elements/test/MarketsTest"
 
 // import ScenariosData from "@/display/elements/data/ScenariosData"
 
-import TimerData from "@/display/elements/data/TimerData"
+import TimerData from "@/display/elements/test/TimerTest"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 

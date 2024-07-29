@@ -21,6 +21,23 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
 
   return (
     <div {...rest} data-component={name}>
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <h3 className="text-error font-bold text-lg">Warning</h3>
+          <p className="py-4">
+            You will lose all your trades and be taken back to January 1970 with another <strong className="text-success">$5,000</strong> to start trading with.
+          </p>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">Cancel</button>
+              <button className="ms-2 btn btn-error" onClick={resetTrading}>
+                Reset
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <div className="p-6 h-full w-full flex flex-col gap-2 justify-center">
         {/* heading */}
         <div className="mt-6 h-32 flex flex-col gap-4 justify-center items-center">
@@ -55,7 +72,7 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
                   <div className="text-xs mt-4">
                     <span>As its not real money, you just hit this</span>
                     {/* <Link to="/reset"> */}
-                    <button className="btn btn-xs btn-error mx-2" onClick={resetTrading}>
+                    <button className="btn btn-xs btn-error mx-2" onClick={() => document?.getElementById("my_modal_1")?.showModal()}>
                       button
                     </button>
                     {/* </Link> */}

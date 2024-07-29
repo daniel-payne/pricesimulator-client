@@ -1,7 +1,7 @@
 import db from "@/data/indexDB/db"
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 
-import DataGrid from "@/display/components/DataGrid"
+import DataGrid from "@/display/OLDcomponents/DataGrid"
 
 import { useEffect, useState, type HTMLAttributes, type PropsWithChildren } from "react"
 import { useParams } from "react-router-dom"

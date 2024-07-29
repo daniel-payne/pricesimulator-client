@@ -19,7 +19,7 @@ import { Timer } from "@/data/indexDB/types/Timer"
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
 // import TradeDetails from "./TradeDetails"
 // import timerNextDay from "@/data/indexDB/controllers/timer/timerNextDay"
-import DisplayOutcome from "../components/DisplayOutcome"
+import DisplayOutcome from "../OLDcomponents/DisplayOutcome"
 
 import { Margin } from "@/data/indexDB/types/Margin"
 import { setState } from "@keldan-systems/state-mutex"

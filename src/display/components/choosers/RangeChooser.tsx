@@ -10,7 +10,7 @@ export type Range = "at" | "5y" | "1y" | "3m" | "1m"
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-export default function HistoryRangeChooser({ name = "HistoryRangeChooser", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function RangeChooser({ name = "RangeChooser", ...rest }: PropsWithChildren<ComponentProps>) {
   const [range, setRange] = useQueryState<Range>("range", "1m")
 
   const handleClick = (range: Range) => {

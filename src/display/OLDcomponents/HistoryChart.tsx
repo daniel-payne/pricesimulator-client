@@ -9,7 +9,7 @@ Chart.register([annotationPlugin])
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-import type { Range } from "@/display/components/HistoryRangeChooser"
+import type { Range } from "@/display/components/choosers/RangeChooser"
 
 import cssVar from "@/utilities/cssVar"
 import { Data } from "@/data/indexDB/types/Data"

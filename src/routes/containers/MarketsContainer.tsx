@@ -1,7 +1,7 @@
 import { Outlet, useParams } from "react-router-dom"
 
-import MarketsHeader from "@/display/elements/header/MarketsHeader"
-import MarketsFooter from "@/display/elements/footer/MarketsFooter"
+import MarketsHeader from "@/display/OLDelements/header/MarketsHeader"
+import MarketsFooter from "@/display/OLDelements/footer/MarketsFooter"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 

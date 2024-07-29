@@ -3,7 +3,7 @@
 
 import useMarketCategories from "@/data/indexDB/hooks/useMarketCategories"
 
-import MarketsCategory from "@/display/components/MarketsCategory"
+import MarketsCategory from "@/display/OLDcomponents/MarketsCategory"
 import { useDataState } from "@keldan-systems/state-mutex"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"

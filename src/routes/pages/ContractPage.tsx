@@ -1,4 +1,4 @@
-import MarketContract from "@/display/elements/MarketContract"
+import MarketContract from "@/display/OLDelements/MarketContract"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { useParams } from "react-router-dom"
 

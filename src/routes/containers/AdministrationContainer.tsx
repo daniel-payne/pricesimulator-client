@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 
-import AdminHeader from "@/display/elements/header/AdminHeader"
+import AdminHeader from "@/display/OLDelements/header/AdminHeader"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 

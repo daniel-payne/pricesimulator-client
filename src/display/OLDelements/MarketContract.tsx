@@ -1,16 +1,16 @@
 import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 
-import TradeChart from "../components/TradeChart"
+import TradeChart from "../OLDcomponents/TradeChart"
 
 import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
 
-import YesterdayMovementDisplay from "../components/YesterdayMovementDisplay"
-import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
+import YesterdayMovementDisplay from "../components/displays/YesterdayMovementDisplay"
+import CurrentOpenDisplay from "../components/displays/CurrentOpenDisplay"
 
 import { type HTMLAttributes, type PropsWithChildren } from "react"
 import { useDataState } from "@keldan-systems/state-mutex"
-import type { Range } from "../components/HistoryRangeChooser"
+import type { Range } from "../components/choosers/RangeChooser"
 import ContractManager from "./ContractManager"
 import ContractStrip from "./ContractStrip"
 import useTimer from "@/data/indexDB/hooks/useTimer"

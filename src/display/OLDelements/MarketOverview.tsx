@@ -4,18 +4,18 @@ import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSym
 import { FaArrowUpRightFromSquare, FaHeart } from "react-icons/fa6"
 
 import { Link } from "react-router-dom"
-import HistoryChart from "../components/HistoryChart"
+import HistoryChart from "../OLDcomponents/HistoryChart"
 
 import useDataForSymbol from "@/data/indexDB/hooks/useDataForSymbol"
 
-import YesterdayMovementDisplay from "../components/YesterdayMovementDisplay"
-import CurrentOpenDisplay from "../components/CurrentOpenDisplay"
+import YesterdayMovementDisplay from "../components/displays/YesterdayMovementDisplay"
+import CurrentOpenDisplay from "../components/displays/CurrentOpenDisplay"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { useDataState } from "@keldan-systems/state-mutex"
-import type { Range } from "../components/HistoryRangeChooser"
+import type { Range } from "../components/choosers/RangeChooser"
 
-import useTimer from "@/data/indexDB/hooks/useTimer"
+// import useTimer from "@/data/indexDB/hooks/useTimer"
 
 type ComponentProps = {
   symbol: string
@@ -25,16 +25,16 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketOverview({ symbol, showGraphs = true, showActions = true, name = "MarketCard", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketOverview({ symbol, showGraphs = true, showActions = true, name = "MarketOverview", ...rest }: PropsWithChildren<ComponentProps>) {
   const market = useMarketForSymbol(symbol)
   const price = useCurrentPriceForSymbol(symbol)
   const data = useDataForSymbol(symbol)
 
-  const timer = useTimer()
+  // const timer = useTimer()
 
   const range = useDataState<Range>("range")
 
-  const timestamp = timer?.currentTimestamp
+  // const timestamp = timer?.currentTimestamp
 
   if (market == null) {
     return (
@@ -78,7 +78,7 @@ export default function MarketOverview({ symbol, showGraphs = true, showActions 
                 {status?.state ?? "No State"} {status?.message}
               </div> */}
               {/* <pre>{JSON.stringify(status, null, 2)}</pre> */}
-              <HistoryChart data={data} price={price} range={range} />
+              <HistoryChart data={data} price={price} range={range} showYScale={undefined} />
 
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(price, null, 2)}</pre> */}
               {/* <pre className="h-full w-full overflow-auto">{JSON.stringify(market, null, 2)}</pre>*/}
