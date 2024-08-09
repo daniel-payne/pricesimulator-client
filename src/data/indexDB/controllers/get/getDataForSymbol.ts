@@ -3,8 +3,9 @@ import db from "@/data/indexDB/db"
 import type { PriceSimulatorDexie } from "@/data/indexDB/db"
 
 import loadDataForSymbol from "@/data/server/load/loadDataForSymbol"
-import { setState } from "@keldan-systems/state-mutex"
+
 import Dexie from "dexie"
+import updateStatus from "../update/updateStatus"
 
 const TIMEGAP_CUTOFF = 10
 
@@ -17,20 +18,20 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     return db.dataCache[symbol]
   }
 
-  setState(symbol + "-STATE", { message: "Retrieving price data" })
+  updateStatus(symbol, { message: "Retrieving price data" })
 
   let data = await db.data?.where({ symbol })?.first()
 
-  setState(symbol + "-STATE", { message: "Finished checking for local data" })
+  updateStatus(symbol, { message: "Finished checking for local data" })
 
   if (data != null) {
-    setState(symbol + "-STATE", { message: "Using Data straight from local data" })
+    updateStatus(symbol, { message: "Using Data straight from local data" })
 
     db.dataCache[symbol] = data
 
     return db.dataCache[symbol]
   } else {
-    setState(symbol + "-STATE", { state: "retrieving", message: "Retrieving data from server" })
+    updateStatus(symbol, { state: "retrieving", message: "Retrieving data from server" })
 
     data = await loadDataForSymbol(symbol)
 
@@ -41,12 +42,12 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     const closes = data?.closes
 
     if (timestamps == null || highs == null || lows == null || opens == null || closes == null) {
-      setState(symbol + "-STATE", { state: "error", message: "Error loading data" })
+      updateStatus(symbol, { state: "error", message: "Error loading data" })
 
       return undefined
     }
 
-    setState(symbol + "-STATE", { state: "processing", message: "Processing data" })
+    updateStatus(symbol, { state: "processing", message: "Processing data" })
 
     const timegaps = data?.timestamps?.map((value: number, index: number) => {
       if (index === 0) {
@@ -89,22 +90,20 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
       }
 
       if (data != null) {
-        data.count = timestamps.length
-        data.firstActiveTimestamp = firstActiveTimestamp
-        data.firstInterdayTimestamp = firstInterdayTimestamp
+        const count = timestamps.length
 
-        setState(symbol + "-STATE", { state: "storing", message: "Storing data" })
+        updateStatus(symbol, { state: "storing", message: "Storing data" })
 
         await db.data.put(data).catch(Dexie.BulkError, function (e) {
           console.error("loadScenarios Loading Error: " + e.failures.length)
         })
 
-        setState(symbol + "-STATE", { state: "loaded", message: "Local data stored" })
+        updateStatus(symbol, { state: "loaded", message: "Local data stored", count, firstActiveTimestamp, firstInterdayTimestamp })
       } else {
-        setState(symbol + "-STATE", { state: "error", message: "Local data error" })
+        updateStatus(symbol, { state: "error", message: "Local data error" })
       }
     } else {
-      setState(symbol + "-STATE", { message: "Using Data from local data" })
+      updateStatus(symbol, { message: "Using Data from local data" })
     }
 
     db.dataCache[symbol] = data

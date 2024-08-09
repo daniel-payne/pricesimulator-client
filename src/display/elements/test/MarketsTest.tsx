@@ -1,6 +1,7 @@
 // import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
 // import useMarketForSymbol from "@/data/indexDB/hooks/useMarketForSymbol"
 import useCurrentPriceForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol"
+import useStatusForSymbol from "@/data/indexDB/hooks/useCurrentPriceForSymbol.1"
 
 import useMarkets from "@/data/indexDB/hooks/useMarkets"
 import FlowLayout from "@/display/components/layouts/FlowLayout"
@@ -54,13 +55,14 @@ export default function MarketsTest({ addBorder = false, name = "MarketsTest", c
 
 const ApplyMarketToEachChild = ({ market, children, showAsJson = false }: { market: any; children?: any; showAsJson: boolean }) => {
   const price = useCurrentPriceForSymbol(market.symbol)
+  const status = useStatusForSymbol(market.symbol)
 
   const array = Children.toArray(children)
 
   const newChildren = array.map((child: any) => {
     const key = market.symbol
 
-    return cloneElement(child, { market, price, key })
+    return cloneElement(child, { market, price, status, key })
   })
 
   return (

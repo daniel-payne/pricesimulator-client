@@ -14,6 +14,7 @@ import type { Price } from "@/data/indexDB/types/Price"
 import { Margin } from "./types/Margin"
 import { Transaction } from "./types/Transaction"
 import { Balance } from "./types/Balance"
+import { Status } from "./types/Status"
 
 export const DIXIE_BALANCE_KEY = "DIXIE_BALANCE_KEY"
 
@@ -27,6 +28,7 @@ export class PriceSimulatorDexie extends Dexie {
   scenarios!: Table<Scenario>
   markets!: Table<Market>
 
+  statuses!: Table<Status>
   data!: Table<Data>
 
   prices!: Table<Price>
@@ -50,6 +52,7 @@ export class PriceSimulatorDexie extends Dexie {
       scenarios: "code, name",
       markets: "symbol, name",
 
+      statuses: "symbol",
       data: "symbol",
       prices: "symbol",
 

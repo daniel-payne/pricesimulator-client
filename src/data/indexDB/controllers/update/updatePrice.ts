@@ -10,6 +10,7 @@ import calculatePriceForIndex from "../../calculate/calculatePriceForIndex"
 
 import Dexie from "dexie"
 import { TradeStatus } from "@/data/indexDB/enums/TradeStatus"
+import getStatusForSymbol from "../get/getStatusForSymbol"
 
 export async function controller(db: PriceSimulatorDexie, symbol: string | undefined, timestamp: number | undefined) {
   if (symbol == null || timestamp == null) {
@@ -23,6 +24,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   }
 
   const market = await getMarketForSymbol(symbol)
+  const status = await getStatusForSymbol(symbol)
 
   const spread = market?.spread
 
@@ -33,6 +35,10 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
   const highs = data?.highs
   const lows = data?.lows
   const closes = data?.closes
+
+  if (status?.firstActiveTimestamp == null || timestamp == null || status?.firstActiveTimestamp < timestamp) {
+    return undefined
+  }
 
   if (timestamps != null) {
     const index = await calculateIndexForTimestamp(timestamps, timestamp, currentPrice?.currentIndex ?? currentPrice?.priorIndex)

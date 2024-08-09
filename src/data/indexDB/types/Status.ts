@@ -8,5 +8,7 @@ export type Status = {
   firstActiveTimestamp?: number | null | undefined
   firstInterdayTimestamp?: number | null | undefined
 
+  message?: string
+
   [index: string]: any
 }

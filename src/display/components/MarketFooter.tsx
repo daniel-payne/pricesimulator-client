@@ -4,10 +4,13 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 import YesterdayMovementDisplay from "./displays/YesterdayMovementDisplay"
 import CurrentOpenDisplay from "./displays/CurrentOpenDisplay"
 import { Price } from "@/data/indexDB/types/Price"
+import { Status } from "@/data/indexDB/types/Status"
+import formatTimestamp from "@/utilities/formatTimestamp"
 
 type ComponentProps = {
   market?: Market | undefined | null
   price?: Price | undefined | null
+  status?: Status | undefined | null
 
   showActions?: boolean | undefined | null
   showForm?: boolean | undefined | null
@@ -18,12 +21,17 @@ type ComponentProps = {
 
 export default function MarketFooter({
   price,
+  status,
   showActions = true,
 
   tradeType = undefined,
   name = "MarketFooter",
   ...rest
 }: PropsWithChildren<ComponentProps>) {
+  if (price == null) {
+    return <div className="fg--subheading">Trading from {formatTimestamp(status?.firstActiveTimestamp)} </div>
+  }
+
   return (
     <div {...rest} data-component={name}>
       <div className="flex flex-row justify-between gap-2">
