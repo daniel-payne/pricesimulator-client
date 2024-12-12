@@ -1,25 +1,32 @@
+import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import type { HTMLAttributes, PropsWithChildren } from "react"
+import MarketNameDescription from "./MarketNameDescription"
+import MarketBehaviors from "./MarketBehaviors"
+import useBehaviorsSelection from "@/data/localStorage/hooks/useBehaviorsSelection"
+import useFavoriteList from "@/data/localStorage/hooks/useFavoriteList"
 
-import type { Market } from "@/data/indexDB/types/Market"
-import MarketBehaviors from "@/display/controllers/behaviors/MarketBehaviors"
+import type { Behavior } from "../controllers/BehaviorSelector"
+import { Settings } from "../Settings"
 
 type ComponentProps = {
-  market?: Market | undefined | null
+  market: MarketOrNothing
 
-  showBehaviors?: boolean | undefined | null
+  settings?: Settings
+  favoriteSymbols?: Array<string>
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketHeader({ market, showBehaviors = true, name = "MarketHeader", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketHeader({ market, settings = {}, favoriteSymbols = [], name = "MarketHeader", ...rest }: PropsWithChildren<ComponentProps>) {
+  const { behaviors = "off" } = settings
+
+  const isFavorite = favoriteSymbols?.includes(market?.symbol ?? "MISSING")
+
   return (
-    <div {...rest} data-component={name}>
-      <div className="flex flex-row justify-between gap-2">
-        <div className="text-xl font-bold truncate">
-          <span className="fg--heading">{market?.name}</span>
-          <span className="fg--subheading ps-2 text-sm">{market?.description}</span>
-        </div>
-        {showBehaviors && <MarketBehaviors market={market} />}
+    <div {...rest} data-controller={name}>
+      <div className="h-full w-full flex flex-row justify-between ">
+        <MarketNameDescription className="truncate pe-2" market={market} />
+        {behaviors === "on" && <MarketBehaviors market={market} isFavorite={isFavorite} />}
       </div>
     </div>
   )

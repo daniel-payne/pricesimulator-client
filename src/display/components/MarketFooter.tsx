@@ -1,70 +1,52 @@
-import { Market } from "@/data/indexDB/types/Market"
+import type { MarketOrNothing } from "@/data/indexDB/types/Market"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-import YesterdayMovementDisplay from "./displays/YesterdayMovementDisplay"
-import CurrentOpenDisplay from "./displays/CurrentOpenDisplay"
-import { Price } from "@/data/indexDB/types/Price"
-import { Status } from "@/data/indexDB/types/Status"
-import formatTimestamp from "@/utilities/formatTimestamp"
+import YesterdayMovementDisplay from "./YesterdayMovementDisplay"
+import CurrentOpenDisplay from "./CurrentOpenDisplay"
+import { PriceOrNothing } from "@/data/indexDB/types/Price"
+import useInfosSelection from "@/data/localStorage/hooks/useInfosSelection"
+import { Info } from "../controllers/InfoSelector"
+import { Action } from "../controllers/ActionSelector"
+import useActionsSelection from "@/data/localStorage/hooks/useActionsSelection"
+import { Settings } from "../Settings"
+import ActionManager from "../coordinators/ActionManager"
 
 type ComponentProps = {
-  market?: Market | undefined | null
-  price?: Price | undefined | null
-  status?: Status | undefined | null
+  market: MarketOrNothing
+  price?: PriceOrNothing
 
-  showActions?: boolean | undefined | null
-  showForm?: boolean | undefined | null
-  tradeType?: string | undefined | null
+  settings?: Settings
 
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketFooter({
-  price,
-  status,
-  showActions = true,
-
-  tradeType = undefined,
-  name = "MarketFooter",
-  ...rest
-}: PropsWithChildren<ComponentProps>) {
-  if (price == null) {
-    return <div className="fg--subheading">Trading from {formatTimestamp(status?.firstActiveTimestamp)} </div>
+export default function MarketFooter({ market, price, settings = {}, name = "MarketFooter", ...rest }: PropsWithChildren<ComponentProps>) {
+  if (market == null || price == null) {
+    return
   }
 
+  const { actions = "on", infos = "on" } = settings
+
+  const hasNoPrices = price == null
+  const hasPrices = !hasNoPrices
+
+  // const actions = useActionsSelection()
+
   return (
-    <div {...rest} data-component={name}>
-      <div className="flex flex-row justify-between gap-2">
-        <div className="flex flex-row justify-between items-center gap-2">
-          <YesterdayMovementDisplay price={price} />
-          <CurrentOpenDisplay price={price} />
+    <div {...rest} data-controller={name}>
+      <div className="h-full w-full flex flex-row justify-between ">
+        <div className="flex-auto flex flex-row gap-2 items-center">
+          {hasPrices && infos === "on" && (
+            <>
+              <YesterdayMovementDisplay price={price} />
+              <CurrentOpenDisplay market={market} price={price} />
+            </>
+          )}
+          {hasNoPrices && <div className="text-xs text-secondary opacity-50">Market Not Active</div>}
         </div>
-        {showActions === true && (
-          <>
-            {tradeType === "dollar" && (
-              <div className="flex flex-row justify-between items-center gap-2">
-                <input className="input input-sm w-[76px] font-bold" placeholder="$1,000" />
-                <button className="btn btn-xs  btn-buy">Buy</button>
-                <button className="btn btn-xs  btn-sell">Sell</button>
-              </div>
-            )}
-            {tradeType === "contract" && (
-              <div className="flex flex-row justify-between items-center gap-2">
-                <div className="flex flex-row justify-between items-center gap-2">
-                  <button className="btn btn-sm  btn-outline btn-primary ">Quarter</button>
-                  <button className="btn btn-sm btn-outline btn-primary ">Half</button>
-                  <button className="btn btn-sm btn-primary ">One</button>
-                  <button className="btn btn-sm btn-outline btn-primary ">Two</button>
-                  <div className="divider divider-horizontal"></div>
-                  <button className="btn btn-sm  btn-buy">Buy</button>
-                  <button className="btn btn-sm btn-outline  btn-sell">Sell</button>
-                  <div className="divider divider-horizontal"></div>
-                  <button className="btn btn-sm btn-primary rounded-3xl">Place the order</button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
+        <div className="flex-auto flex flex-row gap-2 justify-end items-center">
+          {actions === "on" && <ActionManager symbol={market?.symbol} settings={settings} />}
+        </div>
       </div>
     </div>
   )

@@ -3,6 +3,71 @@
 @tailwind utilities;
 
 /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+.h-128 {
+  height: 32rem;
+}
+
+.h-192 {
+  height: 48rem;
+}
+
+.h-256 {
+  height: 64rem;
+}
+
+.h-320 {
+  height: 80rem;
+}
+
+.min-h-128 {
+  min-height: 32rem;
+}
+
+.min-h-192 {
+  min-height: 48rem;
+}
+
+.min-h-256 {
+  min-height: 64rem;
+}
+
+.min-h-320 {
+  min-height: 80rem;
+}
+
+.w-128 {
+  width: 32rem;
+}
+
+.w-192 {
+  width: 48rem;
+}
+
+.w-256 {
+  width: 64rem;
+}
+
+.w-320 {
+  width: 80rem;
+}
+
+.min-w-128 {
+  min-width: 32rem;
+}
+
+.min-w-192 {
+  min-width: 48rem;
+}
+
+.min-w-256 {
+  min-width: 64rem;
+}
+
+.min-w-320 {
+  min-width: 80rem;
+}
+
+/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 
 :root {
   --text-a: rgba(255, 255, 255, 1);
@@ -45,6 +110,11 @@
   --outcome-partial: rgba(219, 212, 43, 1);
   --outcome-profit: rgba(31, 158, 58, 1);
   --outcome-neutral: rgba(2, 153, 204, 1);
+
+  --outcome-loss-75: rgba(244, 85, 85, 0.75);
+  --outcome-partial-75: rgba(219, 212, 43, 0.75);
+  --outcome-profit-75: rgba(31, 158, 58, 0.75);
+  --outcome-neutral-75: rgba(2, 153, 204, 0.75);
 
   --outcome-loss-50: rgba(244, 85, 85, 0.5);
   --outcome-partial-50: rgba(219, 212, 43, 0.5);
@@ -175,6 +245,10 @@
     color: var(--outcome-loss) !important;
   }
 
+  .text-partial {
+    color: var(--outcome-partial) !important;
+  }
+
   /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 
   .fg-price-info--closed {
@@ -204,4 +278,5 @@ div#root {
   margin: 0;
   height: 100%;
   width: 100%;
+  /* overflow: hidden; */
 }

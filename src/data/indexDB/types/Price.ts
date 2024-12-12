@@ -1,12 +1,15 @@
-//         Call / Buy  @ Bid / Offer
+//         Call / Buy  @ Ask Price         $>  lowest price a seller/market will accept
 // Price
-//         Put  / Sell @ Ask
+//         Put  / Sell @ Bid / Offer Price <$  highest price a buyer/market will pay
 
 export type Price = {
-  isMarketClosed: boolean
+  symbol: string
 
-  priorIndex: number | null | undefined
-  priorTimestamp: number | null | undefined
+  isMarketActive?: boolean
+  isMarketClosed?: boolean
+
+  priorIndex?: number | null | undefined
+  priorTimestamp?: number | null | undefined
   priorTimestampISO?: string | null | undefined
   priorTimestampDay?: string | null | undefined
   priorOpen?: number | null | undefined
@@ -39,3 +42,5 @@ export type Price = {
 
   [index: string]: any
 }
+
+export type PriceOrNothing = Price | null | undefined

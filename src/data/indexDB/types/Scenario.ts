@@ -1,23 +1,9 @@
 export type Scenario = {
-  id: number
+  ref: string
   name: string
   description?: string
 
-  contractTypeSettings?: {
-    options?: Array<string>
-  }
-
-  contractNotionalSettings?: {
-    isTradingContracts?: boolean
-    isReadonly?: boolean
-    defaultValue?: number
-  }
-
-  canUseStopLoss?: boolean
-  canUseTakeProfit?: boolean
-  canCoverTrade?: boolean
-
-  symbols: Array<string>
+  symbols: string
 
   [index: string]: any
 }

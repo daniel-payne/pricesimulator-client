@@ -1,13 +1,13 @@
 import { ScenarioSpeed } from "../enums/ScenarioSpeed"
 
 export type Timer = {
-  id?: string
+  guid: string
 
-  startDay?: string
   speed?: ScenarioSpeed
 
-  currentTimestamp?: number
-  currentDay?: string
+  currentIndex?: number
 
   isTimerActive?: boolean
 }
+
+export type TimerOrNothing = Timer | null | undefined
