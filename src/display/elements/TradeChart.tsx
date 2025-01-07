@@ -51,6 +51,9 @@ export default function TradeChart({ closes, trade, margin, range = "1m", name =
 
   const displayCloses = closes?.slice(startDataIndex, endDataIndex + 1) ?? []
 
+  displayCloses[0] = trade?.entryPrice ?? displayCloses[0]
+  displayCloses[displayCloses.length-1] = trade?.exitPrice ?? displayCloses[displayCloses.length-1]
+
   const entryPrice = trade?.entryPrice ?? 0
   const exitPrice = margin?.currentPrice ?? trade?.exitPrice ?? 0
   const exitProfit = entryPrice - exitPrice

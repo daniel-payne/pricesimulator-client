@@ -7,6 +7,7 @@ import transactionsAdd from "./transactionsAdd"
 import { TransactionSource } from "../enums/TransactionSource"
 
 import favoritesClear from "@/data/localStorage/controllers/favoritesClear"
+import { setState, StoragePersistence } from "@keldan-systems/state-mutex"
 
 export async function controller(db: PriceSimulatorDexie) {
   await db.trades.clear()
@@ -14,9 +15,11 @@ export async function controller(db: PriceSimulatorDexie) {
 
   await timerReset()
 
-  await transactionsAdd(5000, TransactionSource.User, undefined, "Initial Deposit")
+  await transactionsAdd(5000, TransactionSource.User, undefined, "Fresh start deposit")
 
   await favoritesClear()
+
+  setState("CAN-PAUSE", true, StoragePersistence.local)
 
   return
 }

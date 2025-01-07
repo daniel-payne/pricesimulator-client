@@ -8,7 +8,7 @@ import type { PriceSimulatorDexie } from "../db"
 
 import timerUpdate from "./timerUpdate"
 
-export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed) {
+export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed, takeControl?: boolean) {
   if (db.timeout != null) {
     window.clearTimeout(db.timeout)
   }
@@ -21,9 +21,9 @@ export async function controller(db: PriceSimulatorDexie, speed?: ScenarioSpeed)
     await timerUpdate({ guid, isTimerActive: true })
   }
 
-  timerNextDay()
+  timerNextDay(takeControl)
 }
 
-export default function timerStart(speed?: ScenarioSpeed) {
-  return controller(db, speed)
+export default function timerStart(speed?: ScenarioSpeed, takeControl?: boolean) {
+  return controller(db, speed, takeControl)
 }

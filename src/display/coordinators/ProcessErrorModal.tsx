@@ -20,12 +20,6 @@ export default function ProcessErrorModal({ processError, name = "ProcessErrorMo
     }
   }
 
-  const handleConfirm = async () => {
-    await clearAllData()
-
-    handleCancel()
-  }
-
   return (
     <div {...rest} data-controller={name}>
       <dialog id={PROCESSERROR_MODAL} className="modal">

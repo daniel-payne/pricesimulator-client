@@ -61,7 +61,7 @@ export async function controller(db: PriceSimulatorDexie, takeControl: boolean) 
 
   if (isOwner && isTimerActive) {
     if (takeControl === true) {
-      isTimerActive = false
+      // isTimerActive = false
 
       await updateTimer(db, { guid: db.guid, currentIndex, isTimerActive })
     } else {

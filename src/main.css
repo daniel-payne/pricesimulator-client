@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+.h-104 {
+  height: 26rem;
+}
+
+.h-112 {
+  height: 28rem;
+}
+
 .h-128 {
   height: 32rem;
 }
@@ -17,6 +25,18 @@
 
 .h-320 {
   height: 80rem;
+}
+
+.max-h-104 {
+  max-height: 26rem;
+}
+
+.max-h-112 {
+  max-height: 28rem;
+}
+
+.max-h-128 {
+  max-height: 32rem;
 }
 
 .min-h-128 {
@@ -254,12 +274,15 @@
   .fg-price-info--closed {
     color: var(--text-d);
   }
+
   .fg-price-info--profit {
     color: var(--outcome-profit);
   }
+
   .fg-price-info--loss {
     color: var(--outcome-loss);
   }
+
   .fg-price-info--no-movement {
     color: var(--outcome-neutral);
   }
@@ -280,3 +303,12 @@ div#root {
   width: 100%;
   /* overflow: hidden; */
 }
+
+/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+.btn:is(.btn-disabled, [disabled], :disabled) {
+  background-color: gainsboro;
+  color: dimgrey
+}
+
+/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */

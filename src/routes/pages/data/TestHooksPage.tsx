@@ -16,6 +16,7 @@ import useSymbols from "@/data/indexDB/hooks/useSymbols"
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import useTrades from "@/data/indexDB/hooks/useTrades"
 import useTransactions from "@/data/indexDB/hooks/useTransactions"
+import useActiveMarkets from "@/data/indexDB/hooks/useActiveMarkets"
 
 import useActionsSelection from "@/data/localStorage/hooks/useActionsSelection"
 import useBehaviorsSelection from "@/data/localStorage/hooks/useBehaviorsSelection"
@@ -80,6 +81,8 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
   const [code, setCode] = useState<string>("USD")
   const [id, setId] = useState<string>("")
 
+  const activeMarkets = useActiveMarkets()
+
   const activeTrades = useActiveTrades()
   const activeTradesFor = useActiveTradesFor(symbol)
   const activeLatestTradeFor = useActiveLatestTradeFor(symbol)
@@ -138,6 +141,8 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
 
   if (checkIfSelected("activeTrades")) {
     data = activeTrades
+  } if (checkIfSelected("activeMarkets")) {
+    data = activeMarkets
   } else if (checkIfSelected("activeTradesFor")) {
     data = activeTradesFor
   } else if (checkIfSelected("activeLatestTradeFor")) {
@@ -244,6 +249,9 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
               <SelectHook name="useMarkets" onSelect={setSelection} />
               <SelectHook name="useMarketFor" symbol={symbol} onSelect={setSelection} />
             </div>
+            <div className="p-2 flex flex-row flex-wrap gap-4">
+               <SelectHook name="useActiveMarkets" onSelect={setSelection} />
+             </div>
             <div className="divider">Stored</div>
             <div className="p-2 flex flex-row flex-wrap gap-4">
               <SelectHook name="useTimer" onSelect={setSelection} />

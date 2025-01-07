@@ -156,7 +156,8 @@ export default function TestControllersPage({ name = "TestControllersPage", ...r
         <div className="divider">Transaction</div>
         <div className="p-2 flex flex-row flex-wrap gap-4">
           <SelectController name="transactionsAdd" type="success" onRun={() => transactionsAdd(+transactionValue, transactionSource as TransactionSource)} />
-          <SelectController name="transaction Deposit 500" value={500} />
+          <SelectController name="transaction Deposit 500"   onRun={() => transactionsAdd(500, TransactionSource.User)} />
+          <SelectController name="transaction Deposit 5000"  onRun={() => transactionsAdd(5000, TransactionSource.User)} />
         </div>
 
         <div className="divider">Trade</div>

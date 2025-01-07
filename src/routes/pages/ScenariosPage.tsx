@@ -1,3 +1,4 @@
+import timerPause from "@/data/indexDB/controllers/timerPause"
 import useScenarios from "@/data/indexDB/hooks/useScenarios"
 import ScenariosHeader from "@/display/coordinators/ScenariosHeader"
 
@@ -11,6 +12,8 @@ type ComponentProps = {
 
 export default function ScenariosPage({ name = "ScenariosPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const scenarios = useScenarios()
+
+  timerPause()
 
   if ((scenarios?.length ?? 0) < 1) {
     return <div>Loading Scenarios</div>

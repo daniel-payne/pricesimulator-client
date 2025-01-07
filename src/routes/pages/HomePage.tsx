@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router"
 
-import { useDataState, useLocalState } from "@keldan-systems/state-mutex"
+import { getState, setState, StoragePersistence, useDataState, useLocalState } from "@keldan-systems/state-mutex"
 
 import useTimer from "@/data/indexDB/hooks/useTimer"
 import formatIndexAsDate from "@/utilities/formatIndexAsDate"
@@ -17,6 +17,8 @@ import LoadAllModal, { LOADALL_MODAL } from "@/display/coordinators/LoadAllModal
 import useLoadingStatus from "@/data/indexDB/hooks/useLoadingStatus"
 import formatNumber from "@/utilities/formatNumber"
 import DeleteAllModal, { DELETEALL_MODAL } from "@/display/coordinators/DeleteAllModal"
+import timerStart from "@/data/indexDB/controllers/timerStart"
+import { ScenarioSpeed } from "@/data/indexDB/enums/ScenarioSpeed"
 // import usePriceSummaries from "@/data/indexDB/hooks/usePriceSummaries"
 // import loadDataForAllSymbols from "@/data/indexDB/controllers/loadDataForAllSymbols"
 // import loadDataForAllKeys from "@/data/indexDB/controllers/loadDataForAllKeys"
@@ -32,6 +34,8 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
 
   const [storageEstimate, setStorageEstimate] = useState<StorageEstimate>()
 
+  const canPause = useDataState<boolean>('CAN-PAUSE')
+
   const { marketsCount, loadedMarketsCount } = useLoadingStatus()
 
   const isFullyLoaded = marketsCount === loadedMarketsCount
@@ -39,6 +43,12 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
   const timer = useTimer()
 
   const { currentIndex } = timer ?? {}
+
+  useEffect(() => {
+    if (timer.isTimerActive === false && canPause === false) {
+      timerStart(ScenarioSpeed.Slow, true)
+    }
+  }, [canPause])
 
   const handleShowResetModal = async () => {
     const element = document?.getElementById(RESET_MODAL) as HTMLDialogElement
@@ -58,6 +68,10 @@ export default function HomePage({ name = "HomePage", ...rest }: PropsWithChildr
 
   const handleStartTrading = async () => {
     if (marketsCount === loadedMarketsCount) {
+      setState("CAN-PAUSE", false, StoragePersistence.local)
+
+      timerStart()
+
       navigate("/prices")
     } else {
       const element = document?.getElementById(LOADALL_MODAL) as HTMLDialogElement

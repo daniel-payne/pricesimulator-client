@@ -23,9 +23,10 @@ export async function controller(db: PriceSimulatorDexie, day?: string) {
 
   const currentIndex = Math.floor(currentEpoch / 1000 / 60 / 60 / 24)
 
+  await timerNextDay(true)
+
   await timerUpdate({ isTimerActive: false, currentIndex })
 
-  await timerNextDay(true)
 }
 
 export default function timerReset(day?: string) {

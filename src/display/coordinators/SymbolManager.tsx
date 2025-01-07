@@ -1,7 +1,6 @@
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-import MarketContractDescription from "../components/MarketContractDescription"
-import MarketSummaryDescription from "../components/MarketSummaryDescription"
+
 
 import useMarketFor from "@/data/indexDB/hooks/useMarketFor"
 
@@ -12,18 +11,16 @@ import MarketFooter from "../components/MarketFooter"
 import FormManager from "./FormManager"
 
 import MarketPriceDescription from "../components/MarketPriceDescription"
-
-import useViewSelection from "@/data/localStorage/hooks/useViewSelection"
-import useContentSelection from "@/data/localStorage/hooks/useContentSelection"
+import ContractDescription from "../components/ContractDescription"
 
 import ClosesManager from "./ClosesManager"
 import HighLowManager from "./HighLowManager"
-import useActiveTradesFor from "@/data/indexDB/hooks/useActiveTradesFor"
-import { View } from "../controllers/ViewChooser"
-import { Content } from "../controllers/ContentChooser"
-import { Behavior } from "../controllers/BehaviorSelector"
-import { Action } from "../controllers/ActionSelector"
-import { Settings } from "../Settings"
+
+import type { Settings } from "../Settings"
+
+
+import useTimer from "@/data/indexDB/hooks/useTimer"
+import MarketSummaryDescription from "../components/MarketSummaryDescription"
 
 type ComponentProps = {
   symbol: string
@@ -46,6 +43,8 @@ export default function SymbolManager({
   const market = useMarketFor(symbol)
   const price = usePriceFor(symbol)
 
+  const timer = useTimer()
+
   const { view = "contracted", content = "info" } = settings
 
   if (market == null || price == null) {
@@ -62,8 +61,8 @@ export default function SymbolManager({
               <div className="h-full w-full relative">
                 {content === "info" && (
                   <>
-                    <MarketContractDescription market={market} />
                     <MarketSummaryDescription market={market} />
+                    <ContractDescription market={market} price={price} timer={timer} settings={settings} />
                   </>
                 )}
                 {content === "price" && <MarketPriceDescription market={market} price={price} />}

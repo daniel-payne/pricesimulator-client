@@ -61,8 +61,10 @@ export async function controller(
 
   const contractValue = computeContractValueFor(market, price) ?? 1
 
-  if (contractValue * INITIAL_MARGIN_REQUIREMENT > availableBalance) {
-    throw new Error(`Insufficient funds, you need to have ${formatValue(contractValue * INITIAL_MARGIN_REQUIREMENT)} to complete this trade`)
+  const adjustedContractValue = contractValue * sizeValue
+
+  if (adjustedContractValue * INITIAL_MARGIN_REQUIREMENT > availableBalance) {
+    throw new Error(`Insufficient funds, you need to have ${formatValue(adjustedContractValue * INITIAL_MARGIN_REQUIREMENT)} to complete this trade`)
   }
 
   const count = await db.trades?.count()

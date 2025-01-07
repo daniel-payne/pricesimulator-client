@@ -42,14 +42,10 @@ export default function ContractController({
 
   settings = {},
 
-  name = "ContractManager",
+  name = "ContractController",
   ...rest
 }: PropsWithChildren<ComponentProps>) {
   const [showOutcome, setShowOutcome] = useState(false)
-
-  const { showMultiples = false } = settings
-
-  const displayInstructions = showMultiples ? "Instructions to Broker" : "Instructions to Market"
 
   const handleStartAgain = async () => {
     setShowOutcome(false)
@@ -58,13 +54,14 @@ export default function ContractController({
   return (
     <div {...rest} data-controller={name}>
       <div className="h-full w-full overflow-auto">
-        <div className="text-info p-2 text-lg font-bold">{displayInstructions}</div>
 
-        <ContractDescription market={market} price={price} timer={timer} settings={settings} />
         {currentTrade == null && showOutcome === false && <StartContract market={market} price={price} settings={settings} />}
         {currentTrade != null && <StopContract market={market} price={price} trade={currentTrade} settings={settings} />}
         {currentTrade != null && <DisplayMargin market={market} price={price} trade={currentTrade} margin={margin} timer={timer} settings={settings} />}
         {lastTrade != null && showOutcome === true && <DisplayOutcome market={market} trade={lastTrade} margin={margin} onStartAgain={handleStartAgain} />}
+
+
+        <ContractDescription market={market} price={price} timer={timer} settings={settings} />
 
         {/* <pre>{JSON.stringify(currentTrade, null, 2)}</pre> */}
       </div>

@@ -78,7 +78,7 @@ export async function controller(db: PriceSimulatorDexie, symbol: string | undef
     return
   }
 
-  const response = await fetch(`/public/prices/${market.symbol}.txt`, {})
+  const response = await fetch(`/public/prices/${market.symbol.toLowerCase()}.txt`, {}) 
 
   if (response.ok === false) {
     return { error: response.statusText }

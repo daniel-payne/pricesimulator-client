@@ -5,6 +5,7 @@ import generateID from "@/utilities/generateID"
 
 import { Transaction } from "../types/Transaction"
 import { TransactionSource } from "../enums/TransactionSource"
+ 
 
 export async function controller(db: PriceSimulatorDexie, value: number, source: TransactionSource, index?: number, description?: string, reference?: string) {
   const id = generateID()
@@ -26,7 +27,7 @@ export async function controller(db: PriceSimulatorDexie, value: number, source:
     reference,
   } as Transaction
 
-  db.transactions.add(newTransaction)
+  await db.transactions.add(newTransaction)
 
   return newTransaction
 }

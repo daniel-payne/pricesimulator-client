@@ -38,7 +38,7 @@ export default function StartContract({ market, price, settings = {}, name = "St
   return (
     <div {...rest} data-controller={name}>
       <div className="p-2">
-        <div className="divider">I would like to open a position</div>
+      <div className="text-info text-center +p-2 text-lg font-bold">I would like to open a position</div>
         <div className="flex flex-col justify-start items-center p-2 gap-4">
           <div className="flex flex-row gap-2 justify-center items-center">
             <div>For</div>
