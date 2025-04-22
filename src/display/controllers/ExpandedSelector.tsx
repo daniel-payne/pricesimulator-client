@@ -1,25 +1,25 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaBorderTopLeft, FaGears } from "react-icons/fa6"
+import { FaArrowDownShortWide } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-export type Behavior = "on" | "off"
-
 type ComponentProps = {
+  isDisabled?: boolean
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-const TOOLTIP = "Behavior"
+const TOOLTIP = "Show Expanded"
 
-export default function BehaviorSelector({ name = "BehaviorSelector", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [view, setView] = useQueryState<Behavior>("behaviors", "off")
+export default function ExpandedSelector({ isDisabled = false, name = "ExpandedSelector", ...rest }: PropsWithChildren<ComponentProps>) {
+  const [view, setView] = useQueryState<boolean>("show-expanded", false)
 
   const handleClick = () => {
-    const newValue = view === "on" ? "off" : "on"
+    const newValue = !view
 
     setView(newValue)
   }
@@ -27,10 +27,10 @@ export default function BehaviorSelector({ name = "BehaviorSelector", ...rest }:
   let classNameSwitch = UNSELECTED_BUTTON
 
   switch (view) {
-    case "on":
+    case true:
       classNameSwitch = SELECTED_BUTTON
       break
-    case "off":
+    case false:
       classNameSwitch = UNSELECTED_BUTTON
       break
   }
@@ -39,9 +39,9 @@ export default function BehaviorSelector({ name = "BehaviorSelector", ...rest }:
     <div {...rest} data-component={name}>
       <div className="flex flex-row gap-2 justify-center items-center">
         <div className="tooltip tooltip-bottom" data-tip={TOOLTIP} onClick={handleClick}>
-          <div className={classNameSwitch}>
-            <FaBorderTopLeft className="rotate-90" />
-          </div>
+          <button className={classNameSwitch} disabled={isDisabled}>
+            <FaArrowDownShortWide />
+          </button>
         </div>
       </div>
     </div>

@@ -12,7 +12,9 @@ import ApplicationNavigation from "../elements/ApplicationNavigation"
 import ViewChooser from "../controllers/ViewChooser"
 import useViewSelection from "@/data/localStorage/hooks/useViewSelection"
 import FavoritesSelector from "../controllers/FavoritesSelector"
-import useFavoriteSelection from "@/data/localStorage/hooks/useFavoriteSelection"
+import useFavoriteSelection from "@/data/localStorage/hooks/useFavoritesSelection"
+import ExpandedSelector from "../controllers/ExpandedSelector"
+import { useQueryState } from "@keldan-systems/state-mutex"
 
 type ComponentProps = {
   focus?: string
@@ -25,11 +27,11 @@ export default function PricesHeader({ name = "PricesHeader", ...rest }: PropsWi
 
   const { currentIndex } = timer
 
-  const favorite = useFavoriteSelection()
-  const view = useViewSelection()
+  //const [showFavorites] = useQueryState<boolean>("show-favorites")
+  const [showExpanded] = useQueryState<boolean>("show-expanded")
 
-  const isViewDisabled = favorite === "off"
-  const isRangeDisabled = view === "contracted" || isViewDisabled
+  //const isViewDisabled = showFavorites === false
+  const isRangeDisabled = showExpanded === false
 
   return (
     <div {...rest} data-controller={name}>
@@ -38,7 +40,7 @@ export default function PricesHeader({ name = "PricesHeader", ...rest }: PropsWi
         <div className="flex-auto flex flex-row gap2 justify-center items-center">
           <FavoritesSelector />
           <div className="divider divider-horizontal" />
-          <ViewChooser isDisabled={isViewDisabled} />
+          <ExpandedSelector />
           <div className="divider divider-horizontal" />
           <RangeChooser isDisabled={isRangeDisabled} />
         </div>

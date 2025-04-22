@@ -13,13 +13,14 @@ export async function controller(db: PriceSimulatorDexie) {
   await db.trades.clear()
   await db.transactions.clear()
 
+  setState("CAN-PAUSE", true, StoragePersistence.local)
+
   await timerReset()
 
   await transactionsAdd(5000, TransactionSource.User, undefined, "Fresh start deposit")
 
   await favoritesClear()
 
-  setState("CAN-PAUSE", true, StoragePersistence.local)
 
   return
 }

@@ -11,10 +11,12 @@ type ComponentProps = {
 
   settings?: Settings
 
+  showPriceScale?: boolean
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ClosesManager({ symbol, settings = {}, name = "ClosesManager", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ClosesManager({ symbol, settings = {}, showPriceScale = true, name = "ClosesManager", ...rest }: PropsWithChildren<ComponentProps>) {
   const closes = useClosesFor(symbol)
   const price = usePriceFor(symbol)
 
@@ -30,7 +32,7 @@ export default function ClosesManager({ symbol, settings = {}, name = "ClosesMan
 
   return (
     <div {...rest} data-controller={name}>
-      <ClosesChart className="h-full w-full" closes={closes} price={price} range={range} />
+      <ClosesChart className="h-full w-full" closes={closes} price={price} range={range} showPriceScale={showPriceScale} />
     </div>
   )
 }

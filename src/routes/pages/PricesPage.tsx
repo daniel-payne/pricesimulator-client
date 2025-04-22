@@ -1,7 +1,7 @@
 import useMarketsByCategories from "@/data/indexDB/hooks/useMarketsByCategories"
 
 import useFavoriteList from "@/data/localStorage/hooks/useFavoriteList"
-import useFavoriteSelection from "@/data/localStorage/hooks/useFavoriteSelection"
+import useFavoriteSelection from "@/data/localStorage/hooks/useFavoritesSelection"
 import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
 
 import { Favorites } from "@/display/controllers/FavoritesSelector"
@@ -22,38 +22,40 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithChildren<ComponentProps>) {
-  const favorite = useFavoriteSelection()
+  const showFavorites = useFavoriteSelection()
 
   const favoriteSymbols = useFavoriteList()
 
   const range = useRangeSelection("1m")
 
-  const categories = useMarketsByCategories(favorite === "on")
+  const categories = useMarketsByCategories(showFavorites === true)
 
   const symbolCount = categories?.reduce((count, category) => count + category.markets?.length, 0)
 
   const [favorites] = useQueryState<Favorites>("favorites")
-  const [view, setView] = useQueryState<View>("view")
+  const [showExpanded, setExpanded] = useQueryState<boolean>("show-expanded")
 
-  const displayClassName = view === "expanded" ? sizeForCount(symbolCount ?? 1) + " p-2" : `h-auto w-full sm:w-1/2 md:w-1/4 lg:w-1/6 p-2`
+  // const displayClassName = showExpanded ? sizeForCount(symbolCount ?? 1) + " p-2" : `h-auto w-full sm:w-1/2 md:w-1/4 lg:w-1/6 p-2`
+  const displayClassName = showExpanded ? `h-64 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2` : `h-auto w-full sm:w-1/2 md:w-1/4 lg:w-1/6 p-2`
 
   const displayWrapperClassName =
-    view === "expanded"
+    showExpanded === true
       ? "h-full w-full min-h-0 flex flex-row flex-wrap overflow-auto justify-start items-start"
       : "h-auto w-full min-h-0 flex flex-row flex-wrap overflow-auto justify-start items-start"
 
   useEffect(() => {
-    if (favorites === "off" && view === "expanded") {
-      setView("contracted")
+    if (favorites === "off" && showExpanded === true) {
+      setExpanded(false)
     }
   }, [favorites])
 
   const settings = {
-    view: view,
     content: "sparkline",
-    behaviors: "on",
-    actions: "off",
     range,
+    showAction: false,
+    showController: true,
+    showSummary: true,
+    showExpanded: showExpanded,
     showMultiples: false,
   } as Settings
 
@@ -66,7 +68,7 @@ export default function PricesPage({ name = "PricesPage", ...rest }: PropsWithCh
           <div className={displayWrapperClassName}>
             {categories?.map((category) => (
               <>
-                {favorite === "off" && <div className="ps-4 py-2 fg--subheading w-full">{capitalizedWord(category.name)}</div>}
+                {showFavorites === false && <div className="ps-4 py-2 fg--subheading w-full">{capitalizedWord(category.name)}</div>}
 
                 {category.markets?.map((market) => (
                   <div className={displayClassName} key={market.symbol}>

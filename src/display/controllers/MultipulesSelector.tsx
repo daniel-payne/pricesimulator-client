@@ -1,10 +1,8 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaHeart } from "react-icons/fa6"
+import { FaEllipsis } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
-
-export type Multipules = "on" | "off"
 
 type ComponentProps = {
   name?: string
@@ -13,13 +11,13 @@ type ComponentProps = {
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-const TOOLTIP = "Favorites"
+const TOOLTIP = "Show Multipules"
 
 export default function MultipulesSelector({ name = "MultipulesSelector", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [view, setView] = useQueryState<Multipules>("multipules", "off")
+  const [view, setView] = useQueryState<boolean>("show-multipules", false)
 
   const handleClick = () => {
-    const newValue = view === "on" ? "off" : "on"
+    const newValue = !view
 
     setView(newValue)
   }
@@ -27,10 +25,10 @@ export default function MultipulesSelector({ name = "MultipulesSelector", ...res
   let classNameSwitch = UNSELECTED_BUTTON
 
   switch (view) {
-    case "on":
+    case true:
       classNameSwitch = SELECTED_BUTTON
       break
-    case "off":
+    case false:
       classNameSwitch = UNSELECTED_BUTTON
       break
   }
@@ -40,7 +38,7 @@ export default function MultipulesSelector({ name = "MultipulesSelector", ...res
       <div className="flex flex-row gap-2 justify-center items-center">
         <div className="tooltip tooltip-bottom" data-tip={TOOLTIP} onClick={handleClick}>
           <div className={classNameSwitch}>
-            <FaHeart />
+            <FaEllipsis />
           </div>
         </div>
       </div>

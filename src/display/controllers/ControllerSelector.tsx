@@ -1,6 +1,6 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaHeart } from "react-icons/fa6"
+import { FaBorderTopLeft } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -13,10 +13,10 @@ type ComponentProps = {
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-const TOOLTIP = "Show Favorites"
+const TOOLTIP = "Show Controller"
 
-export default function FavoritesSelector({ name = "FavoritesSelector", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [view, setView] = useQueryState<boolean>("show-favorites", false)
+export default function ControllerSelector({ name = "ControllerSelector", ...rest }: PropsWithChildren<ComponentProps>) {
+  const [view, setView] = useQueryState<boolean>("show-controller", false)
 
   const handleClick = () => {
     const newValue = !view
@@ -40,7 +40,7 @@ export default function FavoritesSelector({ name = "FavoritesSelector", ...rest 
       <div className="flex flex-row gap-2 justify-center items-center">
         <div className="tooltip tooltip-bottom" data-tip={TOOLTIP} onClick={handleClick}>
           <div className={classNameSwitch}>
-            <FaHeart />
+            <FaBorderTopLeft className="rotate-90" />
           </div>
         </div>
       </div>

@@ -4,10 +4,7 @@ import type { HTMLAttributes, PropsWithChildren } from "react"
 import YesterdayMovementDisplay from "./YesterdayMovementDisplay"
 import CurrentOpenDisplay from "./CurrentOpenDisplay"
 import { PriceOrNothing } from "@/data/indexDB/types/Price"
-import useInfosSelection from "@/data/localStorage/hooks/useInfosSelection"
-import { Info } from "../controllers/InfoSelector"
-import { Action } from "../controllers/ActionSelector"
-import useActionsSelection from "@/data/localStorage/hooks/useActionsSelection"
+
 import { Settings } from "../Settings"
 import ActionManager from "../coordinators/ActionManager"
 
@@ -25,7 +22,7 @@ export default function MarketFooter({ market, price, settings = {}, name = "Mar
     return
   }
 
-  const { actions = "on", infos = "on" } = settings
+  const { showAction, showSummary } = settings
 
   const hasNoPrices = price == null
   const hasPrices = !hasNoPrices
@@ -34,9 +31,10 @@ export default function MarketFooter({ market, price, settings = {}, name = "Mar
 
   return (
     <div {...rest} data-controller={name}>
+
       <div className="h-full w-full flex flex-row justify-between ">
         <div className="flex-auto flex flex-row gap-2 items-center">
-          {hasPrices && infos === "on" && (
+          {hasPrices && showSummary && (
             <>
               <YesterdayMovementDisplay price={price} />
               <CurrentOpenDisplay market={market} price={price} />
@@ -45,7 +43,7 @@ export default function MarketFooter({ market, price, settings = {}, name = "Mar
           {hasNoPrices && <div className="text-xs text-secondary opacity-50">Market Not Active</div>}
         </div>
         <div className="flex-auto flex flex-row gap-2 justify-end items-center">
-          {actions === "on" && <ActionManager symbol={market?.symbol} settings={settings} />}
+          {showAction && <ActionManager symbol={market?.symbol} settings={settings} />}
         </div>
       </div>
     </div>

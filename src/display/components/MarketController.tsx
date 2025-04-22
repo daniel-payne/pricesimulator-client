@@ -14,7 +14,7 @@ type ComponentProps = {
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function MarketBehaviors({ market, isFavorite = false, name = "MarketBehaviors", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function MarketController({ market, isFavorite = false, name = "MarketController", ...rest }: PropsWithChildren<ComponentProps>) {
   const displayFavoriteClassName = isFavorite ? "text-primary my-1 cursor-pointer" : "text-secondary opacity-25  my-1 cursor-pointer"
 
   const handleToggleFavorites = () => {

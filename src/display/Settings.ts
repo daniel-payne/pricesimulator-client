@@ -1,21 +1,22 @@
-import type { Action } from "./controllers/ActionSelector"
-import type { Behavior } from "./controllers/BehaviorSelector"
+
 import type { Content } from "./controllers/ContentChooser"
 import type { View } from "./controllers/ViewChooser"
 import type { Range } from "./controllers/RangeChooser"
 import type { Trade } from "./controllers/TradeChooser"
-import type { Info } from "./controllers/InfoSelector"
+
 
 export type Settings = {
   view?: View
-  content?: Content
 
+  content?: Content
   range?: Range
   trade?: Trade
 
-  infos?: Info
-  behaviors?: Behavior
-  actions?: Action
+  showExpanded?: boolean
+
+  showSummary?: boolean
+  showController?: boolean
+  showAction?: boolean
 
   showFavorites?: boolean
   showMultiples?: boolean

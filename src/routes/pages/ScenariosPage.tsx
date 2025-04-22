@@ -1,6 +1,7 @@
 import timerPause from "@/data/indexDB/controllers/timerPause"
 import useScenarios from "@/data/indexDB/hooks/useScenarios"
 import ScenariosHeader from "@/display/coordinators/ScenariosHeader"
+import { setState, StoragePersistence } from "@keldan-systems/state-mutex"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import { FaVideo } from "react-icons/fa6"
@@ -12,6 +13,8 @@ type ComponentProps = {
 
 export default function ScenariosPage({ name = "ScenariosPage", ...rest }: PropsWithChildren<ComponentProps>) {
   const scenarios = useScenarios()
+
+  setState("CAN-PAUSE", true, StoragePersistence.local)
 
   timerPause()
 

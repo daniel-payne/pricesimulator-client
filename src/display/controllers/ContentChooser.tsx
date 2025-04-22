@@ -1,6 +1,6 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaFileLines, FaChartLine, FaList, FaTableColumns, FaMoneyCheckDollar, FaChartArea } from "react-icons/fa6"
+import { FaBatteryEmpty, FaFileLines, FaChartLine, FaList, FaTableColumns, FaMoneyCheckDollar, FaChartArea } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
@@ -20,6 +20,7 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
     return () => setView(range)
   }
 
+  const handleClickNON = handleClick("none")
   const handleClickINF = handleClick("info")
   const handleClickPRI = handleClick("price")
   const handleClickSPL = handleClick("sparkline")
@@ -27,6 +28,7 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
   const handleClickFOR = handleClick("form")
   const handleClickBOT = handleClick("both")
 
+  let classNameNON = UNSELECTED_BUTTON
   let classNameCHA = UNSELECTED_BUTTON
   let classNameSPL = UNSELECTED_BUTTON
   let classNameFOR = UNSELECTED_BUTTON
@@ -35,6 +37,9 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
   let classNamePRI = UNSELECTED_BUTTON
 
   switch (view) {
+    case "none":
+      classNameCHA = SELECTED_BUTTON
+      break
     case "chart":
       classNameCHA = SELECTED_BUTTON
       break
@@ -58,6 +63,9 @@ export default function ContentChooser({ name = "ContentChooser", ...rest }: Pro
   return (
     <div {...rest} data-component={name}>
       <div className="flex flex-row gap-2 justify-center items-center">
+        <div className={classNameNON} onClick={handleClickNON}>
+          <FaBatteryEmpty />
+        </div>
         <div className={classNameINF} onClick={handleClickINF}>
           <FaFileLines />
         </div>

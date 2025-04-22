@@ -20,10 +20,12 @@ type ComponentProps = {
 
   range?: Range | null | undefined
 
+  showPriceScale?: boolean
+
   name?: string
 } & HTMLAttributes<HTMLDivElement>
 
-export default function ClosesChart({ closes, price, range = "1m", name = "ClosesChart", ...rest }: PropsWithChildren<ComponentProps>) {
+export default function ClosesChart({ closes, price, showPriceScale = true, range = "1m", name = "ClosesChart", ...rest }: PropsWithChildren<ComponentProps>) {
   if (closes == null || price == null) {
     return null
   }
@@ -126,7 +128,7 @@ export default function ClosesChart({ closes, price, range = "1m", name = "Close
     },
     scales: {
       y: {
-        display: true,
+        display: showPriceScale,
         position: "right",
       },
 

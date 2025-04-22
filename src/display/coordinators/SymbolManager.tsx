@@ -45,7 +45,7 @@ export default function SymbolManager({
 
   const timer = useTimer()
 
-  const { view = "contracted", content = "info" } = settings
+  const { showExpanded = true, content = "price" } = settings
 
   if (market == null || price == null) {
     return null
@@ -57,7 +57,7 @@ export default function SymbolManager({
         <div className="h-full w-full flex flex-col gap-2 ">
           <MarketHeader market={market} settings={settings} favoriteSymbols={favoriteSymbols} />
           <div className="flex-auto overflow-auto">
-            {view === "expanded" && (
+            {showExpanded && (
               <div className="h-full w-full relative">
                 {content === "info" && (
                   <>
@@ -66,7 +66,7 @@ export default function SymbolManager({
                   </>
                 )}
                 {content === "price" && <MarketPriceDescription market={market} price={price} />}
-                {content === "sparkline" && <ClosesManager className="h-full w-full" symbol={symbol} settings={settings} />}
+                {content === "sparkline" && <ClosesManager className="h-full w-full" symbol={symbol} settings={settings} showPriceScale={false} />}
                 {content === "chart" && <HighLowManager className="h-full w-full" symbol={symbol} settings={settings} />}
                 {content === "form" && <FormManager className="h-full w-full " symbol={symbol} settings={settings} />}
                 {content === "both" && (
@@ -95,7 +95,7 @@ export default function SymbolManager({
         <div className="p-2">
           <div className="flex flex-row justify-between ">
             <MarketNameDescription market={market} />
-            {favorites != null && <MarketBehaviors market={market} isFavorite={isFavorite} />}
+            {favorites != null && <MarketController market={market} isFavorite={isFavorite} />}
           </div>
           {display === MarketDisplay.Info && (
             <>

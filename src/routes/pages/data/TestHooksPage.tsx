@@ -19,10 +19,10 @@ import useTransactions from "@/data/indexDB/hooks/useTransactions"
 import useActiveMarkets from "@/data/indexDB/hooks/useActiveMarkets"
 
 import useActionsSelection from "@/data/localStorage/hooks/useActionsSelection"
-import useBehaviorsSelection from "@/data/localStorage/hooks/useBehaviorsSelection"
+import useBehaviorsSelection from "@/data/localStorage/hooks/useControllerSelection"
 import useContentSelection from "@/data/localStorage/hooks/useContentSelection"
 import useCountdown from "@/data/localStorage/hooks/useCountdown"
-import useFavoriteSelection from "@/data/localStorage/hooks/useFavoriteSelection"
+import useFavoriteSelection from "@/data/localStorage/hooks/useFavoritesSelection"
 import useRangeSelection from "@/data/localStorage/hooks/useRangeSelection"
 import useViewSelection from "@/data/localStorage/hooks/useViewSelection"
 import useFavoriteList from "@/data/localStorage/hooks/useFavoriteList"
@@ -250,8 +250,8 @@ export default function TestHooksPage({ name = "HooksTestHooksPagePage", ...rest
               <SelectHook name="useMarketFor" symbol={symbol} onSelect={setSelection} />
             </div>
             <div className="p-2 flex flex-row flex-wrap gap-4">
-               <SelectHook name="useActiveMarkets" onSelect={setSelection} />
-             </div>
+              <SelectHook name="useActiveMarkets" onSelect={setSelection} />
+            </div>
             <div className="divider">Stored</div>
             <div className="p-2 flex flex-row flex-wrap gap-4">
               <SelectHook name="useTimer" onSelect={setSelection} />

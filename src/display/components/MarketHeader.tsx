@@ -1,11 +1,10 @@
 import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 import MarketNameDescription from "./MarketNameDescription"
-import MarketBehaviors from "./MarketBehaviors"
-import useBehaviorsSelection from "@/data/localStorage/hooks/useBehaviorsSelection"
-import useFavoriteList from "@/data/localStorage/hooks/useFavoriteList"
+import MarketController from "./MarketController"
 
-import type { Behavior } from "../controllers/BehaviorSelector"
+
+
 import { Settings } from "../Settings"
 
 type ComponentProps = {
@@ -18,7 +17,7 @@ type ComponentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function MarketHeader({ market, settings = {}, favoriteSymbols = [], name = "MarketHeader", ...rest }: PropsWithChildren<ComponentProps>) {
-  const { behaviors = "off" } = settings
+  const { showController } = settings
 
   const isFavorite = favoriteSymbols?.includes(market?.symbol ?? "MISSING")
 
@@ -26,7 +25,7 @@ export default function MarketHeader({ market, settings = {}, favoriteSymbols = 
     <div {...rest} data-controller={name}>
       <div className="h-full w-full flex flex-row justify-between ">
         <MarketNameDescription className="truncate pe-2" market={market} />
-        {behaviors === "on" && <MarketBehaviors market={market} isFavorite={isFavorite} />}
+        {showController && <MarketController market={market} isFavorite={isFavorite} />}
       </div>
     </div>
   )

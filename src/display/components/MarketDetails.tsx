@@ -3,10 +3,10 @@ import { MarketOrNothing } from "@/data/indexDB/types/Market"
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
 import MarketNameDescription from "./MarketNameDescription"
-import MarketContractDescription from "./MarketContractDescription"
-import MarketSummaryDescription from "./MarketSummaryDescription"
-import ohlcLoadFor from "@/data/indexDB/controllers/ohlcLoadFor"
-import MarketBehaviors from "./MarketBehaviors"
+// import MarketContractDescription from "./MarketContractDescription"
+// import MarketSummaryDescription from "./MarketSummaryDescription"
+// import ohlcLoadFor from "@/data/indexDB/controllers/ohlcLoadFor"
+import MarketController from "./MarketController"
 import { MarketDisplay } from "@/data/indexDB/enums/MarketDisplay"
 import SparklineManager from "@/display/coordinators/ClosesManager"
 
@@ -26,8 +26,8 @@ export default function MarketDetails({ market, display, favorites, name = "Scen
   }
 
   const isFavorite = favorites?.includes(market.symbol)
-  const hasPrices = (market.priceCount ?? 0) > 0
-  const hasNoPrices = !hasPrices
+  // const hasPrices = (market.priceCount ?? 0) > 0
+  // const hasNoPrices = !hasPrices
 
   return (
     <div {...rest} data-component={name}>
@@ -35,12 +35,12 @@ export default function MarketDetails({ market, display, favorites, name = "Scen
         <div className="p-2">
           <div className="flex flex-row justify-between ">
             <MarketNameDescription market={market} />
-            {favorites != null && <MarketBehaviors market={market} isFavorite={isFavorite} />}
+            {favorites != null && <MarketController market={market} isFavorite={isFavorite} />}
           </div>
-          {display === MarketDisplay.Info && (
+          {/* {display === MarketDisplay.Info && (
             <>
               <div className="flex flex-col gap-2 pt-2">
-                <MarketContractDescription market={market} />
+            <MarketContractDescription market={market} />  
                 <MarketSummaryDescription market={market} />
               </div>
               {hasNoPrices && (
@@ -51,7 +51,7 @@ export default function MarketDetails({ market, display, favorites, name = "Scen
                 </div>
               )}
             </>
-          )}
+          )}   */}
           {display === MarketDisplay.Line && <SparklineManager symbol={market?.symbol} />}
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { useQueryState } from "@keldan-systems/state-mutex"
 
-import { FaBorderTopLeft, FaGears } from "react-icons/fa6"
+import { FaBorderTopLeft } from "react-icons/fa6"
 
 import type { HTMLAttributes, PropsWithChildren } from "react"
 
-export type Info = "on" | "off"
+
 
 type ComponentProps = {
   name?: string
@@ -13,13 +13,13 @@ type ComponentProps = {
 const UNSELECTED_BUTTON = "btn btn-sm btn-ghost"
 const SELECTED_BUTTON = "btn btn-sm btn-info"
 
-const TOOLTIP = "Info"
+const TOOLTIP = "Show Summary"
 
-export default function InfoSelector({ name = "InfoSelector", ...rest }: PropsWithChildren<ComponentProps>) {
-  const [view, setView] = useQueryState<Info>("info", "off")
+export default function SummarySelector({ name = "SummarySelector", ...rest }: PropsWithChildren<ComponentProps>) {
+  const [view, setView] = useQueryState<boolean>("show-summary", false)
 
   const handleClick = () => {
-    const newValue = view === "on" ? "off" : "on"
+    const newValue = !view
 
     setView(newValue)
   }
@@ -27,10 +27,10 @@ export default function InfoSelector({ name = "InfoSelector", ...rest }: PropsWi
   let classNameSwitch = UNSELECTED_BUTTON
 
   switch (view) {
-    case "on":
+    case true:
       classNameSwitch = SELECTED_BUTTON
       break
-    case "off":
+    case false:
       classNameSwitch = UNSELECTED_BUTTON
       break
   }
